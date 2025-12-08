@@ -1,0 +1,150 @@
+.dashboard-content {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 250px);
+  padding: 100px 0 50px 0;
+}
+
+.dashboard-grid-container {
+  width: calc(90vw - 300px);
+  max-width: 1400px;
+  background-color: #202020;
+  border-radius: 8px;
+  padding: 2rem;
+  position: relative;
+  
+  /* Soft organic border - torn paper / cave opening style */
+  clip-path: polygon(
+    /* Top edge - soft flowing curves with occasional tears */
+    0% 1.8%, 5% 1.2%, 8% 2.1%, 12% 0.9%, 15% 1.6%, 
+    18% 2.4%, 22% 1.3%, 25% 0.8%, 28% 1.9%, 32% 1.5%,
+    35% 0.7%, 38% 2.0%, 42% 1.4%, 45% 0.9%, 48% 1.7%,
+    52% 1.1%, 55% 2.2%, 58% 1.6%, 62% 1.0%, 65% 1.8%,
+    68% 1.3%, 72% 0.8%, 75% 2.1%, 78% 1.5%, 82% 1.2%,
+    85% 1.9%, 88% 1.4%, 92% 0.9%, 95% 1.6%, 98% 1.3%, 100% 1.8%,
+    
+    /* Right edge - gentle flowing irregularities */
+    99.2% 5%, 98.8% 8%, 99.4% 12%, 98.9% 15%, 99.3% 18%,
+    98.7% 22%, 99.5% 25%, 99.0% 28%, 98.8% 32%, 99.4% 35%,
+    99.1% 38%, 98.7% 42%, 99.5% 45%, 98.9% 48%, 99.2% 52%,
+    98.8% 55%, 99.4% 58%, 99.1% 62%, 98.6% 65%, 99.3% 68%,
+    99.0% 72%, 98.7% 75%, 99.5% 78%, 99.1% 82%, 98.8% 85%,
+    99.4% 88%, 99.0% 92%, 98.7% 95%, 99.2% 98%, 99% 100%,
+    
+    /* Bottom edge - soft torn paper texture */
+    100% 98.2%, 95% 98.8%, 92% 99.1%, 88% 98.6%, 85% 99.2%,
+    82% 98.8%, 78% 99.4%, 75% 98.9%, 72% 99.2%, 68% 98.7%,
+    65% 99.3%, 62% 99.0%, 58% 98.6%, 55% 99.1%, 52% 98.9%,
+    48% 99.4%, 45% 99.1%, 42% 98.6%, 38% 98.9%, 35% 99.3%,
+    32% 98.8%, 28% 99.2%, 25% 99.0%, 22% 98.7%, 18% 99.1%,
+    15% 98.9%, 12% 99.4%, 8% 98.8%, 5% 99.2%, 2% 98.7%, 0% 98.2%,
+    
+    /* Left edge - subtle cave opening with flowing curves */
+    1.3% 95%, 0.8% 92%, 1.6% 88%, 1.0% 85%, 0.7% 82%,
+    1.4% 78%, 0.9% 75%, 1.2% 72%, 0.6% 68%, 1.5% 65%,
+    1.1% 62%, 0.8% 58%, 1.3% 55%, 0.9% 52%, 1.7% 48%,
+    1.2% 45%, 0.7% 42%, 1.4% 38%, 1.0% 35%, 0.8% 32%,
+    1.5% 28%, 1.1% 25%, 0.9% 22%, 1.3% 18%, 0.8% 15%,
+    1.6% 12%, 1.2% 8%, 0.7% 5%, 1.4% 2%, 1% 0%
+  );
+  
+  /* Subtle shadow to enhance depth */
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+/* 28×14 Grid System - Square Tiles */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(28, 1fr);
+  grid-template-rows: repeat(14, 1fr);
+  gap: 0;
+  width: 100%;
+  aspect-ratio: 28 / 14;
+  position: relative;
+}
+
+/* Grid Tiles (Visual Guidelines) */
+.grid-tile {
+  border: 1px solid rgba(131, 130, 125, 0.1);
+  background: transparent;
+  pointer-events: none;
+  aspect-ratio: 1 / 1;
+}
+
+/* Widget Wrapper - Occupies full tile space with internal padding */
+.grid-block-wrapper {
+  position: relative;
+  cursor: move;
+  z-index: 10;
+  user-select: none;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.grid-block-wrapper.dragging {
+  cursor: grabbing;
+  z-index: 100;
+}
+
+/* Widget Content - Fills wrapper space with visible styling */
+.grid-block-content {
+  width: 100%;
+  height: 100%;
+  background: #3a3a3a;
+  border: 2px solid #4a4a4a;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  min-height: 60px;
+  min-width: 60px;
+}
+
+.grid-block-wrapper:hover .grid-block-content {
+  background: #424242;
+  border-color: #5a5a5a;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.grid-block-wrapper.dragging .grid-block-content {
+  opacity: 0.7;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+.block-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e8e8e8;
+  text-align: center;
+}
+
+.block-label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e8e8e8;
+}
+
+.block-coords {
+  font-size: 0.875rem;
+  color: #83827d;
+  font-family: monospace;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+  .dashboard-grid-container {
+    width: calc(95vw - 300px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid-container {
+    width: calc(100vw - 280px);
+  }
+}
