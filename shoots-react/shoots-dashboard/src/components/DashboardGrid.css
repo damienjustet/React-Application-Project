@@ -52,15 +52,13 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
 
-/* 28×14 Grid System - Square Tiles */
+/* 28×14 Grid System - Square Tiles (responsive) */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(28, 1fr);
-  grid-template-rows: repeat(14, 1fr);
   gap: 0;
   width: 100%;
-  aspect-ratio: 28 / 14;
   position: relative;
+  /* grid-template-columns and grid-template-rows set dynamically via inline style */
 }
 
 /* Grid Tiles (Visual Guidelines) */
@@ -143,8 +141,33 @@
   }
 }
 
+@media (max-width: 1199px) {
+  .dashboard-grid-container {
+    width: calc(95vw - 280px);
+  }
+  
+  .dashboard-grid {
+    /* Grid switches to 14 columns at this breakpoint */
+  }
+}
+
 @media (max-width: 1024px) {
   .dashboard-grid-container {
     width: calc(100vw - 280px);
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-grid-container {
+    width: calc(100vw - 60px);
+    padding: 1.5rem;
+  }
+  
+  .dashboard-grid {
+    /* Grid switches to 7 columns at this breakpoint */
+  }
+  
+  .dashboard-content {
+    padding: 80px 20px 30px 20px;
   }
 }
