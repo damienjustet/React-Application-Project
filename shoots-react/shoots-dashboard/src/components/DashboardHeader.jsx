@@ -10,10 +10,12 @@ function DashboardHeader({ userName = "Damien" }) {
       <div className="top-bar">
         <span className="sync-status">Last Synced: {getTimeSinceSync()}</span>
         <button className="sync-btn">
-          <span className="sync-icon">🔄</span>
+          <i className="fa-solid fa-arrows-rotate sync-icon"></i>
           Sync Now
         </button>
-        <button className="menu-btn" title="More options">⋯</button>
+        <button className="menu-btn" title="More options">
+          <i className="fa-solid fa-ellipsis"></i>
+        </button>
       </div>
       
       <div className="banner">

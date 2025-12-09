@@ -7,6 +7,7 @@
   border-right: 1px solid #202020;
   left: 0;
   top: 0;
+  font-weight: 600;
 }
 
 .nav-links {
@@ -28,12 +29,13 @@
   display: flex;
   align-items: center;
   color: #83827d;
-  padding: 7px;
+  padding: 4px 7px;
   text-decoration: none;
   background-color: #202020;
   cursor: pointer;
   transition: background-color 0.2s ease;
   border-radius: 0;
+  font-weight: 600;
 }
 
 .nav-item:hover {
@@ -44,17 +46,13 @@
 .nav-item.home-item {
   color: white;
   margin-bottom: 15px;
+  gap: 0;
 }
 
 .nav-item .icon {
   color: #83827d;
   margin-right: 4px;
   font-size: 1.125rem;
-  width: 20px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .logo-icon {
@@ -62,21 +60,17 @@
   height: 20px;
   margin-right: 10px;
   vertical-align: middle;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.nav-item.home-item span {
+  flex-grow: 0;
 }
 
 .add-btn {
   margin-left: auto;
   color: #83827d;
-  font-size: 1.25rem;
-  font-weight: 400;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  font-size: 1.125rem;
+  padding-right: 10px;
 }
 
 .settings-item {

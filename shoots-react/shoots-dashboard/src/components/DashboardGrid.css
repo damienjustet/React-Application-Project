@@ -52,13 +52,12 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
 
-/* 28×14 Grid System - Square Tiles (responsive) */
+/* Grid System - Responsive */
 .dashboard-grid {
   display: grid;
   gap: 0;
   width: 100%;
   position: relative;
-  /* grid-template-columns and grid-template-rows set dynamically via inline style */
 }
 
 /* Grid Tiles (Visual Guidelines) */
@@ -66,7 +65,6 @@
   border: 1px solid rgba(131, 130, 125, 0.1);
   background: transparent;
   pointer-events: none;
-  aspect-ratio: 1 / 1;
 }
 
 /* Widget Wrapper - Occupies full tile space with internal padding */
@@ -145,10 +143,6 @@
   .dashboard-grid-container {
     width: calc(95vw - 280px);
   }
-  
-  .dashboard-grid {
-    /* Grid switches to 14 columns at this breakpoint */
-  }
 }
 
 @media (max-width: 1024px) {
@@ -161,10 +155,6 @@
   .dashboard-grid-container {
     width: calc(100vw - 60px);
     padding: 1.5rem;
-  }
-  
-  .dashboard-grid {
-    /* Grid switches to 7 columns at this breakpoint */
   }
   
   .dashboard-content {
