@@ -1,0 +1,38 @@
+# Ignore everything in home directory except shoots-react
+/*
+!/shoots-react/
+!.gitignore
+
+# System files
+.DS_Store
+.Trash
+.CFUserTextEncoding
+
+# User config
+.claude*
+.config/
+.vscode/
+.zsh*
+.vim*
+.npm/
+.local/
+.python_history
+.gitconfig
+.lesshst
+.X-VPN/
+
+# User directories
+Applications/
+Desktop/
+Documents/
+Downloads/
+Library/
+Movies/
+Music/
+Pictures/
+Public/
+VScode/
+ghost/
+react-zero-to-hero/
+shoots-html/
+First-Application/
