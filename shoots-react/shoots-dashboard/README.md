@@ -74,14 +74,17 @@ Shoots! is built to:
 
 ## 🤝 Contribution
 
-Shoots! is in active development. Contributions, feedback, and ideas are welcome — especially around:
+Shoots! is in active development. Feedback, and ideas are welcome — especially around:
 - UI/UX improvements
 - Charting and visualization
 - Modular widget design
 - Secure fintech integrations
 
+To submit feedback, email: d.anta.justet@gmail.com
 ---
 
 ## 📜 License
 
-MIT License — free to use, modify, and distribute.
+All rights reserved.  
+Shoots! is proprietary software owned and developed by Damien Anta Justet.  
+No part of this project may be copied, modified, or distributed without explicit written permission.
