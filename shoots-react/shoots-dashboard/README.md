@@ -1,12 +1,12 @@
-# Shoots! — Modular Financial Dashboard
+# Shoots — Modular Financial Dashboard
 
-Shoots! is a modern, modular financial dashboard designed to make personal finance **clear, intuitive, and customizable**. Inspired by natural systems (like bamboo’s modular growth), Shoots! provides a flexible interface where users can visualize spending, track budgets, and manage recurring expenses — all in one elegant, drag‑and‑drop environment.
+Shoots is a modern, modular financial dashboard designed to make personal finance **clear, intuitive, and customizable**. Inspired by natural systems (like bamboo’s modular growth), Shoots provides a flexible interface where users can visualize spending, track budgets, and manage recurring expenses — all in one elegant, drag‑and‑drop environment.
 
 ---
 
 ## 🌱 Vision
 
-Shoots! aims to **simplify financial management** by combining:
+Shoots aims to **simplify financial management** by combining:
 - **Transparency** — clear breakdowns of income, spending, bills, and discretionary categories.
 - **Modularity** — widgets and blocks that can be rearranged to fit each user’s workflow.
 - **Elegance** — a clean, paper‑like design with dark themes, intuitive navigation, and smooth transitions.
@@ -54,7 +54,7 @@ The goal is to empower users to **see patterns in their money**, make informed d
 
 ## 🚀 Goals
 
-Shoots! is built to:
+Shoots is built to:
 - Provide **clarity** in financial data
 - Offer **customization** through modular widgets
 - Deliver **insightful visualizations** that highlight trends and anomalies
@@ -74,7 +74,7 @@ Shoots! is built to:
 
 ## 🤝 Contribution
 
-Shoots! is in active development. Feedback, and ideas are welcome — especially around:
+Shoots is in active development. Feedback, and ideas are welcome — especially around:
 - UI/UX improvements
 - Charting and visualization
 - Modular widget design
@@ -86,5 +86,5 @@ To submit feedback, email: d.anta.justet@gmail.com
 ## 📜 License
 
 All rights reserved.  
-Shoots! is proprietary software owned and developed by Damien Anta Justet.  
+Shoots is proprietary software owned and developed by Damien Anta Justet.  
 No part of this project may be copied, modified, or distributed without explicit written permission.
