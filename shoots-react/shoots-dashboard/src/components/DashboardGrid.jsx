@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import './DashboardGrid.css'
 
+const GRID_ROWS = 14 // Keep rows constant
+
 function DashboardGrid() {
   // Determine grid columns based on window width
   const getGridColumns = () => {
@@ -11,13 +13,14 @@ function DashboardGrid() {
   }
 
   const [gridColumns, setGridColumns] = useState(getGridColumns())
-  const gridRows = 14 // Keep rows constant
 
   // State to track block positions (stores original 28-column positions)
   const [blocks, setBlocks] = useState([
-    { id: 1, x: 0, y: 0, w: 6, h: 4, label: '6×4 Block', originalX: 0, originalY: 0, originalW: 6, originalH: 4 },
-    { id: 2, x: 6, y: 0, w: 6, h: 4, label: '6×4 Block', originalX: 6, originalY: 0, originalW: 6, originalH: 4 },
+    { id: 1, x: 0, y: 0, w: 8, h: 3, label: '8×3 Block', originalX: 0, originalY: 0, originalW: 8, originalH: 3 },
+    { id: 2, x: 8, y: 0, w: 4, h: 5, label: '4×5 Block', originalX: 8, originalY: 0, originalW: 4, originalH: 5 },
     { id: 3, x: 12, y: 0, w: 6, h: 4, label: '6×4 Block', originalX: 12, originalY: 0, originalW: 6, originalH: 4 },
+    { id: 4, x: 0, y: 3, w: 5, h: 6, label: '5×6 Block', originalX: 0, originalY: 3, originalW: 5, originalH: 6 },
+    { id: 5, x: 18, y: 0, w: 7, h: 3, label: '7×3 Block', originalX: 18, originalY: 0, originalW: 7, originalH: 3 },
   ])
 
   const [draggedBlock, setDraggedBlock] = useState(null)
@@ -71,7 +74,7 @@ function DashboardGrid() {
       let placed = false
       let testY = currentY
 
-      while (!placed && testY < gridRows + 10) {
+      while (!placed && testY < GRID_ROWS + 10) {
         for (let testX = 0; testX <= columns - scaledW; testX++) {
           // Check if this position is free
           const hasCollision = reflowed.some(other => {
@@ -137,7 +140,7 @@ function DashboardGrid() {
     const gridElement = e.currentTarget.closest('.dashboard-grid')
     const rect = gridElement.getBoundingClientRect()
     const tileWidth = rect.width / gridColumns
-    const tileHeight = rect.height / gridRows
+    const tileHeight = rect.height / GRID_ROWS
     
     // Calculate the wrapper's position (full tile space)
     const wrapperLeft = block.x * tileWidth
@@ -177,7 +180,7 @@ function DashboardGrid() {
     
     const rect = gridElement.getBoundingClientRect()
     const tileWidth = rect.width / gridColumns
-    const tileHeight = rect.height / gridRows
+    const tileHeight = rect.height / GRID_ROWS
     
     // Snap to nearest tile on drop
     const centerX = dragPosition.x + (draggedBlock.w * tileWidth) / 2
@@ -188,7 +191,7 @@ function DashboardGrid() {
     
     // Ensure within bounds
     const finalX = Math.max(0, Math.min(gridColumns - draggedBlock.w, snappedX))
-    const finalY = Math.max(0, Math.min(gridRows - draggedBlock.h, snappedY))
+    const finalY = Math.max(0, Math.min(GRID_ROWS - draggedBlock.h, snappedY))
     
     // Check for collision at target position
     const hasCollision = checkCollision(finalX, finalY, draggedBlock.w, draggedBlock.h, draggedBlock.id)
@@ -236,10 +239,10 @@ function DashboardGrid() {
       <div className="dashboard-grid-container">
         <div className="dashboard-grid" style={{
           gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-          gridTemplateRows: `repeat(${gridRows}, 1fr)`
+          gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
         }}>
           {/* Render grid tiles as background */}
-          {Array.from({ length: gridColumns * gridRows }).map((_, index) => (
+          {Array.from({ length: gridColumns * GRID_ROWS }).map((_, index) => (
             <div key={index} className="grid-tile"></div>
           ))}
           
@@ -258,7 +261,7 @@ function DashboardGrid() {
                         left: `${dragPosition.x}px`,
                         top: `${dragPosition.y}px`,
                         width: `calc((100% / ${gridColumns}) * ${block.w})`,
-                        height: `calc((100% / ${gridRows}) * ${block.h})`,
+                        height: `calc((100% / ${GRID_ROWS}) * ${block.h})`,
                         gridColumn: 'unset',
                         gridRow: 'unset'
                       }

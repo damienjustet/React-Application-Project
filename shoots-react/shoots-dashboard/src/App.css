@@ -6,10 +6,15 @@
 
 .main-content {
   flex: 1;
-  margin-left: clamp(240px, 15vw, 240px);
+  margin-left: 0;
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-expanded {
+  margin-left: clamp(240px, 15vw, 240px);
 }
 
 .container {
@@ -29,9 +34,5 @@
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem;
-  }
-  
-  .banner {
-    height: 150px;
   }
 }

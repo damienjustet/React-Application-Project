@@ -11,6 +11,20 @@
   padding: 0 15px;
   font-size: 14px;
   gap: 15px;
+  position: relative;
+}
+
+/* Hamburger icon in header */
+.hamburger-icon {
+  color: #83827d;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-right: auto;
+}
+
+.hamburger-icon:hover {
+  color: #ffffff;
 }
 
 .sync-status {
@@ -84,4 +98,10 @@
   left: 110px;
   bottom: -57.5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .banner {
+    height: 150px;
+  }
 }

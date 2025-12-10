@@ -8,13 +8,92 @@
   left: 0;
   top: 0;
   font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 100;
+}
+
+/* Mini sidebar on hover */
+.mini-sidebar {
+  width: 200px;
+  height: 80vh;
+  max-height: 80vh;
+  background-color: #202020;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);
+  border-radius: 0 12px 12px 0;
+  z-index: 1001;
+  padding: 15px 0;
+  top: 10vh;
+}
+
+/* Hover trigger edge */
+.hover-trigger {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 100vh;
+  z-index: 999;
+  cursor: pointer;
+}
+
+/* Toggle button wrapper for plus + arrow */
+.toggle-btn-wrapper {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Collapse icon (arrow) */
+.collapse-btn {
+  color: #83827d;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-btn:hover {
+  background-color: #363636;
+  color: #ffffff;
+}
+
+/* Mini sidebar adjustments */
+.mini-sidebar .nav-item {
+  font-size: 13px;
+  padding: 3px 5px;
+  margin: 0 8px;
+}
+
+.mini-sidebar .icon {
+  font-size: 1rem;
+  margin-right: 6px;
+}
+
+.mini-sidebar .logo-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.mini-sidebar .add-btn {
+  font-size: 1rem;
+}
+
+.mini-sidebar .settings-item {
+  padding-bottom: 15px;
 }
 
 .nav-links {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex-grow: 1;
   list-style: none;
   padding: 0;
 }
@@ -70,7 +149,35 @@
   margin-left: auto;
   color: #83827d;
   font-size: 1.125rem;
-  padding-right: 10px;
+  padding: 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-btn:hover {
+  background-color: #363636;
+}
+
+.help-icon {
+  margin-left: auto;
+  color: #83827d;
+  font-size: 1.125rem;
+  padding: 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-icon:hover {
+  background-color: #363636;
+  color: white;
 }
 
 .settings-item {
