@@ -100,6 +100,16 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.profile-picture {
+  width: 115px;
+  height: 115px;
+  border-radius: 50%;
+  position: absolute;
+  left: 110px;
+  bottom: -57.5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 768px) {
   .banner {
     height: 150px;

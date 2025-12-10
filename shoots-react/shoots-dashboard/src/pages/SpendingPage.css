@@ -1,0 +1,435 @@
+.spending-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #191919;
+}
+
+.spending-content {
+  padding: 2rem 3rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #e8e8e8;
+  margin: 0 0 2.5rem 0;
+  padding-bottom: 1rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: #202020;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #2a2a2a;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #83827d;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin-bottom: 0.25rem;
+}
+
+.stat-amount {
+  font-size: 1rem;
+  color: #83827d;
+}
+
+.stat-change {
+  font-size: 0.875rem;
+  color: #83827d;
+}
+
+.stat-change.positive {
+  color: #6aa84f;
+}
+
+/* Main Split Layout */
+.spending-main {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+}
+
+/* Transactions Section */
+.transactions-section {
+  background-color: #202020;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #2a2a2a;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e8e8e8;
+}
+
+.add-transaction-btn {
+  background-color: #6aa84f;
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.add-transaction-btn:hover {
+  background-color: #5a963f;
+}
+
+/* Transaction Controls */
+.transaction-controls {
+  margin-bottom: 1.5rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.search-bar i {
+  color: #83827d;
+  margin-right: 0.75rem;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e8e8e8;
+  font-size: 0.875rem;
+}
+
+.search-bar input::placeholder {
+  color: #83827d;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background-color: #2a2a2a;
+  color: #83827d;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  background-color: #363636;
+}
+
+.filter-chip.active {
+  background-color: #6aa84f;
+  color: white;
+}
+
+/* Transaction List */
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.transaction-item:hover {
+  background-color: #363636;
+}
+
+.transaction-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #363636;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #83827d;
+  font-size: 1.125rem;
+}
+
+.transaction-details {
+  flex: 1;
+}
+
+.transaction-merchant {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #e8e8e8;
+  margin-bottom: 0.25rem;
+}
+
+.transaction-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transaction-date {
+  font-size: 0.8125rem;
+  color: #83827d;
+}
+
+.category-badge {
+  font-size: 0.75rem;
+  color: #6aa84f;
+  background-color: rgba(106, 168, 79, 0.15);
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+}
+
+.transaction-amount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e8e8e8;
+}
+
+/* Insights Section */
+.insights-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.insight-card {
+  background-color: #202020;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #2a2a2a;
+}
+
+.insight-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin-bottom: 1rem;
+}
+
+/* Category Chart */
+.category-chart-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.donut-chart {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff6b6b 0% 24%,
+    #4ecdc4 24% 43%,
+    #95e1d3 43% 58%,
+    #f38181 58% 72%,
+    #aa96da 72% 82%,
+    #83827d 82% 100%
+  );
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-chart::before {
+  content: '';
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background-color: #202020;
+  border-radius: 50%;
+}
+
+.chart-center {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.chart-total {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e8e8e8;
+}
+
+.chart-label {
+  font-size: 0.875rem;
+  color: #83827d;
+}
+
+.category-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.category-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.category-name {
+  font-size: 0.875rem;
+  color: #e8e8e8;
+}
+
+.category-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category-amount {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e8e8e8;
+}
+
+.category-percent {
+  font-size: 0.8125rem;
+  color: #83827d;
+}
+
+/* Trends Chart */
+.trends-chart-placeholder {
+  height: 200px;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-placeholder-text {
+  color: #83827d;
+  font-size: 0.875rem;
+}
+
+/* Insights List */
+.insights-list .insight-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.insights-list .insight-item:last-child {
+  margin-bottom: 0;
+}
+
+.insight-icon {
+  color: #6aa84f;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.insight-icon.success {
+  color: #6aa84f;
+}
+
+.insights-list p {
+  font-size: 0.875rem;
+  color: #e8e8e8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .spending-main {
+    grid-template-columns: 1fr;
+  }
+  
+  .insights-section {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: grid;
+  }
+}
+
+@media (max-width: 768px) {
+  .spending-content {
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .add-transaction-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

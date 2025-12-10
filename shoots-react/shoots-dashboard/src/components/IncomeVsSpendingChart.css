@@ -1,0 +1,67 @@
+.income-spending-chart {
+  background-color: #202020;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #2a2a2a;
+  margin-bottom: 2rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin: 0;
+}
+
+.chart-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.chart-nav-btn {
+  background: transparent;
+  border: none;
+  color: #83827d;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chart-nav-btn:hover:not(:disabled) {
+  color: #e8e8e8;
+}
+
+.chart-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.chart-nav-btn i {
+  font-size: 1.5rem;
+}
+
+.chart-container {
+  height: 350px;
+  position: relative;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 280px;
+  }
+}
