@@ -2,9 +2,59 @@ import { useState } from 'react'
 import './SpendingPage.css'
 import SpendingHeader from '../components/SpendingHeader'
 import IncomeVsSpendingChart from '../components/IncomeVsSpendingChart'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons, categoryColors } from '../context/DataContext'
 
 function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
-  const [selectedCategory, setSelectedCategory] = useState(null)
+  // Constants
+  const RECENT_TRANSACTIONS_LIMIT = 15
+
+  // Context
+  const { transactions, addTransaction, getTransactionsByMonth } = useData()
+
+  // State
+  const [isHoveringChart, setIsHoveringChart] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeFilter, setActiveFilter] = useState('Recent')
+  const [selectedMonth, setSelectedMonth] = useState('Dec')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [newTransaction, setNewTransaction] = useState({ merchant: '', amount: '', category: 'Dining', date: '', type: 'expense' })
+
+  // Computed values
+  const monthTransactions = getTransactionsByMonth(selectedMonth)
+  
+  const filteredTransactions = monthTransactions.filter(transaction => {
+    const matchesSearch = transaction.merchant.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         transaction.category.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    if (!matchesSearch) return false
+
+    if (activeFilter === 'Income') {
+      return transaction.type === 'income'
+    }
+    
+    return true
+  }).slice(0, activeFilter === 'Recent' ? RECENT_TRANSACTIONS_LIMIT : undefined)
+
+  // Handlers
+  const handleAddTransaction = () => {
+    if (newTransaction.merchant && newTransaction.amount && newTransaction.date) {
+      const dateObj = new Date(newTransaction.date)
+      const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      
+      const transaction = {
+        date: formattedDate,
+        merchant: newTransaction.merchant,
+        category: newTransaction.category,
+        amount: parseFloat(newTransaction.amount),
+        icon: categoryIcons[newTransaction.category],
+        type: newTransaction.type
+      }
+      addTransaction(transaction)
+      setNewTransaction({ merchant: '', amount: '', category: 'Dining', date: '', type: 'expense' })
+      setShowAddModal(false)
+    }
+  }
 
   return (
     <div className="spending-page">
@@ -13,35 +63,93 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
         toggleSidebar={toggleSidebar}
       />
       
-      <div className="spending-content">
-        <h1 className="page-title">Spending</h1>
-        
-        {/* Top Stats Cards */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-label">Total Spent This Month</div>
-            <div className="stat-value">$2,847.32</div>
-            <div className="stat-change positive">-12% vs last month</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label">Biggest Category</div>
-            <div className="stat-value">Dining</div>
-            <div className="stat-amount">$687.50</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label">Average per Day</div>
-            <div className="stat-value">$94.91</div>
-            <div className="stat-change">30 days</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label">Transactions</div>
-            <div className="stat-value">142</div>
-            <div className="stat-change">+8 vs last month</div>
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Add Transaction</h2>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Merchant</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Starbucks"
+                  value={newTransaction.merchant}
+                  onChange={(e) => setNewTransaction({...newTransaction, merchant: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Amount</label>
+                <input 
+                  type="number" 
+                  placeholder="0.00"
+                  step="0.01"
+                  value={newTransaction.amount}
+                  onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Date</label>
+                <input 
+                  type="date" 
+                  value={newTransaction.date}
+                  onChange={(e) => setNewTransaction({...newTransaction, date: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Type</label>
+                <div className="type-toggle">
+                  <button 
+                    type="button"
+                    className={`type-btn ${newTransaction.type === 'expense' ? 'active expense' : ''}`}
+                    onClick={() => setNewTransaction({...newTransaction, type: 'expense', category: 'Dining'})}
+                  >
+                    <i className="fa-solid fa-arrow-down"></i>
+                    Expense
+                  </button>
+                  <button 
+                    type="button"
+                    className={`type-btn ${newTransaction.type === 'income' ? 'active income' : ''}`}
+                    onClick={() => setNewTransaction({...newTransaction, type: 'income', category: 'Salary'})}
+                  >
+                    <i className="fa-solid fa-arrow-up"></i>
+                    Income
+                  </button>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Category</label>
+                <select 
+                  value={newTransaction.category}
+                  onChange={(e) => setNewTransaction({...newTransaction, category: e.target.value})}
+                >
+                  {(newTransaction.type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES).map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button className="btn-add" onClick={handleAddTransaction}>Add Transaction</button>
+            </div>
           </div>
         </div>
+      )}
+      
+      <div className="spending-content">
+        <h1 className="page-title">Spending</h1>
 
         {/* Income vs Spending Chart */}
-        <IncomeVsSpendingChart />
+        <IncomeVsSpendingChart 
+          transactions={transactions} 
+          selectedMonth={selectedMonth}
+          onMonthSelect={setSelectedMonth}
+        />
 
         {/* Main Content - Split Layout */}
         <div className="spending-main">
@@ -49,7 +157,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
           <div className="transactions-section">
             <div className="section-header">
               <h2>Transactions</h2>
-              <button className="add-transaction-btn">
+              <button className="add-transaction-btn" onClick={() => setShowAddModal(true)}>
                 <i className="fa-solid fa-plus"></i>
                 Add Transaction
               </button>
@@ -59,43 +167,59 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
             <div className="transaction-controls">
               <div className="search-bar">
                 <i className="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search transactions..." />
+                <input 
+                  type="text" 
+                  placeholder="Search transactions..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
               <div className="filter-chips">
-                <button className="filter-chip active">All</button>
-                <button className="filter-chip">This Month</button>
-                <button className="filter-chip">Last 30 Days</button>
-                <button className="filter-chip">This Year</button>
+                <button 
+                  className={`filter-chip ${activeFilter === 'Recent' ? 'active' : ''}`}
+                  onClick={() => setActiveFilter('Recent')}
+                >
+                  Recent
+                </button>
+                <button 
+                  className={`filter-chip ${activeFilter === 'All' ? 'active' : ''}`}
+                  onClick={() => setActiveFilter('All')}
+                >
+                  All
+                </button>
+                <button 
+                  className={`filter-chip ${activeFilter === 'Income' ? 'active' : ''}`}
+                  onClick={() => setActiveFilter('Income')}
+                >
+                  Income
+                </button>
               </div>
             </div>
 
             {/* Transaction List */}
             <div className="transaction-list">
-              {/* Sample transactions */}
-              {[
-                { date: 'Dec 9', merchant: 'Starbucks', category: 'Dining', amount: 8.50, icon: 'fa-coffee' },
-                { date: 'Dec 9', merchant: 'Uber', category: 'Transportation', amount: 24.30, icon: 'fa-car' },
-                { date: 'Dec 8', merchant: 'Amazon', category: 'Shopping', amount: 156.78, icon: 'fa-cart-shopping' },
-                { date: 'Dec 8', merchant: 'Whole Foods', category: 'Groceries', amount: 87.42, icon: 'fa-basket-shopping' },
-                { date: 'Dec 7', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv' },
-                { date: 'Dec 7', merchant: 'Shell Gas', category: 'Transportation', amount: 52.00, icon: 'fa-gas-pump' },
-                { date: 'Dec 6', merchant: 'Target', category: 'Shopping', amount: 43.21, icon: 'fa-bag-shopping' },
-                { date: 'Dec 6', merchant: 'Chipotle', category: 'Dining', amount: 13.25, icon: 'fa-bowl-food' },
-              ].map((transaction, index) => (
-                <div key={index} className="transaction-item">
-                  <div className="transaction-icon">
-                    <i className={`fa-solid ${transaction.icon}`}></i>
-                  </div>
-                  <div className="transaction-details">
-                    <div className="transaction-merchant">{transaction.merchant}</div>
-                    <div className="transaction-meta">
-                      <span className="transaction-date">{transaction.date}</span>
-                      <span className="category-badge">{transaction.category}</span>
+              {filteredTransactions.length > 0 ? (
+                filteredTransactions.map((transaction, index) => (
+                  <div key={index} className="transaction-item">
+                    <div className="transaction-icon">
+                      <i className={`fa-solid ${transaction.icon}`}></i>
                     </div>
+                    <div className="transaction-details">
+                      <div className="transaction-merchant">{transaction.merchant}</div>
+                      <div className="transaction-meta">
+                        <span className="transaction-date">{transaction.date}</span>
+                        <span className="category-badge">{transaction.category}</span>
+                      </div>
+                    </div>
+                    <div className="transaction-amount">${transaction.amount.toFixed(2)}</div>
                   </div>
-                  <div className="transaction-amount">${transaction.amount.toFixed(2)}</div>
+                ))
+              ) : (
+                <div className="no-transactions">
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                  <p>No transactions found</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -105,34 +229,147 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
             <div className="insight-card">
               <h3>Category Breakdown</h3>
               <div className="category-chart-placeholder">
-                <div className="donut-chart">
-                  {/* Placeholder for chart */}
-                  <div className="chart-center">
-                    <div className="chart-total">$2,847</div>
-                    <div className="chart-label">Total</div>
-                  </div>
-                </div>
-                <div className="category-legend">
-                  {[
-                    { name: 'Dining', amount: 687.50, color: '#ff6b6b', percent: 24 },
-                    { name: 'Shopping', amount: 542.30, color: '#4ecdc4', percent: 19 },
-                    { name: 'Groceries', amount: 423.80, color: '#95e1d3', percent: 15 },
-                    { name: 'Transportation', amount: 386.20, color: '#f38181', percent: 14 },
-                    { name: 'Entertainment', amount: 298.50, color: '#aa96da', percent: 10 },
-                    { name: 'Other', amount: 509.02, color: '#83827d', percent: 18 },
-                  ].map((category, index) => (
-                    <div key={index} className="category-item">
-                      <div className="category-info">
-                        <span className="category-dot" style={{ backgroundColor: category.color }}></span>
-                        <span className="category-name">{category.name}</span>
+                {(() => {
+                  // Get month abbreviations for comparison
+                  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                  const selectedIndex = months.indexOf(selectedMonth)
+                  const previousMonth = selectedIndex > 0 ? months[selectedIndex - 1] : months[11]
+
+                  // Calculate category totals for selected month
+                  const categoryTotals = {}
+                  monthTransactions.forEach(t => {
+                    if (t.type === 'expense' && categoryColors[t.category]) {
+                      categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount
+                    }
+                  })
+
+                  // Calculate previous month totals for comparison
+                  const previousMonthTotals = {}
+                  transactions.forEach(t => {
+                    if (t.type === 'expense' && t.date.includes(previousMonth) && categoryColors[t.category]) {
+                      previousMonthTotals[t.category] = (previousMonthTotals[t.category] || 0) + t.amount
+                    }
+                  })
+
+                  const categories = Object.keys(categoryColors).map(name => {
+                    const amount = categoryTotals[name] || 0
+                    const lastMonth = previousMonthTotals[name] || 0
+                    const percentChange = lastMonth === 0 ? (amount > 0 ? 100 : 0) : Math.round(((amount - lastMonth) / lastMonth) * 100)
+                    return {
+                      name,
+                      amount,
+                      color: categoryColors[name],
+                      percentChange,
+                      lastMonth
+                    }
+                  }).filter(cat => cat.amount > 0)
+
+                  const total = categories.reduce((sum, cat) => sum + cat.amount, 0);
+                    const lastMonthTotal = categories.reduce((sum, cat) => sum + cat.lastMonth, 0);
+                    const totalPercentChange = Math.round(((total - lastMonthTotal) / lastMonthTotal) * 100);
+
+                    const CustomTooltip = ({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      const percentOfTotal = ((data.amount / total) * 100).toFixed(1);
+                      return (
+                        <div style={{
+                          backgroundColor: '#1a1a1a',
+                          border: '1px solid #333',
+                          borderRadius: '4px',
+                          padding: '6px 10px',
+                          color: '#e8e8e8',
+                          fontSize: '0.8125rem'
+                        }}>
+                          {data.name}: {percentOfTotal}%
+                        </div>
+                      );
+                    }
+                    return null;
+                  };
+
+                  return (
+                    <>
+                      <div className="donut-chart">
+                        <div className="chart-center">
+                          <div className="chart-label-wrapper">
+                            <div 
+                              className={`chart-total ${isHoveringChart ? 'expanded' : ''}`}
+                              onMouseEnter={() => setIsHoveringChart(true)}
+                              onMouseLeave={() => setIsHoveringChart(false)}
+                            >
+                              {isHoveringChart ? `$${total.toFixed(2)}` : `$${(total / 1000).toFixed(1)}k`}
+                            </div>
+                            <div className="chart-bottom-row">
+                              <div className={`chart-percent-change ${totalPercentChange >= 0 ? 'increase' : 'decrease'}`}>
+                                {Math.abs(totalPercentChange)}%
+                              </div>
+                              <div className="chart-label">Total</div>
+                            </div>
+                          </div>
+                        </div>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={categories}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={90}
+                              paddingAngle={0}
+                              dataKey="amount"
+                              stroke="none"
+                              activeIndex={undefined}
+                              activeShape={{
+                                outerRadius: 95,
+                              }}
+                              onMouseEnter={(data, index, e) => {
+                                e.target.style.filter = 'brightness(1.15)';
+                              }}
+                              onMouseLeave={(data, index, e) => {
+                                e.target.style.filter = 'brightness(1)';
+                              }}
+                            >
+                              {categories.map((entry, index) => (
+                                <Cell 
+                                  key={`cell-${index}`} 
+                                  fill={entry.color}
+                                  style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip content={<CustomTooltip />} wrapperStyle={{ zIndex: 1000 }} />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </div>
-                      <div className="category-stats">
-                        <span className="category-amount">${category.amount.toFixed(2)}</span>
-                        <span className="category-percent">{category.percent}%</span>
+                      <div className="category-legend">
+                        {categories.map((category, index) => {
+                          const percentOfTotal = ((category.amount / total) * 100).toFixed(1);
+                          const amountDiff = Math.abs(category.amount - category.lastMonth).toFixed(2);
+                          const percentTooltip = `$${amountDiff} ${category.percentChange > 0 ? 'more' : category.percentChange < 0 ? 'less' : 'same as'} than last month`;
+
+                          return (
+                            <div key={index} className="category-item">
+                              <div className="category-info">
+                                <span className="category-dot" style={{ backgroundColor: category.color }}></span>
+                                <span className="category-name">{category.name}</span>
+                              </div>
+                              <div className="category-stats">
+                                <span className="category-amount">${category.amount.toFixed(2)}</span>
+                                <span 
+                                  className={`category-percent ${category.percentChange > 0 ? 'increase' : category.percentChange < 0 ? 'decrease' : ''}`}
+                                  title={percentTooltip}
+                                >
+                                  {Math.abs(category.percentChange)}%
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
