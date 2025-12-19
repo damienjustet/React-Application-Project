@@ -2,15 +2,16 @@ import { useState } from 'react'
 import './SpendingPage.css'
 import SpendingHeader from '../components/SpendingHeader'
 import IncomeVsSpendingChart from '../components/IncomeVsSpendingChart'
+import CurrencyInput from '../components/CurrencyInput'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons, categoryColors } from '../context/DataContext'
 
 function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   // Constants
-  const RECENT_TRANSACTIONS_LIMIT = 15
+  const RECENT_TRANSACTIONS_LIMIT = 10
 
   // Context
-  const { transactions, addTransaction, getTransactionsByMonth } = useData()
+  const { transactions, addTransaction, updateTransaction, deleteTransaction, getTransactionsByMonth } = useData()
 
   // State
   const [isHoveringChart, setIsHoveringChart] = useState(false)
@@ -18,7 +19,10 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   const [activeFilter, setActiveFilter] = useState('Recent')
   const [selectedMonth, setSelectedMonth] = useState('Dec')
   const [showAddModal, setShowAddModal] = useState(false)
-  const [newTransaction, setNewTransaction] = useState({ merchant: '', amount: '', category: 'Dining', date: '', type: 'expense' })
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingIndex, setEditingIndex] = useState(null)
+  const [newTransaction, setNewTransaction] = useState({ merchant: '', amount: 0, category: 'Dining', date: '', type: 'expense' })
+  const [editTransaction, setEditTransaction] = useState({ merchant: '', amount: 0, category: '', date: '', type: '' })
 
   // Computed values
   const monthTransactions = getTransactionsByMonth(selectedMonth)
@@ -38,7 +42,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
 
   // Handlers
   const handleAddTransaction = () => {
-    if (newTransaction.merchant && newTransaction.amount && newTransaction.date) {
+    if (newTransaction.merchant && newTransaction.amount > 0 && newTransaction.date) {
       const dateObj = new Date(newTransaction.date)
       const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
       
@@ -46,13 +50,60 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
         date: formattedDate,
         merchant: newTransaction.merchant,
         category: newTransaction.category,
-        amount: parseFloat(newTransaction.amount),
+        amount: newTransaction.amount,
         icon: categoryIcons[newTransaction.category],
         type: newTransaction.type
       }
       addTransaction(transaction)
-      setNewTransaction({ merchant: '', amount: '', category: 'Dining', date: '', type: 'expense' })
+      setNewTransaction({ merchant: '', amount: 0, category: 'Dining', date: '', type: 'expense' })
       setShowAddModal(false)
+    }
+  }
+
+  const handleEditClick = (transaction, index) => {
+    // Convert date format from "Dec 10" to "2024-12-10" for date input
+    const [monthStr, day] = transaction.date.split(' ')
+    const monthMap = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', 
+                      Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' }
+    const month = monthMap[monthStr]
+    const year = new Date().getFullYear()
+    const dateForInput = `${year}-${month}-${day.padStart(2, '0')}`
+    
+    setEditTransaction({
+      merchant: transaction.merchant,
+      amount: transaction.amount,
+      category: transaction.category,
+      date: dateForInput,
+      type: transaction.type
+    })
+    setEditingIndex(index)
+    setShowEditModal(true)
+  }
+
+  const handleUpdateTransaction = () => {
+    if (editTransaction.merchant && editTransaction.amount > 0 && editTransaction.date) {
+      const dateObj = new Date(editTransaction.date)
+      const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      
+      const transaction = {
+        date: formattedDate,
+        merchant: editTransaction.merchant,
+        category: editTransaction.category,
+        amount: editTransaction.amount,
+        icon: categoryIcons[editTransaction.category],
+        type: editTransaction.type
+      }
+      updateTransaction(editingIndex, transaction)
+      setShowEditModal(false)
+      setEditingIndex(null)
+    }
+  }
+
+  const handleDeleteTransaction = () => {
+    if (editingIndex !== null) {
+      deleteTransaction(editingIndex)
+      setShowEditModal(false)
+      setEditingIndex(null)
     }
   }
 
@@ -84,12 +135,10 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
               </div>
               <div className="form-group">
                 <label>Amount</label>
-                <input 
-                  type="number" 
-                  placeholder="0.00"
-                  step="0.01"
+                <CurrencyInput
                   value={newTransaction.amount}
-                  onChange={(e) => setNewTransaction({...newTransaction, amount: e.target.value})}
+                  onChange={(dollars) => setNewTransaction({...newTransaction, amount: dollars})}
+                  placeholder="0.00"
                 />
               </div>
               <div className="form-group">
@@ -136,6 +185,88 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
             <div className="modal-footer">
               <button className="btn-cancel" onClick={() => setShowAddModal(false)}>Cancel</button>
               <button className="btn-add" onClick={handleAddTransaction}>Add Transaction</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Transaction</h2>
+              <button className="modal-close" onClick={() => setShowEditModal(false)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Merchant</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Starbucks"
+                  value={editTransaction.merchant}
+                  onChange={(e) => setEditTransaction({...editTransaction, merchant: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Amount</label>
+                <CurrencyInput
+                  value={editTransaction.amount}
+                  onChange={(dollars) => setEditTransaction({...editTransaction, amount: dollars})}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="form-group">
+                <label>Date</label>
+                <input 
+                  type="date" 
+                  value={editTransaction.date}
+                  onChange={(e) => setEditTransaction({...editTransaction, date: e.target.value})}
+                />
+              </div>
+              <div className="form-group">
+                <label>Type</label>
+                <div className="type-toggle">
+                  <button 
+                    type="button"
+                    className={`type-btn ${editTransaction.type === 'expense' ? 'active expense' : ''}`}
+                    onClick={() => setEditTransaction({...editTransaction, type: 'expense', category: 'Dining'})}
+                  >
+                    <i className="fa-solid fa-arrow-down"></i>
+                    Expense
+                  </button>
+                  <button 
+                    type="button"
+                    className={`type-btn ${editTransaction.type === 'income' ? 'active income' : ''}`}
+                    onClick={() => setEditTransaction({...editTransaction, type: 'income', category: 'Salary'})}
+                  >
+                    <i className="fa-solid fa-arrow-up"></i>
+                    Income
+                  </button>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Category</label>
+                <select 
+                  value={editTransaction.category}
+                  onChange={(e) => setEditTransaction({...editTransaction, category: e.target.value})}
+                >
+                  {(editTransaction.type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES).map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-delete" onClick={handleDeleteTransaction}>
+                <i className="fa-solid fa-trash"></i>
+                Delete
+              </button>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+                <button className="btn-cancel" onClick={() => setShowEditModal(false)}>Cancel</button>
+                <button className="btn-add" onClick={handleUpdateTransaction}>Update</button>
+              </div>
             </div>
           </div>
         </div>
@@ -199,21 +330,35 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
             {/* Transaction List */}
             <div className="transaction-list">
               {filteredTransactions.length > 0 ? (
-                filteredTransactions.map((transaction, index) => (
-                  <div key={index} className="transaction-item">
-                    <div className="transaction-icon">
-                      <i className={`fa-solid ${transaction.icon}`}></i>
-                    </div>
-                    <div className="transaction-details">
-                      <div className="transaction-merchant">{transaction.merchant}</div>
-                      <div className="transaction-meta">
-                        <span className="transaction-date">{transaction.date}</span>
-                        <span className="category-badge">{transaction.category}</span>
+                filteredTransactions.map((transaction, index) => {
+                  // Find the actual index in the full transactions array
+                  const actualIndex = transactions.findIndex(t => 
+                    t.date === transaction.date && 
+                    t.merchant === transaction.merchant && 
+                    t.amount === transaction.amount &&
+                    t.category === transaction.category
+                  )
+                  return (
+                    <div 
+                      key={index} 
+                      className="transaction-item" 
+                      onClick={() => handleEditClick(transaction, actualIndex)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div className="transaction-icon">
+                        <i className={`fa-solid ${transaction.icon}`}></i>
                       </div>
+                      <div className="transaction-details">
+                        <div className="transaction-merchant">{transaction.merchant}</div>
+                        <div className="transaction-meta">
+                          <span className="transaction-date">{transaction.date}</span>
+                          <span className="category-badge">{transaction.category}</span>
+                        </div>
+                      </div>
+                      <div className="transaction-amount">${transaction.amount.toFixed(2)}</div>
                     </div>
-                    <div className="transaction-amount">${transaction.amount.toFixed(2)}</div>
-                  </div>
-                ))
+                  )
+                })
               ) : (
                 <div className="no-transactions">
                   <i className="fa-solid fa-magnifying-glass"></i>

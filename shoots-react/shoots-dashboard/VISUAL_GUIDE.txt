@@ -1,0 +1,161 @@
+/**
+ * CURRENCY INPUT - VISUAL BEHAVIOR GUIDE
+ * ======================================
+ * 
+ * This guide shows exactly how the currency input behaves from a user's perspective
+ */
+
+/*
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          VISUAL FLOW EXAMPLES                           │
+└─────────────────────────────────────────────────────────────────────────┘
+
+EXAMPLE 1: Entering $8.00
+─────────────────────────────────────────────────────────────────────────
+Initial State (not focused):
+┌─────────────┐
+│ 0.00        │ ← Placeholder
+└─────────────┘
+
+User clicks field (focused):
+┌─────────────┐
+│ |           │ ← Empty, ready for input
+└─────────────┘
+
+User types "8":
+┌─────────────┐
+│ 0.08|          │ ← Shows raw input
+└─────────────┘
+
+User types "0":
+┌─────────────┐
+│ 0.80|         │ ← Shows "80"
+└─────────────┘
+
+User types "0":
+┌─────────────┐
+│ 8.00|        │ ← Shows "800"
+└─────────────┘
+
+User clicks away (blur):
+┌─────────────┐
+│ 8.00        │ ← Formatted as dollars
+└─────────────┘
+Saved value: 8.00
+
+
+EXAMPLE 2: Entering $12.99
+─────────────────────────────────────────────────────────────────────────
+User types: "1" "2" "9" "9"
+
+While focused:
+┌─────────────┐
+│ 12.99|       │ ← Shows raw: "1299"
+└─────────────┘
+
+After blur:
+┌─────────────┐
+│ 12.99       │ ← Formatted as dollars
+└─────────────┘
+Saved value: 12.99
+
+
+EXAMPLE 3: Entering $0.50 (50 cents)
+─────────────────────────────────────────────────────────────────────────
+User types: "5" "0"
+
+While focused:
+┌─────────────┐
+│ 0.50|         │ ← Shows raw: "50"
+└─────────────┘
+
+After blur:
+┌─────────────┐
+│ 0.50        │ ← Formatted as dollars
+└─────────────┘
+Saved value: 0.50
+
+
+EXAMPLE 4: Editing Existing Value
+─────────────────────────────────────────────────────────────────────────
+Existing display:
+┌─────────────┐
+│ 8.50        │ ← Stored as 8.50 dollars
+└─────────────┘
+
+User clicks (focus):
+┌─────────────┐
+│ 8.50|        │ ← Converts back to raw "850"
+└─────────────┘
+
+User backspaces and types "1250":
+┌─────────────┐
+│ 12.50|       │ ← Shows raw: "1250"
+└─────────────┘
+
+After blur:
+┌─────────────┐
+│ 12.50       │ ← New formatted value
+└─────────────┘
+Saved value: 12.50
+
+
+EXAMPLE 5: Common Amounts
+─────────────────────────────────────────────────────────────────────────
+Type     Focused      Blurred     Saved
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"5"      → 5|      → 0.05     → 0.05
+"50"     → 50|     → 0.50     → 0.50
+"100"    → 100|    → 1.00     → 1.00
+"450"    → 450|    → 4.50     → 4.50
+"1000"   → 1000|   → 10.00    → 10.00
+"2550"   → 2550|   → 25.50    → 25.50
+"10000"  → 10000|  → 100.00   → 100.00
+"99999"  → 99999|  → 999.99   → 999.99
+
+
+KEYBOARD BEHAVIOR (Mobile & Desktop)
+─────────────────────────────────────────────────────────────────────────
+Mobile:
+• Shows numeric keyboard (no decimal point needed!)
+• Type digits only: 1, 2, 9, 9
+• Backspace to delete
+• Done/Enter to finish
+
+Desktop:
+• Type digits: 1, 2, 9, 9
+• Backspace to delete
+• Tab/Click away to finish
+
+
+ERROR HANDLING
+─────────────────────────────────────────────────────────────────────────
+User types letters:    "abc123"  → Becomes "123"  → 1.23
+User types symbols:    "$12.99"  → Becomes "1299" → 12.99
+User types too many:   "999999999" → Stopped at 8 digits
+User types zeros:      "000"     → Becomes "0"   → 0.00
+
+
+COMPARISON: OLD vs NEW
+─────────────────────────────────────────────────────────────────────────
+OLD WAY (Standard Input):
+User wants $12.99
+Must type: "12.99" or "12" + TAB + ".99"
+Issues: Needs decimal key, mobile keyboard confusion
+
+NEW WAY (Currency Input):
+User wants $12.99
+Just type: "1299"
+Benefits: No decimal needed, mobile-friendly, intuitive
+
+
+MENTAL MODEL FOR USERS
+─────────────────────────────────────────────────────────────────────────
+Think in cents, display in dollars:
+• $5.00 = type 500
+• $0.50 = type 50
+• $12.99 = type 1299
+
+Rule: Type the full amount without the decimal point
+      The last 2 digits are the cents!
+*/
