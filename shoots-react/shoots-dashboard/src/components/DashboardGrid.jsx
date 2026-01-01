@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useDashboard } from '../context/DashboardContext'
+import { getWidgetById } from '../data/widgetCatalog'
 import './DashboardGrid.css'
 
 const GRID_ROWS = 14 // Keep rows constant
 
 function DashboardGrid() {
+  const { widgets: dashboardWidgets, addWidget, removeWidget } = useDashboard()
+  
   // Determine grid columns based on window width
   const getGridColumns = () => {
     const width = window.innerWidth
@@ -27,6 +31,10 @@ function DashboardGrid() {
   const [dragPosition, setDragPosition] = useState(null) // Free-form pixel position during drag
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [originalPosition, setOriginalPosition] = useState(null) // Store original position before drag
+  
+  // Widget library drag state
+  const [isWidgetDragging, setIsWidgetDragging] = useState(false)
+  const [widgetDropZone, setWidgetDropZone] = useState(null)
 
   // Handle window resize
   useEffect(() => {
@@ -229,6 +237,78 @@ function DashboardGrid() {
     setOriginalPosition(null)
   }
 
+  // Widget library drop handlers
+  const handleWidgetDragOver = (e) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'copy'
+    setIsWidgetDragging(true)
+    
+    // Calculate grid position for preview
+    const gridElement = e.currentTarget
+    if (!gridElement) return
+    
+    const rect = gridElement.getBoundingClientRect()
+    const tileWidth = rect.width / gridColumns
+    const tileHeight = rect.height / GRID_ROWS
+    
+    const relativeX = e.clientX - rect.left
+    const relativeY = e.clientY - rect.top
+    
+    const gridX = Math.floor(relativeX / tileWidth)
+    const gridY = Math.floor(relativeY / tileHeight)
+    
+    // Use generic size for preview (will be replaced on actual drop)
+    setWidgetDropZone({ x: gridX, y: gridY, size: { width: 6, height: 4 } })
+  }
+
+  const handleWidgetDragLeave = (e) => {
+    // Only clear if leaving the grid entirely
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX
+    const y = e.clientY
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setIsWidgetDragging(false)
+      setWidgetDropZone(null)
+    }
+  }
+
+  const handleWidgetDrop = (e) => {
+    e.preventDefault()
+    setIsWidgetDragging(false)
+    setWidgetDropZone(null)
+    
+    try {
+      const data = e.dataTransfer.getData('application/json')
+      if (!data) return
+      
+      const widgetData = JSON.parse(data)
+      if (!widgetData.widgetId) return
+      
+      // Calculate final grid position
+      const gridElement = document.querySelector('.dashboard-grid')
+      if (!gridElement) return
+      
+      const rect = gridElement.getBoundingClientRect()
+      const tileWidth = rect.width / gridColumns
+      const tileHeight = rect.height / GRID_ROWS
+      
+      const relativeX = e.clientX - rect.left
+      const relativeY = e.clientY - rect.top
+      
+      const gridX = Math.max(0, Math.min(gridColumns - widgetData.size.width, Math.floor(relativeX / tileWidth)))
+      const gridY = Math.max(0, Math.min(GRID_ROWS - widgetData.size.height, Math.floor(relativeY / tileHeight)))
+      
+      // Add widget at this position
+      addWidget(widgetData.widgetId, { x: gridX, y: gridY })
+    } catch (err) {
+      console.error('Failed to drop widget:', err)
+    }
+  }
+
+  // Show empty state if no widgets
+  const showEmptyState = dashboardWidgets.length === 0
+
   return (
     <div 
       className="dashboard-content"
@@ -236,11 +316,40 @@ function DashboardGrid() {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      {showEmptyState && (
+        <div className="dashboard-empty-state">
+          <i className="fa-solid fa-grip"></i>
+          <h3>Drag widgets here to get started</h3>
+          <p>Or use multi-select in the widget library →</p>
+        </div>
+      )}
       <div className="dashboard-grid-container">
-        <div className="dashboard-grid" style={{
-          gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-          gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
-        }}>
+        <div 
+          className="dashboard-grid" 
+          style={{
+            gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+            gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
+          }}
+          onDragOver={handleWidgetDragOver}
+          onDragLeave={handleWidgetDragLeave}
+          onDrop={handleWidgetDrop}
+        >
+          {/* Widget drop zone preview */}
+          {isWidgetDragging && widgetDropZone && (
+            <div
+              className="widget-drop-zone"
+              style={{
+                gridColumn: `${widgetDropZone.x + 1} / span ${widgetDropZone.size.width}`,
+                gridRow: `${widgetDropZone.y + 1} / span ${widgetDropZone.size.height}`,
+                backgroundColor: 'rgba(78, 205, 196, 0.2)',
+                border: '2px dashed #4ecdc4',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                zIndex: 10
+              }}
+            />
+          )}
+          
           {/* Render grid tiles as background */}
           {Array.from({ length: gridColumns * GRID_ROWS }).map((_, index) => (
             <div key={index} className="grid-tile"></div>
@@ -277,6 +386,40 @@ function DashboardGrid() {
                     <span className="block-label">{block.label}</span>
                     <span className="block-coords">
                       x:{block.x} y:{block.y} | {block.w}×{block.h}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+
+          {/* Render dashboard widgets from widget library */}
+          {dashboardWidgets.map(widget => {
+            const widgetDef = getWidgetById(widget.widgetId)
+            if (!widgetDef) return null
+            
+            return (
+              <div
+                key={widget.id}
+                className="grid-block-wrapper widget-instance"
+                style={{
+                  gridColumn: `${widget.position.x + 1} / span ${widget.size.width}`,
+                  gridRow: `${widget.position.y + 1} / span ${widget.size.height}`
+                }}
+              >
+                <div className="grid-block-content" style={{ borderColor: widgetDef.color }}>
+                  <button 
+                    className="widget-remove-btn"
+                    onClick={() => removeWidget(widget.id)}
+                    title="Remove widget"
+                  >
+                    <i className="fa-solid fa-times"></i>
+                  </button>
+                  <div className="block-info">
+                    <i className={`fa-solid ${widgetDef.icon}`} style={{ fontSize: '2rem', color: widgetDef.color, marginBottom: '0.5rem' }}></i>
+                    <span className="block-label">{widgetDef.name}</span>
+                    <span className="block-coords">
+                      x:{widget.position.x} y:{widget.position.y} | {widget.size.width}×{widget.size.height}
                     </span>
                   </div>
                 </div>

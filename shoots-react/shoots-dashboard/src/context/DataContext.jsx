@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react'
 const DataContext = createContext()
 
 // Category configurations
-export const EXPENSE_CATEGORIES = ['Dining', 'Shopping', 'Groceries', 'Transportation', 'Entertainment', 'Other']
+export const EXPENSE_CATEGORIES = ['Dining', 'Shopping', 'Groceries', 'Transportation', 'Entertainment', 'Bills and Utilities', 'Other']
 export const INCOME_CATEGORIES = ['Salary', 'Freelance', 'Investment', 'Gift']
 
 export const categoryIcons = {
@@ -12,6 +12,7 @@ export const categoryIcons = {
   'Groceries': 'fa-basket-shopping',
   'Transportation': 'fa-car',
   'Entertainment': 'fa-tv',
+  'Bills and Utilities': 'fa-file-invoice-dollar',
   'Other': 'fa-ellipsis',
   'Salary': 'fa-money-bill-wave',
   'Freelance': 'fa-laptop-code',
@@ -25,6 +26,7 @@ export const categoryColors = {
   'Groceries': '#95e1d3',
   'Transportation': '#f38181',
   'Entertainment': '#aa96da',
+  'Bills and Utilities': '#ffd93d',
   'Other': '#83827d'
 }
 
@@ -76,6 +78,25 @@ const initialTransactions = [
 
 export function DataProvider({ children }) {
   const [transactions, setTransactions] = useState(initialTransactions)
+  const [savingsGoals, setSavingsGoals] = useState([
+    { id: 1, name: 'Emergency Fund', target: 10000, current: 3500, color: '#4ecdc4', icon: 'fa-umbrella' },
+    { id: 2, name: 'Vacation', target: 5000, current: 1200, color: '#aa96da', icon: 'fa-plane' },
+    { id: 3, name: 'New Car', target: 25000, current: 8750, color: '#ff6b6b', icon: 'fa-car' }
+  ])
+  const [recurringBills, setRecurringBills] = useState([
+    { id: 1, name: 'Netflix', amount: 15.99, dueDate: '15', category: 'Entertainment', frequency: 'monthly', icon: 'fa-tv', isPaid: false },
+    { id: 2, name: 'Rent', amount: 1200, dueDate: '1', category: 'Bills and Utilities', frequency: 'monthly', icon: 'fa-house', isPaid: true },
+    { id: 3, name: 'Internet', amount: 79.99, dueDate: '10', category: 'Bills and Utilities', frequency: 'monthly', icon: 'fa-wifi', isPaid: false },
+    { id: 4, name: 'Gym Membership', amount: 49.99, dueDate: '5', category: 'Other', frequency: 'monthly', icon: 'fa-dumbbell', isPaid: true }
+  ])
+  const [budgets, setBudgets] = useState([
+    { category: 'Dining', limit: 300, spent: 0, color: '#ff6b6b' },
+    { category: 'Shopping', limit: 200, spent: 0, color: '#4ecdc4' },
+    { category: 'Groceries', limit: 400, spent: 0, color: '#95e1d3' },
+    { category: 'Transportation', limit: 150, spent: 0, color: '#f38181' },
+    { category: 'Entertainment', limit: 100, spent: 0, color: '#aa96da' },
+    { category: 'Bills and Utilities', limit: 500, spent: 0, color: '#ffd93d' }
+  ])
 
   const addTransaction = (transaction) => {
     setTransactions([transaction, ...transactions])
@@ -130,7 +151,13 @@ export function DataProvider({ children }) {
     getTransactionsByMonth,
     getTransactionsByType,
     getMonthTotal,
-    getCategoryTotals
+    getCategoryTotals,
+    savingsGoals,
+    setSavingsGoals,
+    recurringBills,
+    setRecurringBills,
+    budgets,
+    setBudgets
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

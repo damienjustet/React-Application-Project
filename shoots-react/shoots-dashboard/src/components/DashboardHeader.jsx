@@ -6,7 +6,7 @@ export const PROFILE_PICTURE_URL = "https://encrypted-tbn1.gstatic.com/images?q=
 
 const LAST_SYNC_TIME = "1 minute ago"
 
-function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSidebar }) {
+function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSidebar, onToggleWidgetLibrary }) {
 
   // Update favicon to match profile picture with circular crop
   useEffect(() => {
@@ -56,7 +56,7 @@ function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSi
           <i className="fa-solid fa-arrows-rotate sync-icon"></i>
           Sync Now
         </button>
-        <button className="menu-btn" title="More options">
+        <button className="menu-btn" onClick={onToggleWidgetLibrary} title="Open Widget Library">
           <i className="fa-solid fa-ellipsis"></i>
         </button>
       </div>

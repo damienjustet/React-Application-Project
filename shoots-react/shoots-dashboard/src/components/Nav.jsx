@@ -2,8 +2,13 @@ import { Link, useLocation } from 'react-router-dom'
 import './Nav.css'
 import shootsLogo from '../assets/shootsLogo1.svg'
 
-function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar }) {
+function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar, onSearchClick }) {
   const location = useLocation()
+
+  const handleSearchClick = (e) => {
+    e.preventDefault()
+    onSearchClick()
+  }
 
   return (
     <>
@@ -30,16 +35,22 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar }) {
               </Link>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <a href="#" className="nav-item" onClick={handleSearchClick}>
                 <i className="fa-solid fa-magnifying-glass icon"></i>
-                <span>Savings</span>
+                <span>Search</span>
               </a>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <Link to="/savings" className={`nav-item ${location.pathname === '/savings' ? 'active' : ''}`}>
+                <i className="fa-solid fa-piggy-bank icon"></i>
+                <span>Savings</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/recurring" className={`nav-item ${location.pathname === '/recurring' ? 'active' : ''}`}>
                 <i className="fa-solid fa-calendar icon"></i>
                 <span>Recurring</span>
-              </a>
+              </Link>
             </li>
             <li>
               <Link to="/spending" className={`nav-item ${location.pathname === '/spending' ? 'active' : ''}`}>
@@ -48,10 +59,10 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar }) {
               </Link>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <Link to="/budget" className={`nav-item ${location.pathname === '/budget' ? 'active' : ''}`}>
                 <i className="fa-solid fa-wallet icon"></i>
                 <span>Budget</span>
-              </a>
+              </Link>
             </li>
           </ul>
           <div className="settings-item">
@@ -79,16 +90,22 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar }) {
               </Link>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <a href="#" className="nav-item" onClick={handleSearchClick}>
                 <i className="fa-solid fa-magnifying-glass icon"></i>
-                <span>Savings</span>
+                <span>Search</span>
               </a>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <Link to="/savings" className={`nav-item ${location.pathname === '/savings' ? 'active' : ''}`}>
+                <i className="fa-solid fa-piggy-bank icon"></i>
+                <span>Savings</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/recurring" className={`nav-item ${location.pathname === '/recurring' ? 'active' : ''}`}>
                 <i className="fa-solid fa-calendar icon"></i>
                 <span>Recurring</span>
-              </a>
+              </Link>
             </li>
             <li>
               <Link to="/spending" className={`nav-item ${location.pathname === '/spending' ? 'active' : ''}`}>
@@ -97,10 +114,10 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar }) {
               </Link>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <Link to="/budget" className={`nav-item ${location.pathname === '/budget' ? 'active' : ''}`}>
                 <i className="fa-solid fa-wallet icon"></i>
                 <span>Budget</span>
-              </a>
+              </Link>
             </li>
           </ul>
           <div className="settings-item">

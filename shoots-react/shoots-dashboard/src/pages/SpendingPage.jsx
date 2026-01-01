@@ -5,6 +5,7 @@ import IncomeVsSpendingChart from '../components/IncomeVsSpendingChart'
 import CurrencyInput from '../components/CurrencyInput'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons, categoryColors } from '../context/DataContext'
+import { displayToInputDate, inputToDisplayDate } from '../utils/dateUtils'
 
 function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   // Constants
@@ -18,6 +19,8 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeFilter, setActiveFilter] = useState('Recent')
   const [selectedMonth, setSelectedMonth] = useState('Dec')
+  const [dateRangeFilter, setDateRangeFilter] = useState({ start: '', end: '' })
+  const [showDateFilter, setShowDateFilter] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingIndex, setEditingIndex] = useState(null)
@@ -33,6 +36,13 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
     
     if (!matchesSearch) return false
 
+    // Date range filter
+    if (dateRangeFilter.start || dateRangeFilter.end) {
+      const transactionDate = new Date(transaction.date + ' 2024')
+      if (dateRangeFilter.start && transactionDate < new Date(dateRangeFilter.start)) return false
+      if (dateRangeFilter.end && transactionDate > new Date(dateRangeFilter.end)) return false
+    }
+
     if (activeFilter === 'Income') {
       return transaction.type === 'income'
     }
@@ -43,8 +53,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   // Handlers
   const handleAddTransaction = () => {
     if (newTransaction.merchant && newTransaction.amount > 0 && newTransaction.date) {
-      const dateObj = new Date(newTransaction.date)
-      const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      const formattedDate = inputToDisplayDate(newTransaction.date)
       
       const transaction = {
         date: formattedDate,
@@ -61,13 +70,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
   }
 
   const handleEditClick = (transaction, index) => {
-    // Convert date format from "Dec 10" to "2024-12-10" for date input
-    const [monthStr, day] = transaction.date.split(' ')
-    const monthMap = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', 
-                      Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' }
-    const month = monthMap[monthStr]
-    const year = new Date().getFullYear()
-    const dateForInput = `${year}-${month}-${day.padStart(2, '0')}`
+    const dateForInput = displayToInputDate(transaction.date)
     
     setEditTransaction({
       merchant: transaction.merchant,
@@ -82,8 +85,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
 
   const handleUpdateTransaction = () => {
     if (editTransaction.merchant && editTransaction.amount > 0 && editTransaction.date) {
-      const dateObj = new Date(editTransaction.date)
-      const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      const formattedDate = inputToDisplayDate(editTransaction.date)
       
       const transaction = {
         date: formattedDate,
@@ -105,6 +107,33 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
       setShowEditModal(false)
       setEditingIndex(null)
     }
+  }
+
+  const handleExportTransactions = () => {
+    // Create CSV content
+    const headers = ['Date', 'Merchant', 'Category', 'Amount', 'Type']
+    const csvContent = [
+      headers.join(','),
+      ...filteredTransactions.map(t => 
+        `${t.date},${t.merchant},${t.category},${t.amount},${t.type}`
+      )
+    ].join('\n')
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `transactions-${selectedMonth}-${new Date().getFullYear()}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+  }
+
+  const clearDateFilter = () => {
+    setDateRangeFilter({ start: '', end: '' })
+    setShowDateFilter(false)
   }
 
   return (
@@ -288,10 +317,22 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
           <div className="transactions-section">
             <div className="section-header">
               <h2>Transactions</h2>
-              <button className="add-transaction-btn" onClick={() => setShowAddModal(true)}>
-                <i className="fa-solid fa-plus"></i>
-                Add Transaction
-              </button>
+              <div className="header-actions">
+                <button className="action-btn export-btn" onClick={handleExportTransactions} title="Export to CSV">
+                  <i className="fa-solid fa-download"></i>
+                </button>
+                <button 
+                  className={`action-btn filter-btn ${showDateFilter ? 'active' : ''}`}
+                  onClick={() => setShowDateFilter(!showDateFilter)} 
+                  title="Date Filter"
+                >
+                  <i className="fa-solid fa-calendar-days"></i>
+                </button>
+                <button className="add-transaction-btn" onClick={() => setShowAddModal(true)}>
+                  <i className="fa-solid fa-plus"></i>
+                  Add Transaction
+                </button>
+              </div>
             </div>
 
             {/* Search and Filters */}
@@ -327,6 +368,36 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
               </div>
             </div>
 
+            {/* Date Range Filter */}
+            {showDateFilter && (
+              <div className="date-filter-panel">
+                <div className="date-inputs">
+                  <div className="date-input-group">
+                    <label>From</label>
+                    <input 
+                      type="date" 
+                      value={dateRangeFilter.start}
+                      onChange={(e) => setDateRangeFilter({...dateRangeFilter, start: e.target.value})}
+                    />
+                  </div>
+                  <div className="date-input-group">
+                    <label>To</label>
+                    <input 
+                      type="date" 
+                      value={dateRangeFilter.end}
+                      onChange={(e) => setDateRangeFilter({...dateRangeFilter, end: e.target.value})}
+                    />
+                  </div>
+                </div>
+                {(dateRangeFilter.start || dateRangeFilter.end) && (
+                  <button className="clear-filter-btn" onClick={clearDateFilter}>
+                    <i className="fa-solid fa-xmark"></i>
+                    Clear Filter
+                  </button>
+                )}
+              </div>
+            )}
+
             {/* Transaction List */}
             <div className="transaction-list">
               {filteredTransactions.length > 0 ? (
@@ -355,7 +426,9 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                           <span className="category-badge">{transaction.category}</span>
                         </div>
                       </div>
-                      <div className="transaction-amount">${transaction.amount.toFixed(2)}</div>
+                      <div className={`transaction-amount ${transaction.type === 'income' ? 'income' : ''}`}>
+                        ${transaction.amount.toFixed(2)}
+                      </div>
                     </div>
                   )
                 })
@@ -522,30 +595,136 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
             <div className="insight-card">
               <h3>Spending Trends</h3>
               <div className="trends-chart-placeholder">
-                <div className="line-chart">
-                  {/* Placeholder for line chart */}
-                  <div className="chart-placeholder-text">
-                    6-month spending history
-                  </div>
-                </div>
+                {(() => {
+                  // Calculate last 6 months spending
+                  const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                  const monthlyTotals = months.map(month => {
+                    const total = transactions
+                      .filter(t => t.date.includes(month) && t.type === 'expense')
+                      .reduce((sum, t) => sum + t.amount, 0)
+                    return { month, total }
+                  })
+
+                  const maxTotal = Math.max(...monthlyTotals.map(m => m.total))
+                  const avgTotal = monthlyTotals.reduce((sum, m) => sum + m.total, 0) / monthlyTotals.length
+
+                  return (
+                    <div className="line-chart">
+                      <div className="chart-summary">
+                        <div className="summary-stat">
+                          <span className="stat-label">6-Month Average</span>
+                          <span className="stat-value">${avgTotal.toFixed(0)}</span>
+                        </div>
+                        <div className="summary-stat">
+                          <span className="stat-label">Highest Month</span>
+                          <span className="stat-value">${maxTotal.toFixed(0)}</span>
+                        </div>
+                      </div>
+                      <div className="trend-bars">
+                        {monthlyTotals.map((data, index) => (
+                          <div key={index} className="trend-bar-group">
+                            <div className="trend-bar-container">
+                              <div 
+                                className={`trend-bar ${data.month === selectedMonth ? 'active' : ''}`}
+                                style={{ 
+                                  height: `${(data.total / maxTotal) * 100}%`,
+                                  minHeight: data.total > 0 ? '8px' : '0'
+                                }}
+                                title={`${data.month}: $${data.total.toFixed(2)}`}
+                              />
+                            </div>
+                            <span className="trend-month">{data.month}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
             </div>
 
             {/* Insights */}
             <div className="insight-card insights-list">
-              <h3>Insights</h3>
-              <div className="insight-item">
-                <i className="fa-solid fa-lightbulb insight-icon"></i>
-                <p>You spent 30% more on dining this week compared to your average.</p>
-              </div>
-              <div className="insight-item">
-                <i className="fa-solid fa-chart-line insight-icon"></i>
-                <p>Your coffee habit costs about $85/month. Consider brewing at home!</p>
-              </div>
-              <div className="insight-item">
-                <i className="fa-solid fa-circle-check insight-icon success"></i>
-                <p>Great job! You're under budget in 4 out of 6 categories this month.</p>
-              </div>
+              <h3>Financial Insights</h3>
+              {(() => {
+                const insights = []
+                const currentMonthExpenses = monthTransactions.filter(t => t.type === 'expense')
+                const totalSpending = currentMonthExpenses.reduce((sum, t) => sum + t.amount, 0)
+                const categoryTotals = {}
+                
+                currentMonthExpenses.forEach(t => {
+                  categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount
+                })
+
+                const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0]
+                
+                // Insight 1: Top spending category
+                if (topCategory) {
+                  const categoryPercent = ((topCategory[1] / totalSpending) * 100).toFixed(0)
+                  insights.push({
+                    icon: 'fa-chart-pie',
+                    type: 'info',
+                    text: `${topCategory[0]} accounts for ${categoryPercent}% of your spending this month ($${topCategory[1].toFixed(2)}).`
+                  })
+                }
+
+                // Insight 2: Daily average
+                const daysInMonth = 30
+                const dailyAvg = (totalSpending / daysInMonth).toFixed(2)
+                insights.push({
+                  icon: 'fa-calendar-day',
+                  type: 'info',
+                  text: `Your daily average spending is $${dailyAvg}. Consider setting a daily budget to track progress.`
+                })
+
+                // Insight 3: Transaction frequency
+                const transactionCount = currentMonthExpenses.length
+                if (transactionCount > 50) {
+                  insights.push({
+                    icon: 'fa-receipt',
+                    type: 'warning',
+                    text: `You've made ${transactionCount} transactions this month. Consolidating purchases could help reduce impulse spending.`
+                  })
+                } else if (transactionCount < 20) {
+                  insights.push({
+                    icon: 'fa-circle-check',
+                    type: 'success',
+                    text: `Great job! Your ${transactionCount} transactions show mindful spending habits.`
+                  })
+                }
+
+                // Insight 4: Income vs Spending
+                const income = monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0)
+                if (income > 0) {
+                  const savingsRate = ((income - totalSpending) / income * 100).toFixed(0)
+                  if (savingsRate > 20) {
+                    insights.push({
+                      icon: 'fa-piggy-bank',
+                      type: 'success',
+                      text: `Excellent! You're saving ${savingsRate}% of your income. You're on track for financial success.`
+                    })
+                  } else if (savingsRate > 0) {
+                    insights.push({
+                      icon: 'fa-chart-line',
+                      type: 'info',
+                      text: `You're saving ${savingsRate}% of your income. Financial experts recommend aiming for 20% or more.`
+                    })
+                  } else {
+                    insights.push({
+                      icon: 'fa-triangle-exclamation',
+                      type: 'warning',
+                      text: `Your spending exceeds your income this month. Review your expenses and consider cutting back.`
+                    })
+                  }
+                }
+
+                return insights.slice(0, 4).map((insight, index) => (
+                  <div key={index} className="insight-item">
+                    <i className={`fa-solid ${insight.icon} insight-icon ${insight.type}`}></i>
+                    <p>{insight.text}</p>
+                  </div>
+                ))
+              })()}
             </div>
           </div>
         </div>

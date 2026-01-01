@@ -1,0 +1,586 @@
+INDEPENDENT BUSINESS PLAN
+Jordan Academy for Technology and Careers - South Campus
+12723 Park Ave, Riverton, UT 84065
+Damien Justet & Karina Tejeda[a]
+November 12, 2025
+Table of Contents
+
+
+I. EXECUTIVE SUMMARY        1
+II. PROBLEM        2
+III. CUSTOMER SEGMENTS        3
+IV. UNIQUE VALUE PROPOSITION        6
+V. SOLUTION        9
+VI. CHANNELS        12
+VII. REVENUE STREAMS        15
+VIII. COST STRUCTURE        18
+IX. DETAILED FINANCIALS        20
+X. KEY METRICS        21
+XI. COMPETITIVE ADVANTAGE        22
+XII. CONCLUSION        23
+VII. BIBLIOGRAPHY        24
+
+
+
+
+I. EXECUTIVE SUMMARY
+( To be written )
+________________
+
+
+II. PROBLEM
+Financial[b][c] Applications are Overwhelming
+Users turn to financial apps for guidance and organization amid the clutter of their finances, from advanced day traders to teenagers. Catering to such a broad scope is a challenge for financial apps that promise simplicity. Many financial apps technically offer features users need, but the sheer volume of options becomes overwhelming, creating a problem of too many features. According to UXCam’s 2025 Retention Benchmark Report, finance apps retain only 4.6% of users by Day 30, meaning more than 95% of new users churn within the first month. Many note overly complicated onboarding processes that take forever to complete, indicating real issues in the market. The problem isn’t the presence of features; it’s the failure to deliver them in a way that feels intuitive and approachable.
+
+
+Financial Applications Lack a Personalized Experience
+Getting users to download a finance app is easy; keeping them engaged is the real challenge. When an app feels confusing, clunky, or generic, users abandon it. Winning apps do not succeed just because of their services, but because of the rewarding experience they deliver. Yet many financial apps fail to engage. Another 2025 study reports that 96% of users abandon apps within a month due to low engagement and poor personalization. Generic notifications fail to trigger behavioral change, making the app an observer rather than an active financial coach. Nobody opens a finance app for fun, so when the experience isn’t personal or encouraging, it drains the joy from financial health and leaves users with no real sense of progress. The result is wasted energy, lost trust, and yet again, declining retention rates that cripple long-term success. 
+
+
+Financial Applications Fail to Provide Essential Features
+Financial apps often focus so heavily on a niche that they forget the essentials. Others try to solve the problem of overwhelming users with features by cutting what users still rely on, and some simply prioritize monetization over usability. What seemed to be the Swiss Army Knife of their economic life becomes a fragmented experience, causing many to juggle multiple apps just for the basics. A 2025 survey of 1,500+ users found that nearly 60% of working-age adults reported using multiple financial apps because their primary app lacked core features. The absence of essential functionality not only undermines trust but also accelerates abandonment, leaving users frustrated and searching for alternatives that meet their needs. In the end, an app that can’t deliver the basics offers little long-term value.
+III. CUST[d]OMER SEGMENTS
+
+
+Shoots’ primary market comprises Gen Z and Millennials, consumers aged 18 - 41 who account for over 70% of personal finance app users. Our secondary market is Gen X, a group with the highest average debt, who are actively seeking financial clarity.
+	
+
+Market Potential
+The personal finance apps domain of the fintech industry is one of the fastest-expanding consumer markets in the U.S., with a 7.2% compound annual growth rate and expected to reach roughly $16 billion by 2033. With the widespread adoption of digital finance, millions of Americans are turning to personal finance apps, particularly among Gen Z and Millennials, who are significantly driving this trend. Time spent on personal finance increased by 63% during the pandemic, highlighting a lasting shift towards mobile-first money management. 
+Shoots will launch exclusively in the United States. The Total Addressable Market (TAM) comprises ~331 million American smartphone owners. Narrowing to consumers already engaged in digital finance, 146.4 million Americans are active users of Personal Finance Apps, forming Shoots’ Serviceable Available Market (SAM). There has never been a better time for Shoots to capitalize on a booming market that is only growing.
+
+
+Demographic Segmentation
+Age Groups: Gen Z & Millennials
+	
+
+Shoots aims to target consumers who seek an enjoyable economic experience — those willing to pay for premium subscription features as a long-term investment. People aged 18 to 41 remain the largest group of finance app users. 
+A survey reported that 89% of Gen Z prefer managing finances via mobile apps over visiting a traditional bank. While entering the workforce, one often juggles student loans and first credit cards. Nearly one in four student borrowers is Gen Z, underscoring their need for debt management tools.
+85% of Millennials prefer managing their finances online or through an app, making them the most preferred demographic, with Gen Z at 79%. Managing mortgages, family expenses, and retirement plans, Millennials value simplicity. By blending the customized experiences Gen Z craves with the clarity Millennials demand, Shoots positions itself as a worthwhile investment across generations.
+        While Millennials and Gen Z are our primary target, Shoots aims towards Gen X as a secondary target market. Often called the “Sandwich Generation”, they are simultaneously those supporting aging parents, children, leaving them with severe Time Poverty. This group has the highest average debt ($157,556), but their deeper challenge is a lack of time to make complex financial decisions. Shoots provides the time-saving structure Gen X needs for a financially healthy life.
+
+
+Annual Income Disposable Income: $48,000+
+	
+
+A financial app subscription averages $77 annually and $11.66 monthly across the market, making it an accessible investment relative to annual income for Gen Z and Millennials. Shoots offers free features and services to all users. Yet, it is more appealing to those who can comfortably afford a premium subscription to financial services, with Gen Z’s median income at $48,532 and Millennials' at $71,161-$89,968. 
+With a simple target cost of $6 a month, Shoots balances accessibility for middle‑income earners with premium appeal for higher‑income users, falling at a more affordable rate than competing applications.
+
+
+Geography: Urban and Suburban
+	
+
+Shoots targets individuals in urban and suburban environments, where smartphone penetration and reliance on mobile banking are highest. These areas are the most promising markets for financial app adoption.
+Shoots is a digital application available to all smartphone users. However, currently, 75% of users of personal finance applications are urban, with 25% suburban. By focusing on urban and suburban markets, Shoots positions itself at the intersection of accessibility and affordability -- Serving professionals in dense cities while supporting families in suburban communities.
+At the same time, many parts of the U.S. face banking deserts (areas with limited access to physical branches). Making mobile-first financial tools is not just convenient for our market, but essential.
+
+
+
+
+
+
+
+
+
+
+
+
+Psychographic Segmentation[e]
+
+
+Financially Anxious Users
+	Shoots will target those seeking clarity and guidance on their financial health. A CNBC 2025 study suggests 77% of Americans report feeling anxious about their financial situation. Shoots provides guided onboarding, easy-to-read dashboards, education tips, and debt management tools that reduce stress, build confidence, and educate.
+	Goal-Oriented Planners
+	The basic features Shoots offers, combined with its motivational notifications and tips, appeal strongly to people motivated by milestones such as saving for a home, paying off loans, and preparing for retirement. 44% of users prioritize saving over other financial goals. By adding streaks and savings trackers, Shoots delivers real progression to fellow Goal Planners.
+	Tech-Savvy Early Adopters
+	The key appeal of Shoots lies within its innovative technology and interface. With a fresh modular dashboard, bank linking, and an original look, tech-savvy individuals will find the idea of personalization, automation, and Shoots’ vast library comfortable and enjoyable.
+	Lifestyle Improvers
+	As of 2025, 73% of Americans rank their finances as the No. 1 stress in life. Personal finance is a direct path to self-improvement through fostering discipline,  reducing stress, and unlocking financial freedom. From average self-improvement junkies to influencers, Shoots positions itself as a tool for building confidence, not just a budgeting app.
+	
+
+________________
+
+
+IV. UNIQUE VALUE PROPOSITION 
+
+
+Shoots is built for consumers who want clarity without complexity, while still having access to a large library of features. As the personal finance market grows rapidly, most tools still overwhelm users with cluttered dashboards, rigid workflows, or paywalled essentials. 
+Retention, financial literacy, and the balance of simplicity and adaptability still remain key issues. Shoots focuses on a different niche: affordable, modular financial management that adapts cleanly to the user rather than forcing people into a one-size-fits-all system. Guided onboarding, optional gamified streaks, and a personalized financial toolbelt make it easier to maintain financial habits. Shoots’ Four Piece Stem positions itself as a consumer-first alternative in a crowded market.
+	
+
+Shoots’ Four Piece Stem
+
+
+Adjustability[f]
+	
+
+Shoots recognizes its large and diverse target market; users come from different financial backgrounds, literacy levels, income levels, and comfort with technology. To account for this, the app is designed to be fully accessible. The onboarding process adapts to each user’s needs and experience level, offering tutorial‑like steps for beginners and advanced customization for seasoned planners.
+Shoots is built with an intuitive, clean, and easy interface, ensuring even the most financially anxious users can manage their money without feeling overwhelmed. Its modular drag‑and‑drop dashboard[g] gives users the option for a simplified UI, personalized goal‑setting, and customization that turns financial management into a stress‑free routine rather than a burden.[h]
+For those seeking more, Shoots offers premium features[i] at an affordable $6/month, balancing accessibility for middle‑income earners with advanced tools for higher‑income users. By combining affordability, clarity, and personalization, Shoots becomes the most accessible financial tool on the web.
+
+
+Frictionless Design
+	
+
+Despite Shoots’ vast library of features, it is extraordinarily simple, designed to be effortless from the very first interaction. Every feature is structured to minimize friction: navigation flows naturally, tasks are categorized, organized, and accessible, and progress is displayed clearly, entirely in the user’s hands.
+The interface emphasizes clarity and flexibility, inspired by the adaptable, straightforward bamboo plant. Charts, trackers, and notifications are presented in plain language and visual formats to make complex financial data easy to grasp. Users can quickly set goals, add income, track expenses, monitor debt, or adjust savings plans without needing advanced financial knowledge. With premium features, it only gets easier, offering fully automated tools like expense tracking, bank linking, and more.[j][k][l]
+Shoots incorporates interactive elements that guide rather than lecture, making financial planning easy for anyone to enjoy. It is a companion that makes financial management approachable, efficient, and rewarding[m]
+
+
+Effectivness
+	
+
+Shoots guarantees[n][o] rewarding financial progress and development after every use, and with a reliable system designed by passionate developers in programming and financial literacy, it surpasses the standard. Each tool is engineered to address even the most complex economic challenges, from lingering debt to inconsistent saving habits. Further, Shoots’ premium automation eliminates the guesswork that often derails financial planning, leaving less room for errors.
+To maintain a clean, trustworthy user experience, Shoots employs secure data handling and transparent reporting to prevent confusion or misinformation. Every interaction leaves users with a clearer picture of their finances, reinforcing Shoots’ role as a long‑term companion.[p]
+
+
+Empowerment
+	
+
+While Shoots is a for‑profit brand, its goals go beyond the money. With dedicated, passionate developers, users receive more value than they pay for. At its set price of $6, you gain access not only to seemingly endless features but also to educational and empowering content t[q]hat strengthens long‑term financial health. Shoots is designed to improve financial education and economic management for all users.
+Shoots will partner with schools to support and empower financial literacy classrooms, offering free premium access to teens, paving the way for higher education and future wealth. Shoots’ mission is to impact financial literacy like never before, starting with our future leaders.[r]
+________________
+
+
+V. SOLUTION[s]
+
+
+It is Shoots' primary objective to put an end to overwhelming, impersonal budgeting and to present a superior alternative through modern management methods. With this product[t], personal finance becomes quick, orderly, and easy, removing the stress and confusion that typically accompany money management. Not only will the user’s financial life become consistently stress‑free and organized, but their money will be maximized to its true potential for future personal plans.[u]
+	
+
+Simplify Financial Management
+The most significant problem that Shoots solves is the overwhelming nature of personal finance apps. To mitigate this issue, Shoots uses a simple onboarding questionnaire that enables a quick, effortless setup. By asking about your financial goals, current situation, and level of expertise, Shoots immediately creates a customized dashboard and settings tailored to your personal needs, with the option to customize further later.
+Imagine a financial app greeting you like a financial advisor, deciding what is in your best interest. The clear, understandable widgets and drag‑and‑drop interface are remarkable, eliminating clutter while maintaining an abundance of features for everyone. Shoots also gives people who struggle to track expenses full automation and bank linking[v], making financial records frictionless.[w]
+Personalized Financial[x] Wellness
+Onboarding doesn’t just tackle the overwhelming aspects of personal finance; it also addresses the impersonal elements of notifications, tips, and reminders. Through the questionnaire, Shoots determines whether you are a user who loves constant updates, needs a little motivation, or prefers personal streaks to feel at home with the app. Tips and insights are entirely based on your current financial literacy.
+Once Shoots is introduced to a user, it becomes their financial companion, helping them feel comfortable with their own growth. With custom themes, colors, and images for your dashboard, you can be reminded of who or what you are saving up for. From saving for a car to visiting a loved family member across the country, custom images never let you forget your goal. On top of that, Shoots’ personalized notifications offer motivating tips and callback reminders to keep your financial health thriving.
+
+
+Innovating[y] Essential Features
+Through extensive secondary and primary research, Shoots can define which core features matter most to personal finance users. From most important to least important, the five most important core features include:
+
+
+Features[z][aa]
+	Implementation
+	Expense Tracking and Categorization
+	With Shoots’s planned partnership with Plaid, blank linking and expense tracking will be seamless. As transactions are recorded, each one will be automatically categorized into spending groups, giving users immediate clarity on where their money goes. This eliminates the need for manual entry and provides the foundation for smarter financial decisions.
+	Goal-Setting Tools
+	Shoots makes saving tangible by offering multiple visual formats, such as a digital savings jar, to convey progress toward customized savings goals. Users can see exactly how much they need to deposit each month to reach milestones.
+	Bill Payment Reminders
+	Shoots includes drag-and-drop recurring bills and planned incomes displayed in card formats sorted by upcoming dates, with patterns and recurring schedules automatically recognized. This ensures users never miss a payment, whether it’s a subscription, utility bills, or a loan statement, reducing stress and late fees. Additionally, recurring bills can be used to view subscriptions and cancel pesky ones they no longer use.
+	Financial Insights or Advice
+	Notifications, educational resources, and actionable tips that guide users toward better financial health are designed to motivate self-improvement, build literacy, and encourage discipline, positioning Shoots as both a tool and a coach.
+	Data Security and Privacy
+	Shoots places user data and security at the highest priority. Advanced firewalls, encryption protocols, and trusted hosting providers such as AWS safeguard user information on the back end. On the front end, Shoots offers optional biometric sign-on and two-factor authentication to ensure seamless access with maximum protection. Users can trust that their financial data is safe.
+[ab]	
+
+
+________________
+
+
+VI. CHANNELS 
+Supply[ac][ad] Acquisition[ae]
+
+
+Shoots’ supply is digital infrastructure — the systems that host, process, and protect data between the user and the application. By partnering with reliable providers, Shoots can follow what it values most.
+
+
+Cloud Hosting & Servers[af]
+Local servers are risky and expensive[ag], with power outages and storage failures threatening Shoots' reliability. This is why Shoots will partner with Amazon Web Services (AWS), a trusted cloud hosting service, to guarantee[ah] scalability, uptime, and global connectivity. Users will be able to use Shoots anytime, anywhere, without disruption.
+
+
+Data Security
+Shoots has zero tolerance for insecurity. Partnering with security experts Cloudflare and Okta is essential for Shoots' promise to protect user[ai] data against internal and external threats.
+        Cloudflare provides fast connections, robust firewalls, and DDoS prevention, while Okta secures accounts through social logins, Multi-factor authentication (MFA/2FA), role-based access control, and biometric login. [aj]
+
+
+Bank Linking & API
+Shoots will rely on Plaid to connect with banks, giving users confidence in sharing their bank information[ak]. While international expansion will be a significant consideration in the future, Shoots will first launch in the U.S. before adding services like Finicity or Yodlee. Using America as a test-bed will allow Shoots to mature before international expansion.
+
+
+Payment Processing
+With Stripe accepting a wide range of payments, including Apple Pay, Google Pay, and Manual entry, Shoots creates a seamless experience for users. By integrating Plaid, Shoots also enables low-cost ACH transfers, making its affordable $6 monthly plan even more accessible. Together, Stripe and Plaid provide the flexibility and security that Shoots prioritizes.
+Analytics.
+
+
+User Authentication
+
+
+        Shoots will prioritize secure, seamless access via Firebase Authentication, enabling users to sign in with email, social logins, and enterprise accounts. Biometric login (Face ID and fingerprint) and two-factor authentication will strengthen security. Firebase will combine both robust identity management and convenience to create trust like no other.
+
+
+
+
+Distribution
+
+
+Direct-to-Consumer : Website
+	
+
+Publishing Shoots on popular app stores while adhering to their requirements builds trust between users and businesses. The two biggest app stores are Google Play and the Apple App Store.[al]
+            Google Play has broad distribution, with 2.5 billion monthly Android users, who account for 41% of the U.S. mobile OS market (71% globally). To host Shoots on the store, a developer account is needed, with a $25 fee. Google Play’s requirements guide Shoots to a polished application by adding a privacy policy, providing testing tracks (Internal tests, Closed Tests, and Open Beta), and having a finalized AAB file. 
+        Apple reviews its apps closely, especially financial ones. As a result, users see App Store apps as safe, high-quality, and legitimate, given that 58% of mobile OS users in the U.S. use iOS. Having Shoots distributed through the App Store will boost trust in the app as it enters the market. Apple has a 99$ yearly fee for Apple Developer accounts. Before approval, Shoots will be built with Xcode and iOS-approved tools to ensure they comply with the latest iOS SDK. 
+
+
+
+
+Web Platform
+	
+
+        Shoots’ web application ensures instant global access, giving users the flexibility to engage without app store restrictions and serving as a direct distribution channel. Having a direct connection to your financial data is essential to Shoots’ need for accessibility.
+With Plaid as our API partner, Shoots confidently ensures secure financial connections. To ensure quality, Shoots must demonstrate responsiveness across desktops, tablets, and mobile browsers. HTTPS or SSL certificates will[am] enhance security, trust, and create an encrypted connection between the user's browser and the website server. 
+
+
+For consistent updates to users, Continuous deployment pipelines are needed. GitHub is an excellent resource for storing Shoots code and deploying updates fast and securely.[an]
+
+
+Customer Acquisition
+
+
+1. Distribution Channels: TikTok, YouTube, Instagram.  These platforms will reach a wide range of Shoot’s targeted demographic. Gen Z and Millennials on TikTok and YouTube; business professionals, small[ao] businesses, and entrepreneurs on LinkedIn. This method of reaching clientele is effective because Pew Research Center research indicates that, as of 2025, 37% of adults report using TikTok, and 33% of U.S. adults use LinkedIn (~22-44). This is important to note because Shoots has budgeting features appealing to working adults 
+2. Customer Acquisition Channels: Paid promotions through content creators and influencers on sites such as YouTube. By contacting creators and influencers who specialize in financial literacy and budgeting, Shoots aims to reach audiences already searching for an app suitable for small businesses[ap] and individual use.  By publishing regular blog posts using strategic keywords, trending topics, and SEO-friendly long-form content, Shoots will be easy to find and recommended. 
+3. Customer Communication & Support Channels: Shoots will deliver consistent, high quality service through clear communication channels built for different customer needs. The user can reach support directly via in-app chat, email, and the help center, which offers tutorials and FAQs. To maintain intense customer satisfaction, Automated responses provide instant acknowledgement and quick solutions for common issues. 24/7 Email[aq] support guarantees users can submit issues at any time. [ar]
+
+
+VII. REVENUE[as] STREAMS[at]
+Revenue streams are defined as various sources from which Shoots earns money through its subscription service and digital distribution, sold directly on its website or through app stores. Website sales will notably generate more profit and establish proof of concept without app store commissions, but app stores provide credibility, accessibility, and higher user volume. [au]
+
+
+Direct Sales - Website
+Shoots’ initial sales will be very low as there will not be a proof of concept established. Using a mobile website will establish proof of concept and enable higher margins for startup Shoots before moving to higher distribution through app stores. Made simple, logged-out consumers will be greeted with a page, advertising the capabilities of shoots and features. Payment plans and account creation will be available directly on the homepage after the user logs in. As a general strategy, Shoots will suggest premium features and promotions as users engage with the app, encouraging purchases, referrals, or gift subscriptions as a gesture of kindness for another. The consumer will then have the option to share the website’s referral links with any of their contacts, thereby promoting the website's revenue stream. [av]
+
+
+Indirect Sales - App Stores
+Mobile apps have a 157% higher conversion rate than mobile websites; using Google Play and App Store is essential for both revenue generation and distribution. Despite app stores' standard 30% commission and fees, Shoots benefits from their massive reach and credibility. Starting year 2, Apple’s commission drops from 30[aw]% to 15%, improving margins on indirect sales.[ax]
+
+
+3 - Year Revenue
+Shoots’ total addressable market is too broad, with 331 million smartphone users. We can define a credible serviceable obtainable market (SOM) of 5 million consumers based on the user base of one of our successful competitors, Rocket Money.  Revenue projections are based on a consistant 15%[ay] conversion rate and a gradually increasing share of its five million-user SOM.
+
+
+
+
+
+
+	
+
+	Servicable Obtainable Market
+	5,000,000
+	
+
+	
+
+	
+
+	Percentage Goal
+	Users
+	Subscribers
+	Website Split
+	App Split
+	Website Revenue
+	App Store Revenue
+	Total Revenue
+	Year 1
+	0.96%
+	48,000
+	7,200
+	70%
+	30%
+	$362,880
+	$108,864
+	$471,744
+	Year 2
+	1.82%
+	91,000
+	13,650
+	50%
+	50%
+	$491,400
+	$380,835
+	$872,235
+	Year 3
+	2.60%
+	130,000
+	19,500
+	40%
+	60%
+	$561,600
+	$652,860
+	$1,214,460
+	
+
+
+
+Year 1
+Shoots expects to net .96% of its SOM, totaling 48,000 users and 7,200 subscribers. These subscribers are split into two channels: 70% through our website application, and 30% through app store distribution. Accounting platform commissions, Shoots projects $362,880 in website revenue and $108,864 in app store revenue, totalling $471,744.00.
+Year 2
+Shoots anticipates 1.82% its SOM (91,00 users, 13,650 subscribers). With a balanced 50/50 channel split and Apple commission dropping to 15%, Shoots expects $491,400.00 in revenue from web sales and $380,835.00 in App Store revenue, totalling $872,235.00.
+
+
+Year 3
+After proof of concept is established, Shoots aims to reach 2.60% of its SOM (130,000 users, 19,500 subscribers), with 40% of subscribers purchasing via web application, and 60% via app stores. Shoots projects $561,600 in website revenue and $652,860 in app store revenue, for a total of  $1,214,460.
+
+
+
+
+  
+
+	  
+
+	
+
+Lifetime Values[az] (LTVs)
+
+
+Monthly Subscription x Retention = LTV
+        Lifetime value (LTV) is a benchmark used to estimate the average revenue a customer generates over their lifetime as a buyer. The quantifiable value of a customer serves as the foundation for Shoots in evaluating business decisions, such as marketing, budget, and resource allocation. Additionally, LTVs will contribute to revenue, profit, and liquidity forecasting. Shoots will group its customers into two key categories: “Core Subscribers” and “Referral Subscribers.” Through extensive research, 
+Shoots has determined the average business lifespan per customer is 24 months. Core subscribers are the average customer, subscribing for the whole expected retention period at $6 per month, with a gross LTV of $144. Referral subscribers are core subscribers who send links through Shoots’ platform, accounting for a new customer, both paying a gross LTV of $288. 
+
+
+Net LTV After Platform Commissions
+
+
+Gross LTV: $144 per customer
+	
+
+
+
+Website
+	
+
+	Apple (Year 1)
+	
+
+	Apple (Year 2)
+	
+
+	Google
+	Commission 0%
+Net LTV: $144
+	
+
+	Commission 30%
+Net LTV: $101
+	
+
+	Commission 15%
+Net LTV: $122
+	
+
+	Commission 30%
+Net LTV: $101
+	
+
+VIII. COST STRUCTURE[ba]
+Production Costs
+The estimated annual production for Shoots in its first year is $323,145.88. This figure is based on the digital infrastructure required to operate securely and reliably, including services like AWS, Cloudflare, Okta, Plaid, Stripe, Firebase, and App Stores. The expenses detailed below are based on a planned growth of 48,000 users and 7,200 subscribers within the first year.
+
+
+Shoots Services Make-Up
+	XXX
+	Cloud Hosting
+	Security Firewall
+	Identity Management
+	Bank Linking & API
+	Payment Processing
+	Authentication
+	App Store Fees
+	Service
+	AWS
+	Cloudflare
+	Okta
+	Plaid
+	Stripe
+	Firebase
+	Apple & Google
+	Annual Cost
+	$44,852
+	$240
+	$172,800
+	$16,800
+	$40,954
+	$720
+	$46,780
+	Make-Up
+	13.88%
+	0.07%
+	53.47%
+	5.20%
+	12.67%
+	0.22%
+	14.48%
+	Notes
+	Plaid only charges $2 per bank link permanently; annual charges depend on the number of new users, and transaction-tracking fees are estimated at $200-$300 per month. Apple commissions change to 15% after year 1.
+	  
+
+Additionally, upkeep expenses are modeled quarterly across three years that reflect expected user and subscriber growth. Total projected production costs are $434,144 in year 2 and $605,792 in year 3, for a total of $1,363,081. Accounting for a one-time AWS upgrade in Year 2 and scalability ahead of expectations. Expense distributions are detailed below.
+
+
+Projected Production Expenses: Years 1 - 3
+	Year
+	2026
+	2027
+	2028
+	
+
+	Months
+	Jan
+	April
+	July
+	Oct
+	Jan
+	April
+	July
+	Oct
+	Jan
+	April
+	July
+	Oct
+	Total
+	Costs
+	$65,292
+	$64,040
+	$90,333
+	$103,481
+	$78,714
+	$93,625
+	$123,447
+	$138,358
+	$107,044
+	$128,983
+	$172,963
+	$196,802
+	$1,363,081
+	
+
+Start-Up Costs
+Shoots’ start-up costs will stem from research and development (R&D), patent acquisition, business registration, legal fees, and the initial production of its infrastructure. To ensure Shoots meets all planned production requirements, extensive work in software architecture, security planning, and user-experience design is essential. As the full-stack developer, the founder contributes this development effort as a non-cash R&D investment, significantly reducing early expenses while maintaining quality. Continuing, to prevent competition from replicating Shoots’ innovative functions, a patent attorney will be hired to seek two utility patents to protect its modular financial dashboard and adaptive onboarding system. Finally, Shoots will register itself as an LLC to provide liability protection for its individual members, protecting their assets. The distribution of start-up costs is detailed below.
+
+
+Projected Start-Up Expenses
+	R&D (Value)
+	Patent Acquisition
+	Business Registration
+	Legal Fees
+	Total
+	$22,500
+	$4,250
+	$285
+	$1,150
+	$28,185
+	
+
+Customer Acquisition Cost
+
+
+Human Resource Cost
+Identify and explain main expenses,  Fixed vs. Variable Costs, explain how you keep costs low or optimized, Startup Costs vs. Ongoing Costs (clearly separate). Explain how costs will:Increase slowly compared to users Benefit from economies of scale. 
+
+
+IX. DETAILED FINANCIALS
+X. KEY METRICS
+________________
+XI. COMPETITIVE ADVANTAGE
+________________
+XII. CONCLUSION
+VII. BIBLIOGRAPHY
+
+
+Apps, Business of. “Finance App Benchmarks (2025).” Business of Apps, 28 Nov. 2024, www.businessofapps.com/data/finance-app-benchmarks/.
+“Digital Wallet Fatigue in 2025: Why Consumers Juggle Multiple Finance Apps.” Decta.com, 2025, www.decta.com/company/media/digital-wallet-and-financial-app-user-experience-2025.
+Elad, Barry. “Personal Finance App Industry Statistics 2025: Market Leaders, User Engagement, and Future Outlook.” CoinLaw, 28 Nov. 2024, coinlaw.io/personal-finance-app-industry-statistics/.
+Farley, Keith. “The Customer Experience Gen Z Expects from Every Brand.” CMSWire.com, 10 Mar. 2025, www.cmswire.com/customer-experience/the-customer-experience-gen-z-expects-from-every-brand/.
+“Finance App Design: 6 Best Practices for Higher Engagement.” ProCreator Blog: Design, Technology, Innovation, 18 Mar. 2025, procreator.design/blog/finance-app-design-best-practices/.
+“Financial Literacy Statistics in the U.S. 2025 | Key Facts.” The Global Statistics, 20 July 2025, www.theglobalstatistics.com/united-states-financial-literacy-statistics/.
+George, Miltos. “Mobile App Retention Benchmarks by Industry 2025 - Growth-Onomics.” Growth-Onomics, 9 Sept. 2025, growth-onomics.com/mobile-app-retention-benchmarks-by-industry-2025/. Accessed 13 Nov. 2025.
+Hanson, Melanie. “Student Loan Debt by Generation.” EducationData, 12 Oct. 2021, educationdata.org/student-loan-debt-by-generation.
+Lee, Simon. “Why Do Users Abandon Financial Apps?” Thisisglance.com, Glance group, 8 July 2025, thisisglance.com/learning-centre/why-do-users-abandon-financial-apps.
+---. “Why Do Users Abandon Financial Apps?” Thisisglance.com, Glance group, 8 July 2025, thisisglance.com/learning-centre/why-do-users-abandon-financial-apps.
+“Personal Finance Apps Market Size and Forecast to 2033.” Businessresearchinsights.com, 2025, www.businessresearchinsights.com/market-reports/personal-finance-apps-market-124310. Accessed 4 Dec. 2025.
+PYMNTS. “Only 21% of Consumers Created a Budget Last Year | PYMNTS.com.” PYMNTS.com, 23 Oct. 2025, www.pymnts.com/consumer-finance/2025/only-21-percent-of-consumers-created-a-budget-last-year/. Accessed 13 Nov. 2025.
+Robinson, Ali. “Gen Z Doubles Time Spent on Finance/Trading Apps during Pandemic Year.” Businesswire, 23 Mar. 2021, www.businesswire.com/news/home/20210323005712/en/Gen-Z-Doubles-Time-Spent-on-FinanceTrading-Apps-During-Pandemic-Year-Phone-Use-Among-All-Consumers-Up-More-Than-an-Hour-Per-Week-Led-by-Finance-and-Social-Media-App-Growth.
+Rounds, Hannah. “Gen Z Age Range and What Does It Mean Financially?” The College Investor, 8 Aug. 2022, thecollegeinvestor.com/40493/genz-age-range/.
+Shewale, Rohit. “How Many People Own Smartphones (2024).” DemandSage, 28 Feb. 2024, www.demandsage.com/smartphone-users/.
+Tuttle, Brad. “Which Generation Has the Most Debt? It’s Not Millennials.” Money, Money, 4 June 2024, money.com/generation-with-most-debt-gen-x/.
+White, Alexandria. “77% of Americans Are Anxious about Their Financial Situation—Here’s How to Take Control.” CNBC, 28 Jan. 2020, www.cnbc.com/select/how-to-take-control-of-your-finances/.
+Gottfried, Jeffrey. “The vast majority of U.S. adults (84%) say they ever use YouTube. Most Americans (71%) also report using Facebook. These findings are according to a Pew Research Center survey”
+        November 20, 2025 https://www.pewresearch.org/internet/2025/11/20/social-media-use-2025-methodology/
+Gottfried, Jeffrey. “Smaller shares use the other sites and apps we asked about, such as TikTok (37%) and WhatsApp (32%)”. 
+November 20, 2025 https://www.pewresearch.org/internet/2025/11/20/social-media-use-2025-methodology/
+        
+
+
+
+
+
+
+
+
+[a]What on earth is happening with formatting here?
+[b]You have a logical contradiction.
+
+
+Problem 1: Apps are "Overwhelming" (Too many features).
+
+
+Problem 3: Apps "Lack Essential Features" (Not enough features).
+[c]It should be solved now. Problems 1 & 3 are the direct cause of companies trying to solve both of them incorrectly. They need features for everyone, but can't overwhelm them.
+[d]You gotta get into this sooner. I need to know your primary and secondary market as fast as you can. Then the nitty gritty. This isnt an English paper
+[e]This is your best part
+[f]This is weak. Be more creative or smarter
+[g]Explain this- it can be cool but what is the benefit.
+[h]Unlike rigid competitors, Shoots allows users to build their own dashboard blocks, prioritizing the data they care about
+[i]what are these features
+[j]We need visuals in this part of your paper
+[k]such as....
+[l]I hope you have a cool logo
+[m]again, I need to see these. Cant just tell me about them
+[n]There is no such thing. You cant
+[o]Shoots utilizes 'Nudge Theory' notifications to drive positive behavioral changes
+[p]How do you do this? What encryption tool do you use?
+[q]Id call this an ecosystem
+[r]Im not sure this belongs here by the way. Its not something that truthfully sets you apart
+[s]This needs to directly match you problems
+[t]Shoots replaces the spreadsheet with a dynamic, living financial operating system
+[u]just get to the point.
+[v]I feel like the cost for this is crazy.... I hope you have it in your finance parts
+[w]visual
+[x]goal visualization
+[y]Use a different word- this is over used
+[z]Module?
+[aa]?
+[ab]This isnt a feature. You have to have this.
+[ac]You list Okta AND Firebase Authentication.
+
+
+Firebase is for B2C apps (fast, cheap, handles Google/Apple logins).
+
+
+Okta is for Enterprise B2B identity management (expensive, corporate).
+
+
+You do not need both. Using both is like wearing two seatbelts. It shows you don't understand what they do. Pick Firebase.
+[ad]Stop with the center
+[ae]App store tax ...
+[af]This whole section is supposed to be about your customer getting your product. Not all the nitty gritty details
+[ag]Dont need this
+[ah]Serverless Architecture on AWS Lambda
+[ai]I dont know much- but I know you need to talk about SOC 2 Compliance
+[aj]I dont think you need both here
+[ak]best para
+[al]fee for this
+[am]This is all fine- but you might want to simplify it for your judge
+[an]Needs a little more structure, but we will focus on this later.
+[ao]Does this need to be a thing?
+[ap]I dont think you even mention this
+[aq]How you gonna afford this? Or you gonna use ai?
+[ar]there is so much going on in this section. You made this way too complicated
+[as]My understanding- If your business makes under $1,000,000/year (which you do in Year 1 & 2), Apple charges you 15% from Day 1. You do not have to wait for Year 2.
+[at]Finance apps are mobile-first. If I see a TikTok ad for Shoots, I click the link and expect it to open the App Store. If it opens a website and asks me to create an account before I download the app, I will leave. Friction kills conversion. You are trading a higher conversion rate for lower fees. That is a bad trade.
+[au]This is a nothing burger
+[av]Disagree- websites suck
+[aw]double check this
+[ax]so start here
+[ay]this is pretty darn high
+[az]You are double-counting. If User A refers User B, User A's LTV is still $144. User B contributes their own $144. You cannot add them together and claim User A is worth $288 unless you call it "Network Effect Value."
+[ba]Guys.... gotta finish
