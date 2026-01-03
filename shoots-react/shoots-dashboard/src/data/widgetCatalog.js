@@ -15,7 +15,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Shows your current account balance',
     icon: 'fa-wallet',
-    color: '#4ecdc4',
     defaultSize: { width: 6, height: 4 }
   },
   {
@@ -24,7 +23,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Total income for the current month',
     icon: 'fa-arrow-trend-up',
-    color: '#45b7aa',
     defaultSize: { width: 6, height: 4 }
   },
   {
@@ -33,7 +31,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Total spending for the current month',
     icon: 'fa-arrow-trend-down',
-    color: '#ff6b6b',
     defaultSize: { width: 6, height: 4 }
   },
   {
@@ -42,7 +39,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Combined total of all savings goals',
     icon: 'fa-piggy-bank',
-    color: '#ffd93d',
     defaultSize: { width: 6, height: 4 }
   },
   {
@@ -51,7 +47,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Number of active recurring bills',
     icon: 'fa-repeat',
-    color: '#a78bfa',
     defaultSize: { width: 6, height: 4 }
   },
 
@@ -62,7 +57,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Monthly comparison chart',
     icon: 'fa-chart-line',
-    color: '#4ecdc4',
     defaultSize: { width: 12, height: 5 }
   },
   {
@@ -71,7 +65,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Spending distribution by category',
     icon: 'fa-chart-pie',
-    color: '#ff6b6b',
     defaultSize: { width: 8, height: 6 }
   },
   {
@@ -80,7 +73,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Multi-month spending trends',
     icon: 'fa-chart-area',
-    color: '#45b7aa',
     defaultSize: { width: 14, height: 6 }
   },
   {
@@ -89,7 +81,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Visual progress bars for budgets',
     icon: 'fa-chart-bar',
-    color: '#ffd93d',
     defaultSize: { width: 10, height: 5 }
   },
 
@@ -100,7 +91,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.LISTS,
     description: 'Last 10 transactions',
     icon: 'fa-list',
-    color: '#e8e8e8',
     defaultSize: { width: 8, height: 6 }
   },
   {
@@ -109,7 +99,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.LISTS,
     description: 'Bills due in the next 7 days',
     icon: 'fa-calendar-check',
-    color: '#a78bfa',
     defaultSize: { width: 6, height: 5 }
   },
   {
@@ -118,7 +107,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.LISTS,
     description: 'Current budget status overview',
     icon: 'fa-wallet',
-    color: '#ffd93d',
     defaultSize: { width: 6, height: 5 }
   },
 
@@ -129,7 +117,6 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.ACTIONS,
     description: 'Fast transaction entry form',
     icon: 'fa-plus-circle',
-    color: '#4ecdc4',
     defaultSize: { width: 7, height: 5 }
   }
 ]

@@ -4,7 +4,8 @@ import SpendingHeader from '../components/SpendingHeader'
 import IncomeVsSpendingChart from '../components/IncomeVsSpendingChart'
 import CurrencyInput from '../components/CurrencyInput'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons, categoryColors } from '../context/DataContext'
+import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons } from '../context/DataContext'
+import { useTheme } from '../context/ThemeContext'
 import { displayToInputDate, inputToDisplayDate } from '../utils/dateUtils'
 
 function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
@@ -13,6 +14,10 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
 
   // Context
   const { transactions, addTransaction, updateTransaction, deleteTransaction, getTransactionsByMonth } = useData()
+  const { getCategoryColors } = useTheme()
+  
+  // Get theme-based category colors
+  const categoryColors = getCategoryColors()
 
   // State
   const [isHoveringChart, setIsHoveringChart] = useState(false)

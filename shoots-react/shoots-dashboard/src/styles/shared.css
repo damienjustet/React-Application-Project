@@ -87,17 +87,17 @@
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #4ecdc4 0%, #6aa84f 100%);
+  background: var(--theme-primary);
   border-radius: 6px;
   transition: width 0.3s ease;
 }
 
 .progress-bar.warning {
-  background: linear-gradient(90deg, #ffd93d 0%, #ff6b6b 100%);
+  background: var(--theme-secondary);
 }
 
 .progress-bar.over {
-  background: #ff5252;
+  background: var(--expense-color);
 }
 
 /* Form Pickers */
@@ -123,13 +123,13 @@
 }
 
 .icon-option:hover, .color-option:hover {
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
   transform: scale(1.05);
 }
 
 .icon-option.selected, .color-option.selected {
-  border-color: #4ecdc4;
-  background-color: rgba(78, 205, 196, 0.1);
+  border-color: var(--theme-primary);
+  background-color: var(--theme-subtle);
 }
 
 .color-option {
@@ -137,5 +137,5 @@
 }
 
 .color-option.selected {
-  box-shadow: 0 0 0 2px #191919, 0 0 0 4px #4ecdc4;
+  box-shadow: 0 0 0 2px #191919, 0 0 0 4px var(--theme-primary);
 }

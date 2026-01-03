@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import './DashboardHeader.css'
+import { useTheme } from '../context/ThemeContext'
 
 // Profile picture URL - shared with favicon
 export const PROFILE_PICTURE_URL = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRbCcz-0bRk8bJf8gE-0KH6XhbekBGIYhy8tIXAljBHEn_cRo94"
@@ -7,6 +8,7 @@ export const PROFILE_PICTURE_URL = "https://encrypted-tbn1.gstatic.com/images?q=
 const LAST_SYNC_TIME = "1 minute ago"
 
 function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSidebar, onToggleWidgetLibrary }) {
+  const { bannerUrl } = useTheme()
 
   // Update favicon to match profile picture with circular crop
   useEffect(() => {
@@ -63,9 +65,10 @@ function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSi
       
       <div className="banner">
         <img 
-          src="https://wallpapers.com/images/hd/ultrawide-forest-13q5t71bljg4rpw9.webp" 
+          src={bannerUrl}
           alt="Header Banner" 
           className="banner-image"
+          crossOrigin="anonymous"
         />
         <img 
           src={PROFILE_PICTURE_URL}

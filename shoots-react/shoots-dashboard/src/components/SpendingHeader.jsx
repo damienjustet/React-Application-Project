@@ -1,8 +1,11 @@
 import './DashboardHeader.css'
+import { useTheme } from '../context/ThemeContext'
 
 const LAST_SYNC_TIME = "1 minute ago"
 
 function SpendingHeader({ isExpanded, toggleSidebar }) {
+  const { bannerUrl } = useTheme()
+
   return (
     <header className="dashboard-header">
       <div className="top-bar">
@@ -18,9 +21,10 @@ function SpendingHeader({ isExpanded, toggleSidebar }) {
       
       <div className="banner">
         <img 
-          src="https://wallpapers.com/images/hd/ultrawide-forest-13q5t71bljg4rpw9.webp" 
+          src={bannerUrl}
           alt="Header Banner" 
           className="banner-image"
+          crossOrigin="anonymous"
         />
       </div>
     </header>

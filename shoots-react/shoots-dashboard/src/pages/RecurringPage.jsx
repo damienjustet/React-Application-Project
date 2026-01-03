@@ -369,8 +369,8 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                 className={`recurring-card ${isExpanded ? 'expanded' : ''} ${item.isPaid ? 'paid' : ''} ${item.possiblyUnused ? 'unused' : ''} ${item.isAutoDetected ? 'auto-detected' : ''}`}
               >
                 <div className="card-header">
-                  <div className="card-icon-wrapper" style={{ backgroundColor: item.possiblyUnused ? 'rgba(255, 217, 61, 0.15)' : 'rgba(78, 205, 196, 0.15)' }}>
-                    <i className={`fa-solid ${item.icon}`} style={{ color: item.possiblyUnused ? '#ffd93d' : '#4ecdc4' }}></i>
+                  <div className="card-icon-wrapper" style={{ backgroundColor: item.possiblyUnused ? 'rgba(255, 217, 61, 0.15)' : 'rgba(131, 130, 125, 0.15)' }}>
+                    <i className={`fa-solid ${item.icon}`} style={{ color: item.possiblyUnused ? '#ffd93d' : '#83827d' }}></i>
                   </div>
                   
                   <div className="card-main-info">

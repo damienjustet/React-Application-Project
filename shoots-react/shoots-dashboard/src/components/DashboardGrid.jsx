@@ -6,7 +6,7 @@ import './DashboardGrid.css'
 const GRID_ROWS = 14 // Keep rows constant
 
 function DashboardGrid() {
-  const { widgets: dashboardWidgets, addWidget, removeWidget } = useDashboard()
+  const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget } = useDashboard()
   
   // Determine grid columns based on window width
   const getGridColumns = () => {
@@ -17,24 +17,35 @@ function DashboardGrid() {
   }
 
   const [gridColumns, setGridColumns] = useState(getGridColumns())
-
-  // State to track block positions (stores original 28-column positions)
-  const [blocks, setBlocks] = useState([
-    { id: 1, x: 0, y: 0, w: 8, h: 3, label: '8×3 Block', originalX: 0, originalY: 0, originalW: 8, originalH: 3 },
-    { id: 2, x: 8, y: 0, w: 4, h: 5, label: '4×5 Block', originalX: 8, originalY: 0, originalW: 4, originalH: 5 },
-    { id: 3, x: 12, y: 0, w: 6, h: 4, label: '6×4 Block', originalX: 12, originalY: 0, originalW: 6, originalH: 4 },
-    { id: 4, x: 0, y: 3, w: 5, h: 6, label: '5×6 Block', originalX: 0, originalY: 3, originalW: 5, originalH: 6 },
-    { id: 5, x: 18, y: 0, w: 7, h: 3, label: '7×3 Block', originalX: 18, originalY: 0, originalW: 7, originalH: 3 },
-  ])
-
-  const [draggedBlock, setDraggedBlock] = useState(null)
-  const [dragPosition, setDragPosition] = useState(null) // Free-form pixel position during drag
+  
+  // Widget drag state (for moving widgets on grid)
+  const [draggedWidget, setDraggedWidget] = useState(null)
+  const [dragPosition, setDragPosition] = useState(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [originalPosition, setOriginalPosition] = useState(null) // Store original position before drag
+  const [originalPosition, setOriginalPosition] = useState(null)
   
   // Widget library drag state
   const [isWidgetDragging, setIsWidgetDragging] = useState(false)
   const [widgetDropZone, setWidgetDropZone] = useState(null)
+  
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState(null)
+
+  // Check if a widget overlaps with any existing widgets (excluding itself)
+  const checkCollision = (x, y, w, h, excludeId) => {
+    return dashboardWidgets.some(widget => {
+      if (widget.id === excludeId) return false
+      
+      // Check if rectangles overlap
+      const noOverlap = 
+        x >= widget.position.x + widget.size.width || // Target is to the right
+        x + w <= widget.position.x ||       // Target is to the left
+        y >= widget.position.y + widget.size.height || // Target is below
+        y + h <= widget.position.y          // Target is above
+      
+      return !noOverlap
+    })
+  }
 
   // Handle window resize
   useEffect(() => {
@@ -42,22 +53,6 @@ function DashboardGrid() {
       const newColumns = getGridColumns()
       if (newColumns !== gridColumns) {
         setGridColumns(newColumns)
-        
-        if (newColumns === 28) {
-          // Restore original positions when back to full size
-          setBlocks(prevBlocks =>
-            prevBlocks.map(block => ({
-              ...block,
-              x: block.originalX,
-              y: block.originalY,
-              w: block.originalW,
-              h: block.originalH
-            }))
-          )
-        } else {
-          // Reflow widgets for smaller grid
-          reflowWidgets(newColumns)
-        }
       }
     }
 
@@ -65,85 +60,18 @@ function DashboardGrid() {
     return () => window.removeEventListener('resize', handleResize)
   }, [gridColumns])
 
-  // Reflow widgets to fit smaller grid
-  const reflowWidgets = (columns) => {
-    const reflowed = []
-    let currentY = 0
+  // Close context menu on click outside
+  useEffect(() => {
+    const handleClickOutside = () => setContextMenu(null)
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
 
-    blocks.forEach(block => {
-      // Scale widget width proportionally
-      const scaledW = Math.min(
-        Math.ceil((block.originalW / 28) * columns),
-        columns
-      )
-      const scaledH = block.originalH // Keep height the same
-
-      // Find next available position
-      let placed = false
-      let testY = currentY
-
-      while (!placed && testY < GRID_ROWS + 10) {
-        for (let testX = 0; testX <= columns - scaledW; testX++) {
-          // Check if this position is free
-          const hasCollision = reflowed.some(other => {
-            const noOverlap = 
-              testX >= other.x + other.w ||
-              testX + scaledW <= other.x ||
-              testY >= other.y + other.h ||
-              testY + scaledH <= other.y
-            return !noOverlap
-          })
-
-          if (!hasCollision) {
-            reflowed.push({
-              ...block,
-              x: testX,
-              y: testY,
-              w: scaledW,
-              h: scaledH
-            })
-            placed = true
-            break
-          }
-        }
-        testY++
-      }
-
-      // Update currentY for next widget
-      const lastBlock = reflowed[reflowed.length - 1]
-      if (lastBlock) {
-        currentY = Math.max(currentY, lastBlock.y)
-      }
-    })
-
-    setBlocks(reflowed)
-  }
-
-  // Check if a widget overlaps with any existing widgets (excluding itself)
-  const checkCollision = (x, y, w, h, excludeId) => {
-    return blocks.some(block => {
-      if (block.id === excludeId) return false
-      
-      // Check if rectangles overlap
-      const noOverlap = 
-        x >= block.x + block.w || // Target is to the right
-        x + w <= block.x ||       // Target is to the left
-        y >= block.y + block.h || // Target is below
-        y + h <= block.y          // Target is above
-      
-      return !noOverlap
-    })
-  }
-
-  const getPixelPosition = (clientX, clientY, gridElement) => {
-    const rect = gridElement.getBoundingClientRect()
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
-    }
-  }
-
-  const handleMouseDown = (e, block) => {
+  // Widget drag handlers
+  const handleWidgetMouseDown = (e, widget) => {
+    // Ignore right clicks (for context menu)
+    if (e.button !== 0) return
+    
     e.preventDefault()
     const gridElement = e.currentTarget.closest('.dashboard-grid')
     const rect = gridElement.getBoundingClientRect()
@@ -151,37 +79,38 @@ function DashboardGrid() {
     const tileHeight = rect.height / GRID_ROWS
     
     // Calculate the wrapper's position (full tile space)
-    const wrapperLeft = block.x * tileWidth
-    const wrapperTop = block.y * tileHeight
+    const wrapperLeft = widget.position.x * tileWidth
+    const wrapperTop = widget.position.y * tileHeight
     
     // Calculate offset from the wrapper's top-left
     const offsetX = e.clientX - rect.left - wrapperLeft
     const offsetY = e.clientY - rect.top - wrapperTop
     
-    setDraggedBlock(block)
-    setOriginalPosition({ x: block.x, y: block.y }) // Store original position
+    setDraggedWidget(widget)
+    setOriginalPosition({ x: widget.position.x, y: widget.position.y })
     setDragOffset({ x: offsetX, y: offsetY })
     setDragPosition({ x: wrapperLeft, y: wrapperTop })
   }
 
-  const handleMouseMove = (e) => {
-    if (!draggedBlock) return
+  const handleWidgetMouseMove = (e) => {
+    if (!draggedWidget) return
     
     const gridElement = document.querySelector('.dashboard-grid')
     if (!gridElement) return
     
     const rect = gridElement.getBoundingClientRect()
-    const pixelPos = getPixelPosition(e.clientX, e.clientY, gridElement)
+    const pixelX = e.clientX - rect.left
+    const pixelY = e.clientY - rect.top
     
     // Free-form movement during drag
     setDragPosition({
-      x: pixelPos.x - dragOffset.x,
-      y: pixelPos.y - dragOffset.y
+      x: pixelX - dragOffset.x,
+      y: pixelY - dragOffset.y
     })
   }
 
-  const handleMouseUp = (e) => {
-    if (!draggedBlock) return
+  const handleWidgetMouseUp = (e) => {
+    if (!draggedWidget) return
     
     const gridElement = document.querySelector('.dashboard-grid')
     if (!gridElement) return
@@ -191,50 +120,48 @@ function DashboardGrid() {
     const tileHeight = rect.height / GRID_ROWS
     
     // Snap to nearest tile on drop
-    const centerX = dragPosition.x + (draggedBlock.w * tileWidth) / 2
-    const centerY = dragPosition.y + (draggedBlock.h * tileHeight) / 2
+    const centerX = dragPosition.x + (draggedWidget.size.width * tileWidth) / 2
+    const centerY = dragPosition.y + (draggedWidget.size.height * tileHeight) / 2
     
-    const snappedX = Math.round(centerX / tileWidth - draggedBlock.w / 2)
-    const snappedY = Math.round(centerY / tileHeight - draggedBlock.h / 2)
+    const snappedX = Math.round(centerX / tileWidth - draggedWidget.size.width / 2)
+    const snappedY = Math.round(centerY / tileHeight - draggedWidget.size.height / 2)
     
     // Ensure within bounds
-    const finalX = Math.max(0, Math.min(gridColumns - draggedBlock.w, snappedX))
-    const finalY = Math.max(0, Math.min(GRID_ROWS - draggedBlock.h, snappedY))
+    const finalX = Math.max(0, Math.min(gridColumns - draggedWidget.size.width, snappedX))
+    const finalY = Math.max(0, Math.min(GRID_ROWS - draggedWidget.size.height, snappedY))
     
     // Check for collision at target position
-    const hasCollision = checkCollision(finalX, finalY, draggedBlock.w, draggedBlock.h, draggedBlock.id)
+    const hasCollision = checkCollision(finalX, finalY, draggedWidget.size.width, draggedWidget.size.height, draggedWidget.id)
     
     if (hasCollision) {
-      // Collision detected - snap back to original position
-      setBlocks(prevBlocks =>
-        prevBlocks.map(block =>
-          block.id === draggedBlock.id
-            ? { ...block, x: originalPosition.x, y: originalPosition.y }
-            : block
-        )
-      )
+      // Collision detected - snap back to original position (do nothing, widget stays in place)
+      console.log('Collision detected, reverting to original position')
     } else {
-      // No collision - place at new position
-      setBlocks(prevBlocks =>
-        prevBlocks.map(block => {
-          if (block.id === draggedBlock.id) {
-            // Update current position and save to original if on 28-column grid
-            const updatedBlock = { ...block, x: finalX, y: finalY }
-            if (gridColumns === 28) {
-              updatedBlock.originalX = finalX
-              updatedBlock.originalY = finalY
-            }
-            return updatedBlock
-          }
-          return block
-        })
-      )
+      // No collision - move widget to new position
+      if (finalX !== originalPosition.x || finalY !== originalPosition.y) {
+        moveWidget(draggedWidget.id, { x: finalX, y: finalY })
+      }
     }
     
-    setDraggedBlock(null)
+    setDraggedWidget(null)
     setDragPosition(null)
     setDragOffset({ x: 0, y: 0 })
     setOriginalPosition(null)
+  }
+
+  // Widget context menu handlers
+  const handleWidgetRightClick = (e, widget) => {
+    e.preventDefault()
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      widgetId: widget.id
+    })
+  }
+
+  const handleRemoveWidget = (widgetId) => {
+    removeWidget(widgetId)
+    setContextMenu(null)
   }
 
   // Widget library drop handlers
@@ -312,9 +239,9 @@ function DashboardGrid() {
   return (
     <div 
       className="dashboard-content"
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseMove={handleWidgetMouseMove}
+      onMouseUp={handleWidgetMouseUp}
+      onMouseLeave={handleWidgetMouseUp}
     >
       {showEmptyState && (
         <div className="dashboard-empty-state">
@@ -341,8 +268,8 @@ function DashboardGrid() {
               style={{
                 gridColumn: `${widgetDropZone.x + 1} / span ${widgetDropZone.size.width}`,
                 gridRow: `${widgetDropZone.y + 1} / span ${widgetDropZone.size.height}`,
-                backgroundColor: 'rgba(78, 205, 196, 0.2)',
-                border: '2px dashed #4ecdc4',
+                backgroundColor: 'var(--theme-subtle)',
+                border: '2px dashed var(--theme-primary)',
                 borderRadius: '8px',
                 pointerEvents: 'none',
                 zIndex: 10
@@ -354,69 +281,41 @@ function DashboardGrid() {
           {Array.from({ length: gridColumns * GRID_ROWS }).map((_, index) => (
             <div key={index} className="grid-tile"></div>
           ))}
-          
-          {/* Render draggable blocks */}
-          {blocks.map(block => {
-            const isDragging = draggedBlock?.id === block.id
-            
-            return (
-              <div
-                key={block.id}
-                className={`grid-block-wrapper ${isDragging ? 'dragging' : ''}`}
-                style={
-                  isDragging && dragPosition
-                    ? {
-                        position: 'absolute',
-                        left: `${dragPosition.x}px`,
-                        top: `${dragPosition.y}px`,
-                        width: `calc((100% / ${gridColumns}) * ${block.w})`,
-                        height: `calc((100% / ${GRID_ROWS}) * ${block.h})`,
-                        gridColumn: 'unset',
-                        gridRow: 'unset'
-                      }
-                    : {
-                        gridColumn: `${block.x + 1} / span ${block.w}`,
-                        gridRow: `${block.y + 1} / span ${block.h}`
-                      }
-                }
-                onMouseDown={(e) => handleMouseDown(e, block)}
-              >
-                <div className="grid-block-content">
-                  <div className="block-info">
-                    <span className="block-label">{block.label}</span>
-                    <span className="block-coords">
-                      x:{block.x} y:{block.y} | {block.w}×{block.h}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
 
           {/* Render dashboard widgets from widget library */}
           {dashboardWidgets.map(widget => {
             const widgetDef = getWidgetById(widget.widgetId)
             if (!widgetDef) return null
             
+            const isDragging = draggedWidget?.id === widget.id
+            
             return (
               <div
                 key={widget.id}
-                className="grid-block-wrapper widget-instance"
-                style={{
-                  gridColumn: `${widget.position.x + 1} / span ${widget.size.width}`,
-                  gridRow: `${widget.position.y + 1} / span ${widget.size.height}`
-                }}
+                className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''}`}
+                style={
+                  isDragging && dragPosition
+                    ? {
+                        position: 'absolute',
+                        left: `${dragPosition.x}px`,
+                        top: `${dragPosition.y}px`,
+                        width: `calc((100% / ${gridColumns}) * ${widget.size.width})`,
+                        height: `calc((100% / ${GRID_ROWS}) * ${widget.size.height})`,
+                        gridColumn: 'unset',
+                        gridRow: 'unset',
+                        zIndex: 1000
+                      }
+                    : {
+                        gridColumn: `${widget.position.x + 1} / span ${widget.size.width}`,
+                        gridRow: `${widget.position.y + 1} / span ${widget.size.height}`
+                      }
+                }
+                onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                onContextMenu={(e) => handleWidgetRightClick(e, widget)}
               >
-                <div className="grid-block-content" style={{ borderColor: widgetDef.color }}>
-                  <button 
-                    className="widget-remove-btn"
-                    onClick={() => removeWidget(widget.id)}
-                    title="Remove widget"
-                  >
-                    <i className="fa-solid fa-times"></i>
-                  </button>
+                <div className="grid-block-content">
                   <div className="block-info">
-                    <i className={`fa-solid ${widgetDef.icon}`} style={{ fontSize: '2rem', color: widgetDef.color, marginBottom: '0.5rem' }}></i>
+                    <i className={`fa-solid ${widgetDef.icon}`} style={{ fontSize: '2rem', marginBottom: '0.5rem', color: 'var(--theme-primary)' }}></i>
                     <span className="block-label">{widgetDef.name}</span>
                     <span className="block-coords">
                       x:{widget.position.x} y:{widget.position.y} | {widget.size.width}×{widget.size.height}
@@ -428,6 +327,27 @@ function DashboardGrid() {
           })}
         </div>
       </div>
+      
+      {/* Context menu for widgets */}
+      {contextMenu && (
+        <div
+          className="widget-context-menu"
+          style={{
+            position: 'fixed',
+            left: `${contextMenu.x}px`,
+            top: `${contextMenu.y}px`,
+            zIndex: 10000
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="context-menu-item"
+            onClick={() => handleRemoveWidget(contextMenu.widgetId)}
+          >
+            Remove Widget
+          </button>
+        </div>
+      )}
     </div>
   )
 }

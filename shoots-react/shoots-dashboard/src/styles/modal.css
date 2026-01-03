@@ -92,7 +92,7 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
   background-color: #1a1a1a;
 }
 

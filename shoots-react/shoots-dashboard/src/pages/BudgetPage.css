@@ -35,12 +35,12 @@
 
 .month-selector:focus {
   outline: none;
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
 }
 
 /* Budget-specific stat colors */
 .stat-value.spent {
-  color: #4ecdc4;
+  color: var(--theme-primary);
 }
 
 .stat-value.remaining {
@@ -147,7 +147,7 @@
 
 .budget-card:hover {
   transform: translateY(-2px);
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
@@ -233,7 +233,7 @@
 .amount-row.highlight {
   margin-top: 0.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #4ecdc4;
+  border-top: 1px solid var(--theme-primary);
   border-bottom: none;
 }
 
@@ -249,7 +249,7 @@
 }
 
 .amount-value.spent {
-  color: #4ecdc4;
+  color: var(--theme-primary);
 }
 
 .amount-value.remaining {

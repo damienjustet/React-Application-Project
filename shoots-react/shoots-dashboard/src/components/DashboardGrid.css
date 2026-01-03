@@ -19,8 +19,8 @@
 
 .dashboard-empty-state i {
   font-size: 4rem;
-  color: #4ecdc4;
-  opacity: 0.3;
+  color: var(--theme-primary);
+  opacity: 0.5;
   margin-bottom: 1rem;
 }
 
@@ -89,6 +89,8 @@
   display: grid;
   gap: 0;
   width: 100%;
+  min-height: 500px;
+  aspect-ratio: 2 / 1;
   position: relative;
 }
 
@@ -102,10 +104,14 @@
 /* Widget Wrapper - Occupies full tile space with internal padding */
 .grid-block-wrapper {
   position: relative;
-  cursor: move;
+  cursor: grab;
   z-index: 10;
   user-select: none;
   padding: 6px;
+}
+
+.grid-block-wrapper:active {
+  cursor: grabbing;
 }
 
 .grid-block-wrapper.dragging {
@@ -132,7 +138,7 @@
 
 .grid-block-wrapper:hover .grid-block-content {
   background: #424242;
-  border-color: #5a5a5a;
+  border-color: var(--theme-primary);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -142,36 +148,35 @@
 }
 
 .grid-block-wrapper.widget-instance {
-  cursor: default;
+  cursor: move;
 }
 
-.widget-remove-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 28px;
-  height: 28px;
-  background-color: rgba(255, 107, 107, 0.9);
+/* Context Menu */
+.widget-context-menu {
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  padding: 0;
+  min-width: 140px;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+.context-menu-item {
+  width: 100%;
+  padding: 6px 10px;
+  background: none;
   border: none;
-  border-radius: 50%;
-  color: white;
+  color: #e8e8e8;
+  text-align: left;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  opacity: 0;
-  transition: all 0.2s ease;
-  z-index: 10;
+  font-size: 0.8125rem;
+  transition: background-color 0.15s ease;
 }
 
-.grid-block-wrapper.widget-instance:hover .widget-remove-btn {
-  opacity: 1;
-}
-
-.widget-remove-btn:hover {
-  background-color: #ff4444;
-  transform: scale(1.1);
+.context-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .block-info {

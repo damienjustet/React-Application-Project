@@ -43,7 +43,7 @@
 
 .goal-card:hover {
   transform: translateY(-2px);
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
@@ -92,7 +92,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(to right, #4ecdc4, #6dded6);
+  background: var(--theme-primary);
   transition: width 0.3s ease;
   border-radius: 4px;
 }
@@ -112,7 +112,7 @@
 .progress-percent {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #4ecdc4;
+  color: var(--theme-primary);
 }
 
 .goal-insights {
@@ -146,7 +146,7 @@
 
 .quick-add-btn {
   width: 100%;
-  background-color: #4ecdc4;
+  background-color: var(--theme-primary);
   color: #191919;
   border: none;
   padding: 0.75rem;
@@ -162,7 +162,7 @@
 }
 
 .quick-add-btn:hover {
-  background-color: #6dded6;
+  filter: brightness(1.1);
 }
 
 .goal-complete {
@@ -190,7 +190,8 @@
 
 .empty-state i {
   font-size: 4rem;
-  color: #4ecdc4;
+  color: var(--theme-primary);
+  opacity: 0.5;
   margin-bottom: 1rem;
 }
 

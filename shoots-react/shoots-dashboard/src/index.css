@@ -8,8 +8,19 @@
 }
 
 :root {
-  /* Accent colors */
+  /* Theme colors - will be dynamically updated from banner image */
+  --theme-primary: #6a8a6d;
+  --theme-secondary: #8b9e8c;
+  --theme-tertiary: #a5b5a6;
+  --theme-accent1: #7d9a7f;
+  --theme-accent2: #92a893;
+  --theme-accent3: #a8b8a9;
+  --theme-subtle: rgba(106, 138, 109, 0.15);
+  
+  /* Fixed accent colors (not affected by theme) */
   --accent-green: #6aa84f;
+  --income-color: #6aa84f;
+  --expense-color: #e85d5d;
   
   /* Typography */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

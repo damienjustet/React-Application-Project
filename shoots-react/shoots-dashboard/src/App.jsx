@@ -12,6 +12,7 @@ import SearchModal from './components/SearchModal'
 import WidgetLibrary from './components/WidgetLibrary'
 import { DataProvider } from './context/DataContext'
 import { DashboardProvider, useDashboard } from './context/DashboardContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 function AppContent() {
   const [isExpanded, setIsExpanded] = useState(true)
@@ -131,11 +132,13 @@ function AppContent() {
 
 function App() {
   return (
-    <DataProvider>
-      <DashboardProvider>
-        <AppContent />
-      </DashboardProvider>
-    </DataProvider>
+    <ThemeProvider>
+      <DataProvider>
+        <DashboardProvider>
+          <AppContent />
+        </DashboardProvider>
+      </DataProvider>
+    </ThemeProvider>
   )
 }
 

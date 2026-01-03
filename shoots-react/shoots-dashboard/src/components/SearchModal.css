@@ -123,14 +123,14 @@
 .search-result-item:hover,
 .search-result-item.selected {
   background-color: #2a2a2a;
-  border-left-color: #4ecdc4;
+  border-left-color: var(--theme-primary);
 }
 
 .result-icon {
   width: 24px;
   text-align: center;
   font-size: 1rem;
-  color: #4ecdc4;
+  color: var(--theme-primary);
 }
 
 .result-content {

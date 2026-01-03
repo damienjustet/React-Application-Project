@@ -8,9 +8,9 @@ function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingGoal, setEditingGoal] = useState(null)
-  const [newGoal, setNewGoal] = useState({ name: '', target: 0, current: 0, color: '#4ecdc4', icon: 'fa-piggy-bank' })
+  const [newGoal, setNewGoal] = useState({ name: '', target: 0, current: 0, color: '#83827d', icon: 'fa-piggy-bank' })
 
-  const goalColors = ['#4ecdc4', '#aa96da', '#ff6b6b', '#95e1d3', '#f38181', '#ffd93d', '#6aa84f']
+  const goalColors = ['#83827d', '#a0a0a0', '#c0c0c0', '#707070', '#5a5a5a', '#b8b8b8', '#909090']
   const goalIcons = ['fa-piggy-bank', 'fa-plane', 'fa-car', 'fa-house', 'fa-umbrella', 'fa-graduation-cap', 'fa-ring', 'fa-laptop', 'fa-heart']
 
   const totalSaved = savingsGoals.reduce((sum, goal) => sum + goal.current, 0)
@@ -24,7 +24,7 @@ function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
         ...newGoal
       }
       setSavingsGoals([...savingsGoals, goal])
-      setNewGoal({ name: '', target: 0, current: 0, color: '#4ecdc4', icon: 'fa-piggy-bank' })
+      setNewGoal({ name: '', target: 0, current: 0, color: '#83827d', icon: 'fa-piggy-bank' })
       setShowAddModal(false)
     }
   }

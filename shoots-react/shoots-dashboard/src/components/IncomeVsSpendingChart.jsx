@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import './IncomeVsSpendingChart.css'
 
@@ -8,9 +8,9 @@ const CHART_COLORS = {
   text: '#e8e8e8',
   label: '#83827d',
   monthHighlight: '#2c2c2c',
-  income: '#F4C95D',
-  discretionary: '#FFDC84',
-  bills: '#FFEBB8'
+  income: '#F4C95D',        // Income - gold/yellow (restored)
+  discretionary: '#FFDC84', // Discretionary spending - soft yellow
+  bills: '#FFEBB8'          // Bills/fixed costs - pale yellow
 }
 
 const CHART_CONFIG = {
@@ -42,54 +42,110 @@ const TOOLTIP_STYLES = {
 // Helper function
 const formatCurrency = (value) => `$${(value / 1000).toFixed(1)}k`
 
+// Custom component that renders both spending segments as one bar with rounded top
+const CombinedSpendingBar = (props) => {
+  const { x, y, width, height, payload } = props
+  
+  const bills = payload.bills || 0
+  const discretionary = payload.discretionary || 0
+  const total = bills + discretionary
+  
+  if (!total || !height || height <= 0) return null
+  
+  const radius = 10
+  const effectiveRadius = Math.min(radius, height / 2, width / 2)
+  
+  // Calculate proportional heights
+  const billsHeight = (bills / total) * height
+  const discretionaryHeight = (discretionary / total) * height
+  
+  // Unique clip path ID for this bar
+  const clipId = `spending-clip-${payload.month}`
+  
+  return (
+    <g>
+      {/* Define a clip path with rounded top corners */}
+      <defs>
+        <clipPath id={clipId}>
+          <path
+            d={`
+              M${x},${y + effectiveRadius}
+              A${effectiveRadius},${effectiveRadius} 0 0 1 ${x + effectiveRadius},${y}
+              L${x + width - effectiveRadius},${y}
+              A${effectiveRadius},${effectiveRadius} 0 0 1 ${x + width},${y + effectiveRadius}
+              L${x + width},${y + height}
+              L${x},${y + height}
+              Z
+            `}
+          />
+        </clipPath>
+      </defs>
+      
+      {/* Render both segments clipped by the rounded shape */}
+      <g clipPath={`url(#${clipId})`}>
+        {/* Bills on top (pale yellow) */}
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={billsHeight}
+          fill={CHART_COLORS.bills}
+        />
+        {/* Discretionary on bottom (soft yellow) */}
+        <rect
+          x={x}
+          y={y + billsHeight}
+          width={width}
+          height={discretionaryHeight}
+          fill={CHART_COLORS.discretionary}
+        />
+      </g>
+    </g>
+  )
+}
+
 function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect }) {
   const [startIndex, setStartIndex] = useState(6)
   const monthsToShow = 6
 
-  // Helper to identify bills/subscriptions
-  const isBillTransaction = (transaction) => {
-    const billMerchants = ['Netflix', 'Spotify', 'Hulu', 'Disney+', 'Amazon Prime', 'Apple Music']
-    const billPatterns = ['subscription', 'monthly', 'insurance', 'utilities', 'rent', 'mortgage']
+  // Memoize month data calculations to prevent recalculating on every render
+  const allMonthsData = useMemo(() => {
+    const isBillTransaction = (transaction) => transaction.category === 'Bills and Utilities'
     
-    return billMerchants.includes(transaction.merchant) ||
-           billPatterns.some(pattern => transaction.merchant.toLowerCase().includes(pattern))
-  }
+    const calculateMonthData = (month) => {
+      const income = transactions
+        .filter(t => t.type === 'income' && t.date.includes(month))
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      const expenses = transactions
+        .filter(t => t.type === 'expense' && t.date.includes(month))
+      
+      const bills = expenses
+        .filter(isBillTransaction)
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      const discretionary = expenses
+        .filter(t => !isBillTransaction(t))
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      return { month, income, bills, discretionary }
+    }
 
-  // Calculate income and spending from transactions
-  const calculateMonthData = (month) => {
-    const income = transactions
-      .filter(t => t.type === 'income' && t.date.includes(month))
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const expenses = transactions
-      .filter(t => t.type === 'expense' && t.date.includes(month))
-    
-    // Split expenses into bills (subscriptions/recurring) and discretionary
-    const bills = expenses
-      .filter(isBillTransaction)
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    const discretionary = expenses
-      .filter(t => !isBillTransaction(t))
-      .reduce((sum, t) => sum + t.amount, 0)
-    
-    return { month, income, bills, discretionary }
-  }
-
-  const allMonthsData = [
-    calculateMonthData('Jan'),
-    calculateMonthData('Feb'),
-    calculateMonthData('Mar'),
-    calculateMonthData('Apr'),
-    calculateMonthData('May'),
-    calculateMonthData('Jun'),
-    calculateMonthData('Jul'),
-    calculateMonthData('Aug'),
-    calculateMonthData('Sep'),
-    calculateMonthData('Oct'),
-    calculateMonthData('Nov'),
-    calculateMonthData('Dec')
-  ]
+    return [
+      calculateMonthData('Jan'),
+      calculateMonthData('Feb'),
+      calculateMonthData('Mar'),
+      calculateMonthData('Apr'),
+      calculateMonthData('May'),
+      calculateMonthData('Jun'),
+      calculateMonthData('Jul'),
+      calculateMonthData('Aug'),
+      calculateMonthData('Sep'),
+      calculateMonthData('Oct'),
+      calculateMonthData('Nov'),
+      calculateMonthData('Dec')
+    ]
+  }, [transactions])
 
   const currentMonthIndex = 11 // December
   const visibleMonths = allMonthsData.slice(startIndex, startIndex + monthsToShow)
@@ -197,8 +253,13 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
                 return null
               }} ticks={[0, yAxisMax / 2, yAxisMax]} />
               <Tooltip content={<CustomTooltip />} cursor={false} />
-              <Bar dataKey="discretionary" fill={CHART_COLORS.discretionary} radius={[0, 0, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} stackId="spending" />
-              <Bar dataKey="bills" fill={CHART_COLORS.bills} radius={[100, 100, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} stackId="spending" />
+              {/* Single bar for combined spending (bills + discretionary) with rounded top */}
+              <Bar
+                dataKey={entry => (entry.bills || 0) + (entry.discretionary || 0)}
+                fill={CHART_COLORS.discretionary}
+                maxBarSize={CHART_CONFIG.barMaxSize}
+                shape={<CombinedSpendingBar />}
+              />
               <Bar dataKey="income" fill={CHART_COLORS.income} radius={[100, 100, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} />
             </BarChart>
           </ResponsiveContainer>

@@ -54,13 +54,13 @@
 }
 
 .spending-page .btn-add {
-  background-color: #4ecdc4;
+  background-color: var(--theme-primary);
   color: #191919;
   font-weight: 500;
 }
 
 .spending-page .btn-add:hover {
-  background-color: #45b8b0;
+  filter: brightness(1.1);
 }
 
 .spending-page .btn-delete {
@@ -181,7 +181,7 @@
 }
 
 .action-btn.active {
-  background-color: #4ecdc4;
+  background-color: var(--theme-primary);
   color: #191919;
 }
 
@@ -321,7 +321,7 @@
 
 .date-input-group input[type="date"]:focus {
   outline: none;
-  border-color: #4ecdc4;
+  border-color: var(--theme-primary);
 }
 
 .date-input-group input[type="date"]::-webkit-calendar-picker-indicator {
@@ -676,8 +676,8 @@
 }
 
 .trend-bar.active {
-  background: linear-gradient(to top, #4ecdc4, #6dded6);
-  box-shadow: 0 0 12px rgba(78, 205, 196, 0.4);
+  background: var(--theme-primary);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .trend-month {
@@ -717,7 +717,7 @@
 }
 
 .insight-icon.info {
-  color: #4ecdc4;
+  color: var(--theme-primary);
 }
 
 .insight-icon.warning {

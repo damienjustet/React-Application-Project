@@ -21,13 +21,13 @@ export const categoryIcons = {
 }
 
 export const categoryColors = {
-  'Dining': '#ff6b6b',
-  'Shopping': '#4ecdc4',
-  'Groceries': '#95e1d3',
-  'Transportation': '#f38181',
-  'Entertainment': '#aa96da',
-  'Bills and Utilities': '#ffd93d',
-  'Other': '#83827d'
+  'Dining': 'rgba(232, 232, 232, 0.8)',
+  'Shopping': 'rgba(232, 232, 232, 0.8)',
+  'Groceries': 'rgba(232, 232, 232, 0.8)',
+  'Transportation': 'rgba(232, 232, 232, 0.8)',
+  'Entertainment': 'rgba(232, 232, 232, 0.8)',
+  'Bills and Utilities': 'rgba(232, 232, 232, 0.8)',
+  'Other': 'rgba(131, 130, 125, 0.6)'
 }
 
 // Initial transaction data
@@ -79,9 +79,9 @@ const initialTransactions = [
 export function DataProvider({ children }) {
   const [transactions, setTransactions] = useState(initialTransactions)
   const [savingsGoals, setSavingsGoals] = useState([
-    { id: 1, name: 'Emergency Fund', target: 10000, current: 3500, color: '#4ecdc4', icon: 'fa-umbrella' },
-    { id: 2, name: 'Vacation', target: 5000, current: 1200, color: '#aa96da', icon: 'fa-plane' },
-    { id: 3, name: 'New Car', target: 25000, current: 8750, color: '#ff6b6b', icon: 'fa-car' }
+    { id: 1, name: 'Emergency Fund', target: 10000, current: 3500, color: '#83827d', icon: 'fa-umbrella' },
+    { id: 2, name: 'Vacation', target: 5000, current: 1200, color: '#a0a0a0', icon: 'fa-plane' },
+    { id: 3, name: 'New Car', target: 25000, current: 8750, color: '#707070', icon: 'fa-car' }
   ])
   const [recurringBills, setRecurringBills] = useState([
     { id: 1, name: 'Netflix', amount: 15.99, dueDate: '15', category: 'Entertainment', frequency: 'monthly', icon: 'fa-tv', isPaid: false },
@@ -90,12 +90,12 @@ export function DataProvider({ children }) {
     { id: 4, name: 'Gym Membership', amount: 49.99, dueDate: '5', category: 'Other', frequency: 'monthly', icon: 'fa-dumbbell', isPaid: true }
   ])
   const [budgets, setBudgets] = useState([
-    { category: 'Dining', limit: 300, spent: 0, color: '#ff6b6b' },
-    { category: 'Shopping', limit: 200, spent: 0, color: '#4ecdc4' },
-    { category: 'Groceries', limit: 400, spent: 0, color: '#95e1d3' },
-    { category: 'Transportation', limit: 150, spent: 0, color: '#f38181' },
-    { category: 'Entertainment', limit: 100, spent: 0, color: '#aa96da' },
-    { category: 'Bills and Utilities', limit: 500, spent: 0, color: '#ffd93d' }
+    { category: 'Dining', limit: 300, spent: 0, color: '#707070' },
+    { category: 'Shopping', limit: 200, spent: 0, color: '#83827d' },
+    { category: 'Groceries', limit: 400, spent: 0, color: '#a0a0a0' },
+    { category: 'Transportation', limit: 150, spent: 0, color: '#5a5a5a' },
+    { category: 'Entertainment', limit: 100, spent: 0, color: '#909090' },
+    { category: 'Bills and Utilities', limit: 500, spent: 0, color: '#b8b8b8' }
   ])
 
   const addTransaction = (transaction) => {
