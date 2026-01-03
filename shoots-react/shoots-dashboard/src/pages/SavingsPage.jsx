@@ -3,7 +3,7 @@ import './SavingsPage.css'
 import SpendingHeader from '../components/SpendingHeader'
 import { useData } from '../context/DataContext'
 
-function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
+function SavingsPage({ isExpanded, toggleSidebar }) {
   const { savingsGoals, setSavingsGoals } = useData()
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -228,15 +228,15 @@ function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
           <div className="overview-stats">
             <div className="stat-item">
               <span className="stat-label">Total Saved</span>
-              <span className="stat-value">${totalSaved.toFixed(2)}</span>
+              <span className="stat-value font-numeric">${totalSaved.toFixed(2)}</span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Total Goals</span>
-              <span className="stat-value">${totalTarget.toFixed(2)}</span>
+              <span className="stat-value font-numeric">${totalTarget.toFixed(2)}</span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Overall Progress</span>
-              <span className="stat-value">{overallProgress.toFixed(0)}%</span>
+              <span className="stat-value font-numeric">{overallProgress.toFixed(0)}%</span>
             </div>
           </div>
           <div className="overview-progress">
@@ -261,7 +261,7 @@ function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
                   </div>
                   <div className="goal-info">
                     <h3>{goal.name}</h3>
-                    <p className="goal-target">${goal.target.toFixed(2)} goal</p>
+                    <p className="goal-target"><span className="font-numeric">${goal.target.toFixed(2)}</span> goal</p>
                   </div>
                 </div>
                 
@@ -276,19 +276,19 @@ function SavingsPage({ isExpanded, isHovering, toggleSidebar }) {
                     ></div>
                   </div>
                   <div className="progress-info">
-                    <span className="current-amount">${goal.current.toFixed(2)}</span>
-                    <span className="progress-percent">{progress.toFixed(0)}%</span>
+                    <span className="current-amount font-numeric">${goal.current.toFixed(2)}</span>
+                    <span className="progress-percent font-numeric">{progress.toFixed(0)}%</span>
                   </div>
                 </div>
 
                 <div className="goal-insights">
                   <div className="insight-row">
                     <span className="insight-label">Remaining</span>
-                    <span className="insight-value">${remaining.toFixed(2)}</span>
+                    <span className="insight-value font-numeric">${remaining.toFixed(2)}</span>
                   </div>
                   <div className="insight-row">
                     <span className="insight-label">Save/month (12mo)</span>
-                    <span className="insight-value">${monthlyTarget}</span>
+                    <span className="insight-value font-numeric">${monthlyTarget}</span>
                   </div>
                 </div>
 

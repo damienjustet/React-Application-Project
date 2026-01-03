@@ -4,7 +4,7 @@ import SpendingHeader from '../components/SpendingHeader'
 import { useData, EXPENSE_CATEGORIES, categoryIcons } from '../context/DataContext'
 import { detectRecurringTransactions, calculateMonthlyTotal, calculateYearlyCost } from '../utils/recurringDetection'
 
-function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
+function RecurringPage({ isExpanded, toggleSidebar }) {
   const { recurringBills, setRecurringBills, transactions } = useData()
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -303,24 +303,24 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
         {/* Smart Insights Banner */}
         <div className="insights-banner">
           <div className="insight-item">
-            <div className="insight-value">${monthlyTotal.toFixed(2)}</div>
+            <div className="insight-value font-numeric">${monthlyTotal.toFixed(2)}</div>
             <div className="insight-label">Monthly Total</div>
           </div>
           <div className="insight-divider"></div>
           <div className="insight-item">
-            <div className="insight-value">{detectedCount}</div>
+            <div className="insight-value font-numeric">{detectedCount}</div>
             <div className="insight-label">Auto-Detected</div>
           </div>
           <div className="insight-divider"></div>
           <div className="insight-item">
-            <div className="insight-value" style={{ color: unusedCount > 0 ? '#ffd93d' : '#6aa84f' }}>
+            <div className="insight-value font-numeric" style={{ color: unusedCount > 0 ? '#ffd93d' : '#6aa84f' }}>
               {unusedCount}
             </div>
             <div className="insight-label">Possibly Unused</div>
           </div>
           <div className="insight-divider"></div>
           <div className="insight-item">
-            <div className="insight-value" style={{ color: priceIncreases > 0 ? '#ff6b6b' : '#6aa84f' }}>
+            <div className="insight-value font-numeric" style={{ color: priceIncreases > 0 ? '#ff6b6b' : '#6aa84f' }}>
               {priceIncreases}
             </div>
             <div className="insight-label">Price Increases</div>
@@ -387,7 +387,7 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                   </div>
 
                   <div className="card-amount">
-                    <div className="amount-value">${(item.averageAmount || item.amount).toFixed(2)}</div>
+                    <div className="amount-value font-numeric">${(item.averageAmount || item.amount).toFixed(2)}</div>
                     <div className="amount-frequency">{item.frequency}</div>
                   </div>
                 </div>
@@ -404,7 +404,7 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                     {item.hasIncrease && (
                       <span className="increase-badge">
                         <i className="fa-solid fa-arrow-trend-up"></i>
-                        Price increased by ${item.priceChange.toFixed(2)}
+                        Price increased by <span className="font-numeric">${item.priceChange.toFixed(2)}</span>
                       </span>
                     )}
                   </div>
@@ -478,7 +478,7 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                     <div className="expanded-row">
                       <div className="expanded-stat">
                         <span className="stat-label">Yearly Cost</span>
-                        <span className="stat-value">${yearlyCost.toFixed(2)}</span>
+                        <span className="stat-value font-numeric">${yearlyCost.toFixed(2)}</span>
                       </div>
                       {item.lastCharge && (
                         <div className="expanded-stat">
@@ -489,7 +489,7 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                       {item.averageAmount && item.amount !== item.averageAmount && (
                         <div className="expanded-stat">
                           <span className="stat-label">Amount Range</span>
-                          <span className="stat-value">${Math.min(...item.transactions.map(t => t.amount)).toFixed(2)} - ${Math.max(...item.transactions.map(t => t.amount)).toFixed(2)}</span>
+                          <span className="stat-value font-numeric">${Math.min(...item.transactions.map(t => t.amount)).toFixed(2)} - ${Math.max(...item.transactions.map(t => t.amount)).toFixed(2)}</span>
                         </div>
                       )}
                     </div>
@@ -502,7 +502,7 @@ function RecurringPage({ isExpanded, isHovering, toggleSidebar }) {
                             <div key={idx} className="history-item">
                               <span className="history-date">{t.date}</span>
                               <span className="history-merchant">{t.merchant}</span>
-                              <span className="history-amount">${t.amount.toFixed(2)}</span>
+                              <span className="history-amount font-numeric">${t.amount.toFixed(2)}</span>
                             </div>
                           ))}
                         </div>

@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { WIDGET_CATALOG, WIDGET_CATEGORIES, getWidgetsByCategory } from '../data/widgetCatalog'
+import { useState, useMemo, useRef } from 'react'
+import { WIDGET_CATEGORIES, getWidgetsByCategory, setCurrentDragWidget, clearCurrentDragWidget } from '../data/widgetCatalog'
 import { useDashboard } from '../context/DashboardContext'
 import './WidgetLibrary.css'
 
@@ -8,30 +8,77 @@ function WidgetLibrary({ isOpen, onClose }) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [selectedWidgets, setSelectedWidgets] = useState([])
   const [showCheckboxes, setShowCheckboxes] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const dragImageRef = useRef(null)
   
-  const { addWidget, addMultipleWidgets } = useDashboard()
+  const { addWidget, addMultipleWidgets, widgets: dashboardWidgets } = useDashboard()
 
-  // Filter widgets based on search and category
+  // Filter widgets based on search, category, and dashboard presence
   const filteredWidgets = useMemo(() => {
     let widgets = getWidgetsByCategory(activeCategory)
-    
+    const usedWidgetIds = new Set(dashboardWidgets.map(w => w.widgetId))
+    widgets = widgets.filter(w => !usedWidgetIds.has(w.id))
     if (searchQuery) {
       widgets = widgets.filter(w =>
         w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         w.description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
-    
     return widgets
-  }, [searchQuery, activeCategory])
+  }, [searchQuery, activeCategory, dashboardWidgets])
 
   // Handle drag start
   const handleDragStart = (e, widget) => {
+    // Prevent default drag image (browser often shows icon as image)
     e.dataTransfer.setData('application/json', JSON.stringify({
       widgetId: widget.id,
       size: widget.defaultSize
     }))
+    // Store widget ID as text so we can access it during dragOver
+    e.dataTransfer.setData('text/plain', widget.id)
     e.dataTransfer.effectAllowed = 'copy'
+    
+    // Store the widget info globally so it can be accessed during dragover
+    // (dataTransfer.getData() is not accessible during dragover for security reasons)
+    setCurrentDragWidget({ id: widget.id, size: widget.defaultSize })
+    
+    // Create a custom drag image
+    const dragPreview = document.createElement('div')
+    dragPreview.className = 'widget-drag-preview'
+    dragPreview.innerHTML = `<i class="fa-solid ${widget.icon}"></i> ${widget.name}`
+    dragPreview.style.cssText = `
+      position: fixed;
+      top: -1000px;
+      left: -1000px;
+      padding: 8px 16px;
+      background: var(--theme-primary, #4a9eff);
+      color: #191919;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      z-index: 10000;
+    `
+    document.body.appendChild(dragPreview)
+    e.dataTransfer.setDragImage(dragPreview, 0, 0)
+    
+    // Clean up the drag preview after a short delay
+    setTimeout(() => {
+      document.body.removeChild(dragPreview)
+    }, 0)
+    
+    // Set dragging state to make overlay transparent to pointer events
+    setIsDragging(true)
+  }
+  
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(false)
+    clearCurrentDragWidget()
   }
 
   // Handle checkbox toggle
@@ -60,13 +107,14 @@ function WidgetLibrary({ isOpen, onClose }) {
 
   return (
     <>
-      <div className="widget-library-overlay" onClick={onClose} />
+      <div 
+        className={`widget-library-overlay ${isDragging ? 'dragging' : ''}`}
+        onClick={onClose}
+        style={isDragging ? { pointerEvents: 'none' } : {}}
+      />
       <div className="widget-library">
         <div className="widget-library-header">
-          <h2>
-            <i className="fa-solid fa-grip"></i>
-            Widget Library
-          </h2>
+          <h2>Widget Library</h2>
           <button className="close-btn" onClick={onClose} title="Close">
             <i className="fa-solid fa-times"></i>
           </button>
@@ -96,40 +144,17 @@ function WidgetLibrary({ isOpen, onClose }) {
         </div>
 
         <div className="widget-library-categories">
-          <button
-            className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('all')}
+          <select
+            className="category-dropdown"
+            value={activeCategory}
+            onChange={e => setActiveCategory(e.target.value)}
           >
-            All
-          </button>
-          <button
-            className={`category-btn ${activeCategory === WIDGET_CATEGORIES.STATS ? 'active' : ''}`}
-            onClick={() => setActiveCategory(WIDGET_CATEGORIES.STATS)}
-          >
-            <i className="fa-solid fa-chart-simple"></i>
-            Stats
-          </button>
-          <button
-            className={`category-btn ${activeCategory === WIDGET_CATEGORIES.CHARTS ? 'active' : ''}`}
-            onClick={() => setActiveCategory(WIDGET_CATEGORIES.CHARTS)}
-          >
-            <i className="fa-solid fa-chart-line"></i>
-            Charts
-          </button>
-          <button
-            className={`category-btn ${activeCategory === WIDGET_CATEGORIES.LISTS ? 'active' : ''}`}
-            onClick={() => setActiveCategory(WIDGET_CATEGORIES.LISTS)}
-          >
-            <i className="fa-solid fa-list"></i>
-            Lists
-          </button>
-          <button
-            className={`category-btn ${activeCategory === WIDGET_CATEGORIES.ACTIONS ? 'active' : ''}`}
-            onClick={() => setActiveCategory(WIDGET_CATEGORIES.ACTIONS)}
-          >
-            <i className="fa-solid fa-bolt"></i>
-            Actions
-          </button>
+            <option value="all">All</option>
+            <option value={WIDGET_CATEGORIES.STATS}>Stats</option>
+            <option value={WIDGET_CATEGORIES.CHARTS}>Charts</option>
+            <option value={WIDGET_CATEGORIES.LISTS}>Lists</option>
+            <option value={WIDGET_CATEGORIES.ACTIONS}>Actions</option>
+          </select>
         </div>
 
         <div className="widget-library-content">
@@ -137,8 +162,9 @@ function WidgetLibrary({ isOpen, onClose }) {
             <div
               key={widget.id}
               className={`widget-card ${selectedWidgets.includes(widget.id) ? 'selected' : ''}`}
-              draggable={!showCheckboxes}
+              draggable={true}
               onDragStart={(e) => handleDragStart(e, widget)}
+              onDragEnd={handleDragEnd}
             >
               {showCheckboxes && (
                 <div className="widget-card-checkbox">
@@ -149,21 +175,13 @@ function WidgetLibrary({ isOpen, onClose }) {
                   />
                 </div>
               )}
-              <div className="widget-card-icon" style={{ color: widget.color }}>
-                <i className={`fa-solid ${widget.icon}`}></i>
-              </div>
               <div className="widget-card-info">
-                <h3>{widget.name}</h3>
+                <h3>{widget.name} <span className="widget-card-size-badge">{widget.defaultSize.width}×{widget.defaultSize.height}</span></h3>
                 <p>{widget.description}</p>
-                <span className="widget-card-size">
-                  {widget.defaultSize.width}×{widget.defaultSize.height}
-                </span>
               </div>
-              {!showCheckboxes && (
-                <div className="widget-card-drag-handle">
-                  <i className="fa-solid fa-grip-vertical"></i>
-                </div>
-              )}
+              <div className="widget-card-icon" style={{ color: widget.color }} draggable={false}>
+                <i className={`fa-solid ${widget.icon}`} draggable={false}></i>
+              </div>
             </div>
           ))}
         </div>

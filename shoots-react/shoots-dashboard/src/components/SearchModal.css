@@ -154,6 +154,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Moulpali', sans-serif;
 }
 
 .result-type {

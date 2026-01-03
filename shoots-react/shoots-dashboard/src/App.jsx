@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
+import './styles/moulpali-font.css'
 import Nav from './components/Nav'
 import DashboardHeader from './components/DashboardHeader'
 import DashboardGrid from './components/DashboardGrid'
@@ -88,7 +89,6 @@ function AppContent() {
                   <DashboardHeader 
                     userName="Damien" 
                     isExpanded={isExpanded}
-                    isHovering={isHovering}
                     toggleSidebar={toggleSidebar}
                     onToggleWidgetLibrary={toggleWidgetLibrary}
                   />
@@ -98,28 +98,24 @@ function AppContent() {
               <Route path="/savings" element={
                 <SavingsPage 
                   isExpanded={isExpanded}
-                  isHovering={isHovering}
                   toggleSidebar={toggleSidebar}
                 />
               } />
               <Route path="/recurring" element={
                 <RecurringPage 
                   isExpanded={isExpanded}
-                  isHovering={isHovering}
                   toggleSidebar={toggleSidebar}
                 />
               } />
               <Route path="/spending" element={
                 <SpendingPage 
                   isExpanded={isExpanded}
-                  isHovering={isHovering}
                   toggleSidebar={toggleSidebar}
                 />
               } />
               <Route path="/budget" element={
                 <BudgetPage 
                   isExpanded={isExpanded}
-                  isHovering={isHovering}
                   toggleSidebar={toggleSidebar}
                 />
               } />

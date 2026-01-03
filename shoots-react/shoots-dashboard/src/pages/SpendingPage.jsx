@@ -8,7 +8,7 @@ import { useData, EXPENSE_CATEGORIES, INCOME_CATEGORIES, categoryIcons } from '.
 import { useTheme } from '../context/ThemeContext'
 import { displayToInputDate, inputToDisplayDate } from '../utils/dateUtils'
 
-function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
+function SpendingPage({ isExpanded, toggleSidebar }) {
   // Constants
   const RECENT_TRANSACTIONS_LIMIT = 10
 
@@ -431,7 +431,7 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                           <span className="category-badge">{transaction.category}</span>
                         </div>
                       </div>
-                      <div className={`transaction-amount ${transaction.type === 'income' ? 'income' : ''}`}>
+                      <div className={`transaction-amount font-numeric ${transaction.type === 'income' ? 'income' : ''}`}>
                         ${transaction.amount.toFixed(2)}
                       </div>
                     </div>
@@ -502,7 +502,8 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                           borderRadius: '4px',
                           padding: '6px 10px',
                           color: '#e8e8e8',
-                          fontSize: '0.8125rem'
+                          fontSize: '0.8125rem',
+                          fontFamily: "'Moulpali', sans-serif"
                         }}>
                           {data.name}: {percentOfTotal}%
                         </div>
@@ -518,13 +519,17 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                           <div className="chart-label-wrapper">
                             <div 
                               className={`chart-total ${isHoveringChart ? 'expanded' : ''}`}
+                              style={{ fontFamily: "'Moulpali', sans-serif" }}
                               onMouseEnter={() => setIsHoveringChart(true)}
                               onMouseLeave={() => setIsHoveringChart(false)}
                             >
                               {isHoveringChart ? `$${total.toFixed(2)}` : `$${(total / 1000).toFixed(1)}k`}
                             </div>
                             <div className="chart-bottom-row">
-                              <div className={`chart-percent-change ${totalPercentChange >= 0 ? 'increase' : 'decrease'}`}>
+                              <div 
+                                className={`chart-percent-change ${totalPercentChange >= 0 ? 'increase' : 'decrease'}`}
+                                style={{ fontFamily: "'Moulpali', sans-serif" }}
+                              >
                                 {Math.abs(totalPercentChange)}%
                               </div>
                               <div className="chart-label">Total</div>
@@ -578,9 +583,9 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                                 <span className="category-name">{category.name}</span>
                               </div>
                               <div className="category-stats">
-                                <span className="category-amount">${category.amount.toFixed(2)}</span>
+                                <span className="category-amount font-numeric">${category.amount.toFixed(2)}</span>
                                 <span 
-                                  className={`category-percent ${category.percentChange > 0 ? 'increase' : category.percentChange < 0 ? 'decrease' : ''}`}
+                                  className={`category-percent font-numeric ${category.percentChange > 0 ? 'increase' : category.percentChange < 0 ? 'decrease' : ''}`}
                                   title={percentTooltip}
                                 >
                                   {Math.abs(category.percentChange)}%
@@ -618,11 +623,11 @@ function SpendingPage({ isExpanded, isHovering, toggleSidebar }) {
                       <div className="chart-summary">
                         <div className="summary-stat">
                           <span className="stat-label">6-Month Average</span>
-                          <span className="stat-value">${avgTotal.toFixed(0)}</span>
+                          <span className="stat-value font-numeric">${avgTotal.toFixed(0)}</span>
                         </div>
                         <div className="summary-stat">
                           <span className="stat-label">Highest Month</span>
-                          <span className="stat-value">${maxTotal.toFixed(0)}</span>
+                          <span className="stat-value font-numeric">${maxTotal.toFixed(0)}</span>
                         </div>
                       </div>
                       <div className="trend-bars">

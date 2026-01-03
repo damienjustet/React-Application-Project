@@ -10,6 +10,14 @@ export const WIDGET_CATEGORIES = {
 export const WIDGET_CATALOG = [
   // Stats Widgets
   {
+    id: 'budget-progress-bar',
+    name: 'Budget Progress Bar',
+    category: WIDGET_CATEGORIES.STATS,
+    description: 'Shows a visual progress bar of spending vs. budget',
+    icon: 'fa-battery-half',
+    defaultSize: { width: 10, height: 1 }
+  },
+  {
     id: 'total-balance-widget',
     name: 'Total Balance',
     category: WIDGET_CATEGORIES.STATS,
@@ -121,6 +129,22 @@ export const WIDGET_CATALOG = [
   }
 ]
 
+// Track currently dragged widget (needed because dataTransfer.getData() 
+// is not accessible during dragover events for security reasons)
+let currentDragWidget = null
+
+export const setCurrentDragWidget = (widget) => {
+  currentDragWidget = widget
+}
+
+export const getCurrentDragWidget = () => {
+  return currentDragWidget
+}
+
+export const clearCurrentDragWidget = () => {
+  currentDragWidget = null
+}
+
 // Helper functions
 export const getWidgetsByCategory = (category) => {
   if (!category || category === 'all') return WIDGET_CATALOG
@@ -129,16 +153,4 @@ export const getWidgetsByCategory = (category) => {
 
 export const getWidgetById = (id) => {
   return WIDGET_CATALOG.find(widget => widget.id === id)
-}
-
-export const getCategoriesWithCounts = () => {
-  const counts = {}
-  WIDGET_CATALOG.forEach(widget => {
-    counts[widget.category] = (counts[widget.category] || 0) + 1
-  })
-  
-  return Object.keys(WIDGET_CATEGORIES).map(key => ({
-    category: WIDGET_CATEGORIES[key],
-    count: counts[WIDGET_CATEGORIES[key]] || 0
-  }))
 }

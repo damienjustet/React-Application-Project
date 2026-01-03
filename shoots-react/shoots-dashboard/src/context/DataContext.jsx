@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const DataContext = createContext()
 
@@ -98,6 +98,39 @@ export function DataProvider({ children }) {
     { category: 'Bills and Utilities', limit: 500, spent: 0, color: '#b8b8b8' }
   ])
 
+  // Track selected month for budget calculations (auto-detect latest month with transactions)
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    if (initialTransactions.length === 0) return '';
+    // Extract all months from transaction dates
+    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthsInData = Array.from(new Set(initialTransactions.map(t => t.date.split(' ')[0])));
+    // Sort months by their order in the year, descending (latest first)
+    monthsInData.sort((a, b) => monthOrder.indexOf(b) - monthOrder.indexOf(a));
+    return monthsInData[0] || '';
+  })
+
+  // Automatically calculate and update budget spent amounts whenever transactions or selectedMonth changes
+  useEffect(() => {
+    const monthTransactions = transactions.filter(t =>
+      t.date.includes(selectedMonth) && t.type === 'expense'
+    )
+
+    setBudgets(prevBudgets => {
+      const updatedBudgets = prevBudgets.map(budget => {
+        const spent = monthTransactions
+          .filter(t => t.category === budget.category)
+          .reduce((sum, t) => sum + t.amount, 0)
+        return { ...budget, spent }
+      })
+
+      // Only update if something actually changed
+      const hasChanged = updatedBudgets.some((budget, index) =>
+        budget.spent !== prevBudgets[index].spent
+      )
+      return hasChanged ? updatedBudgets : prevBudgets
+    })
+  }, [selectedMonth, transactions])
+
   const addTransaction = (transaction) => {
     setTransactions([transaction, ...transactions])
   }
@@ -157,7 +190,9 @@ export function DataProvider({ children }) {
     recurringBills,
     setRecurringBills,
     budgets,
-    setBudgets
+    setBudgets,
+    selectedMonth,
+    setSelectedMonth
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

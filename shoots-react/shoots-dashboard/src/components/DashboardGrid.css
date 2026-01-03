@@ -1,3 +1,5 @@
+@import '../styles/shared.css';
+
 .dashboard-content {
   display: grid;
   place-items: center;
@@ -38,11 +40,11 @@
 }
 
 .dashboard-grid-container {
-  width: calc(90vw - 300px);
-  max-width: 1400px;
+  width: calc(92vw - 280px);
+  max-width: 1600px;
   background-color: #202020;
   border-radius: 8px;
-  padding: 2rem;
+  padding: 2.25rem;
   position: relative;
   
   /* Soft organic border - torn paper / cave opening style */
@@ -89,7 +91,7 @@
   display: grid;
   gap: 0;
   width: 100%;
-  min-height: 500px;
+  min-height: 600px;
   aspect-ratio: 2 / 1;
   position: relative;
 }

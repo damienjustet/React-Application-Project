@@ -1,37 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './BudgetPage.css'
 import SpendingHeader from '../components/SpendingHeader'
 import { useData, categoryColors } from '../context/DataContext'
 
-function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
-  const { budgets, setBudgets, transactions } = useData()
+function BudgetPage({ isExpanded, toggleSidebar }) {
+  const { budgets, setBudgets, selectedMonth, setSelectedMonth } = useData()
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingBudget, setEditingBudget] = useState(null)
-  const [selectedMonth, setSelectedMonth] = useState('Dec')
 
-  // Calculate spent amounts from transactions
-  useEffect(() => {
-    const monthTransactions = transactions.filter(t => 
-      t.date.includes(selectedMonth) && t.type === 'expense'
-    )
-
-    const updatedBudgets = budgets.map(budget => {
-      const spent = monthTransactions
-        .filter(t => t.category === budget.category)
-        .reduce((sum, t) => sum + t.amount, 0)
-      return { ...budget, spent }
-    })
-
-    // Only update if spent values actually changed
-    const hasChanged = updatedBudgets.some((budget, index) => 
-      budget.spent !== budgets[index].spent
-    )
-
-    if (hasChanged) {
-      setBudgets(updatedBudgets)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth, transactions])
+  // Budget spent amounts are now calculated automatically in DataContext
 
   const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0)
   const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0)
@@ -91,15 +68,15 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
               <div className="budget-preview">
                 <div className="preview-row">
                   <span>Current Spending:</span>
-                  <span className="preview-value">${editingBudget.spent.toFixed(2)}</span>
+                  <span className="preview-value font-numeric">${editingBudget.spent.toFixed(2)}</span>
                 </div>
                 <div className="preview-row">
                   <span>New Limit:</span>
-                  <span className="preview-value">${(editingBudget.limit || 0).toFixed(2)}</span>
+                  <span className="preview-value font-numeric">${(editingBudget.limit || 0).toFixed(2)}</span>
                 </div>
                 <div className="preview-row">
                   <span>Remaining:</span>
-                  <span className={`preview-value ${(editingBudget.limit - editingBudget.spent) < 0 ? 'over' : ''}`}>
+                  <span className={`preview-value ${(editingBudget.limit - editingBudget.spent) < 0 ? 'over' : ''} font-numeric`}>
                     ${((editingBudget.limit || 0) - editingBudget.spent).toFixed(2)}
                   </span>
                 </div>
@@ -134,15 +111,15 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
           <div className="overview-main">
             <div className="overview-stat">
               <span className="stat-label">Total Budget</span>
-              <span className="stat-value">${totalBudget.toFixed(2)}</span>
+              <span className="stat-value font-numeric">${totalBudget.toFixed(2)}</span>
             </div>
             <div className="overview-stat">
               <span className="stat-label">Spent</span>
-              <span className="stat-value spent">${totalSpent.toFixed(2)}</span>
+              <span className="stat-value spent font-numeric">${totalSpent.toFixed(2)}</span>
             </div>
             <div className="overview-stat">
               <span className="stat-label">Remaining</span>
-              <span className={`stat-value ${totalRemaining < 0 ? 'over' : 'remaining'}`}>
+              <span className={`stat-value ${totalRemaining < 0 ? 'over' : 'remaining'} font-numeric`}>
                 ${Math.abs(totalRemaining).toFixed(2)}
               </span>
             </div>
@@ -156,18 +133,18 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
               />
             </div>
             <div className="progress-stats">
-              <span>{overallProgress.toFixed(0)}% of budget used</span>
+              <span className="font-numeric">{overallProgress.toFixed(0)}%</span> of budget used
               <div className="budget-badges">
                 {onTrackCount > 0 && (
                   <span className="badge good">
                     <i className="fa-solid fa-circle-check"></i>
-                    {onTrackCount} on track
+                    <span className="font-numeric">{onTrackCount}</span> on track
                   </span>
                 )}
                 {overBudgetCount > 0 && (
                   <span className="badge over">
                     <i className="fa-solid fa-triangle-exclamation"></i>
-                    {overBudgetCount} over budget
+                    <span className="font-numeric">{overBudgetCount}</span> over budget
                   </span>
                 )}
               </div>
@@ -218,17 +195,17 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
                   <div className="budget-amounts">
                     <div className="amount-row">
                       <span className="amount-label">Spent</span>
-                      <span className="amount-value spent">${budget.spent.toFixed(2)}</span>
+                      <span className="amount-value spent font-numeric">${budget.spent.toFixed(2)}</span>
                     </div>
                     <div className="amount-row">
                       <span className="amount-label">Budget</span>
-                      <span className="amount-value">${budget.limit.toFixed(2)}</span>
+                      <span className="amount-value font-numeric">${budget.limit.toFixed(2)}</span>
                     </div>
                     <div className="amount-row highlight">
                       <span className="amount-label">
                         {remaining >= 0 ? 'Remaining' : 'Over by'}
                       </span>
-                      <span className={`amount-value ${remaining < 0 ? 'over' : 'remaining'}`}>
+                      <span className={`amount-value ${remaining < 0 ? 'over' : 'remaining'} font-numeric`}>
                         ${Math.abs(remaining).toFixed(2)}
                       </span>
                     </div>
@@ -244,7 +221,7 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
                         }}
                       />
                     </div>
-                    <span className="progress-text">{percentage.toFixed(0)}% used</span>
+                    <span className="progress-text font-numeric">{percentage.toFixed(0)}% used</span>
                   </div>
                 </div>
               )
@@ -267,8 +244,8 @@ function BudgetPage({ isExpanded, isHovering, toggleSidebar }) {
                       <h4>{budget.category}</h4>
                       <p>
                         {percentage >= 100 
-                          ? `You've exceeded your ${budget.category} budget by $${(budget.spent - budget.limit).toFixed(2)}.`
-                          : `You're at ${percentage.toFixed(0)}% of your ${budget.category} budget. Consider reducing spending.`
+                          ? <>You've exceeded your {budget.category} budget by <span className="font-numeric">${(budget.spent - budget.limit).toFixed(2)}</span>.</>
+                          : <>You're at <span className="font-numeric">{percentage.toFixed(0)}%</span> of your {budget.category} budget. Consider reducing spending.</>
                         }
                       </p>
                     </div>

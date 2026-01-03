@@ -35,8 +35,8 @@ const TOOLTIP_STYLES = {
   container: { background: '#2a2a2a', border: '1px solid #3a3a3a', padding: '8px', borderRadius: '4px' },
   title: { color: CHART_COLORS.text, margin: 0, marginBottom: '6px', fontWeight: '600', fontSize: `${CHART_CONFIG.fontSize.tooltipTitle}px` },
   label: { color: CHART_COLORS.text, margin: 0, marginBottom: '2px', fontSize: `${CHART_CONFIG.fontSize.tooltipText}px` },
-  value: { color: CHART_COLORS.text, margin: 0, marginBottom: '6px', fontSize: `${CHART_CONFIG.fontSize.tooltipText}px` },
-  valueLast: { color: CHART_COLORS.text, margin: 0, fontSize: `${CHART_CONFIG.fontSize.tooltipText}px` }
+  value: { color: CHART_COLORS.text, margin: 0, marginBottom: '6px', fontSize: `${CHART_CONFIG.fontSize.tooltipText}px`, fontFamily: "'Moulpali', sans-serif" },
+  valueLast: { color: CHART_COLORS.text, margin: 0, fontSize: `${CHART_CONFIG.fontSize.tooltipText}px`, fontFamily: "'Moulpali', sans-serif" }
 }
 
 // Helper function
@@ -248,7 +248,7 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
               }} />
               <YAxis domain={[0, yAxisMax]} stroke="transparent" tick={(props) => {
                 if (props.payload.value === yAxisMax) {
-                  return <text x={props.x + 10} y={props.y} fill={CHART_COLORS.label} fontSize={CHART_CONFIG.fontSize.yAxis} textAnchor="start" dominantBaseline="middle">{formatCurrency(props.payload.value)}</text>
+                  return <text x={props.x + 10} y={props.y} fill={CHART_COLORS.label} fontSize={CHART_CONFIG.fontSize.yAxis} textAnchor="start" dominantBaseline="middle" style={{ fontFamily: "'Moulpali', sans-serif" }}>{formatCurrency(props.payload.value)}</text>
                 }
                 return null
               }} ticks={[0, yAxisMax / 2, yAxisMax]} />

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useDashboard } from '../context/DashboardContext'
-import { getWidgetById } from '../data/widgetCatalog'
+import { getWidgetById, getCurrentDragWidget } from '../data/widgetCatalog'
+import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import './DashboardGrid.css'
 
 const GRID_ROWS = 14 // Keep rows constant
@@ -184,8 +185,15 @@ function DashboardGrid() {
     const gridX = Math.floor(relativeX / tileWidth)
     const gridY = Math.floor(relativeY / tileHeight)
     
-    // Use generic size for preview (will be replaced on actual drop)
-    setWidgetDropZone({ x: gridX, y: gridY, size: { width: 6, height: 4 } })
+    // Get widget size from the currently dragged widget (stored globally)
+    // Note: dataTransfer.getData() is not accessible during dragover for security reasons
+    let widgetSize = { width: 6, height: 4 } // default fallback
+    const draggedWidgetInfo = getCurrentDragWidget()
+    if (draggedWidgetInfo && draggedWidgetInfo.size) {
+      widgetSize = draggedWidgetInfo.size
+    }
+    
+    setWidgetDropZone({ x: gridX, y: gridY, size: widgetSize })
   }
 
   const handleWidgetDragLeave = (e) => {
@@ -204,28 +212,34 @@ function DashboardGrid() {
     e.preventDefault()
     setIsWidgetDragging(false)
     setWidgetDropZone(null)
-    
     try {
       const data = e.dataTransfer.getData('application/json')
       if (!data) return
-      
       const widgetData = JSON.parse(data)
       if (!widgetData.widgetId) return
-      
       // Calculate final grid position
       const gridElement = document.querySelector('.dashboard-grid')
       if (!gridElement) return
-      
       const rect = gridElement.getBoundingClientRect()
       const tileWidth = rect.width / gridColumns
       const tileHeight = rect.height / GRID_ROWS
-      
       const relativeX = e.clientX - rect.left
       const relativeY = e.clientY - rect.top
-      
       const gridX = Math.max(0, Math.min(gridColumns - widgetData.size.width, Math.floor(relativeX / tileWidth)))
       const gridY = Math.max(0, Math.min(GRID_ROWS - widgetData.size.height, Math.floor(relativeY / tileHeight)))
-      
+      // Prevent dropping on top of existing widgets
+      const hasCollision = checkCollision(
+        gridX,
+        gridY,
+        widgetData.size.width,
+        widgetData.size.height,
+        null // no excludeId, since this is a new widget
+      )
+      if (hasCollision) {
+        // Optionally, show feedback (alert or visual)
+        // alert('Cannot drop widget here: space is occupied.')
+        return
+      }
       // Add widget at this position
       addWidget(widgetData.widgetId, { x: gridX, y: gridY })
     } catch (err) {
@@ -286,30 +300,44 @@ function DashboardGrid() {
           {dashboardWidgets.map(widget => {
             const widgetDef = getWidgetById(widget.widgetId)
             if (!widgetDef) return null
-            
             const isDragging = draggedWidget?.id === widget.id
-            
+            const style = isDragging && dragPosition
+              ? {
+                  position: 'absolute',
+                  left: `${dragPosition.x}px`,
+                  top: `${dragPosition.y}px`,
+                  width: `calc((100% / ${gridColumns}) * ${widget.size.width})`,
+                  height: `calc((100% / ${GRID_ROWS}) * ${widget.size.height})`,
+                  gridColumn: 'unset',
+                  gridRow: 'unset',
+                  zIndex: 1000
+                }
+              : {
+                  gridColumn: `${widget.position.x + 1} / span ${widget.size.width}`,
+                  gridRow: `${widget.position.y + 1} / span ${widget.size.height}`
+                }
+
+            // Render custom widget for budget-progress-bar
+            if (widget.widgetId === 'budget-progress-bar') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <BudgetProgressBarWidget data={widget.data} />
+                </div>
+              )
+            }
+
+            // Default widget card
             return (
               <div
                 key={widget.id}
                 className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''}`}
-                style={
-                  isDragging && dragPosition
-                    ? {
-                        position: 'absolute',
-                        left: `${dragPosition.x}px`,
-                        top: `${dragPosition.y}px`,
-                        width: `calc((100% / ${gridColumns}) * ${widget.size.width})`,
-                        height: `calc((100% / ${GRID_ROWS}) * ${widget.size.height})`,
-                        gridColumn: 'unset',
-                        gridRow: 'unset',
-                        zIndex: 1000
-                      }
-                    : {
-                        gridColumn: `${widget.position.x + 1} / span ${widget.size.width}`,
-                        gridRow: `${widget.position.y + 1} / span ${widget.size.height}`
-                      }
-                }
+                style={style}
                 onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
                 onContextMenu={(e) => handleWidgetRightClick(e, widget)}
               >

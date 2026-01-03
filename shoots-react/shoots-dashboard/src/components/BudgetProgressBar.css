@@ -1,0 +1,75 @@
+@import '../styles/shared.css';
+
+.budget-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 110%;
+  background: #353535;
+  border-radius: 15px;
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.budget-progress-bar__padding {
+  background: #666666;
+  border-radius: 12px;
+  width: 100%;
+  height: 38px;
+  margin: 0 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.budget-progress-bar__fill {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #F4C95D;
+  height: 38px;
+  border-radius: 12px;
+  position: relative;
+  margin-left: 0;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  transition: width 0.3s ease;
+  min-width: 60px;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.budget-progress-bar__amount {
+  color: #fff;
+  font-family: 'Moulpali', sans-serif;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: font-size 0.2s;
+  z-index: 3;
+  font-size: 15px;
+}
+
+.budget-progress-bar__amount--spent {
+  color: #fff;
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.budget-progress-bar__amount--budget {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}

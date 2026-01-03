@@ -12,6 +12,8 @@
   flex-direction: column;
   transition: transform 0.3s ease, opacity 0.3s ease;
   z-index: 100;
+  border-right: 1px solid #232323;
+  box-shadow: none;
 }
 
 /* Mini sidebar on hover */

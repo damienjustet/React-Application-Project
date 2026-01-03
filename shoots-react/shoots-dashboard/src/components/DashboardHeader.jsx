@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import './DashboardHeader.css'
 import { useTheme } from '../context/ThemeContext'
 
@@ -7,8 +7,9 @@ export const PROFILE_PICTURE_URL = "https://encrypted-tbn1.gstatic.com/images?q=
 
 const LAST_SYNC_TIME = "1 minute ago"
 
-function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSidebar, onToggleWidgetLibrary }) {
-  const { bannerUrl } = useTheme()
+function DashboardHeader({ userName = "Damien", isExpanded, toggleSidebar, onToggleWidgetLibrary }) {
+  const { bannerUrl, updateBanner } = useTheme()
+  const fileInputRef = useRef(null)
 
   // Update favicon to match profile picture with circular crop
   useEffect(() => {
@@ -47,6 +48,21 @@ function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSi
     createCircularFavicon(PROFILE_PICTURE_URL)
   }, [])
 
+  const handleBannerClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        updateBanner(event.target.result); // Set banner to data URL
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <header className="dashboard-header">
       <div className="top-bar">
@@ -62,8 +78,7 @@ function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSi
           <i className="fa-solid fa-ellipsis"></i>
         </button>
       </div>
-      
-      <div className="banner">
+      <div className="banner" onClick={handleBannerClick} style={{ cursor: 'pointer' }} title="Click to upload your own banner image">
         <img 
           src={bannerUrl}
           alt="Header Banner" 
@@ -74,6 +89,13 @@ function DashboardHeader({ userName = "Damien", isExpanded, isHovering, toggleSi
           src={PROFILE_PICTURE_URL}
           alt="Profile" 
           className="profile-picture"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
         />
       </div>
     </header>
