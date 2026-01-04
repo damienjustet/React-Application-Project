@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { getWidgetById } from '../data/widgetCatalog'
+import { saveDashboardWidgets, loadDashboardWidgets } from '../services/storageService'
 
 const DashboardContext = createContext(null)
 
@@ -12,12 +13,20 @@ export const useDashboard = () => {
 }
 
 export const DashboardProvider = ({ children }) => {
-  // Default dashboard layout - empty initially to show empty state
-  const [widgets, setWidgets] = useState([])
+  // Load widgets from localStorage on initial render
+  const [widgets, setWidgets] = useState(() => {
+    const saved = loadDashboardWidgets()
+    return saved.length > 0 ? saved : []
+  })
   
   // Undo/Redo history
   const [history, setHistory] = useState([[]])
   const [historyIndex, setHistoryIndex] = useState(0)
+
+  // Persist widgets to localStorage whenever they change
+  useEffect(() => {
+    saveDashboardWidgets(widgets)
+  }, [widgets])
 
   // Update widgets and add to history
   const updateWithHistory = useCallback((newWidgets) => {

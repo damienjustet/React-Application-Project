@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { parseDisplayDate, matchesMonthYear, getLastNMonths, getCurrentDate } from '../utils/dateUtils'
 
 const DataContext = createContext()
 
@@ -30,50 +31,67 @@ export const categoryColors = {
   'Other': 'rgba(131, 130, 125, 0.6)'
 }
 
-// Initial transaction data
+// Initial transaction data with proper year formatting
 const initialTransactions = [
-  // December transactions
-  { date: 'Dec 10', merchant: 'Starbucks', category: 'Dining', amount: 8.50, icon: 'fa-coffee', type: 'expense' },
-  { date: 'Dec 10', merchant: 'Uber', category: 'Transportation', amount: 24.30, icon: 'fa-car', type: 'expense' },
-  { date: 'Dec 9', merchant: 'Amazon', category: 'Shopping', amount: 156.78, icon: 'fa-cart-shopping', type: 'expense' },
-  { date: 'Dec 9', merchant: 'Whole Foods', category: 'Groceries', amount: 87.42, icon: 'fa-basket-shopping', type: 'expense' },
-  { date: 'Dec 9', merchant: 'McDonalds', category: 'Dining', amount: 12.45, icon: 'fa-burger', type: 'expense' },
-  { date: 'Dec 8', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv', type: 'expense' },
-  { date: 'Dec 8', merchant: 'Shell Gas', category: 'Transportation', amount: 52.00, icon: 'fa-gas-pump', type: 'expense' },
-  { date: 'Dec 8', merchant: 'Target', category: 'Shopping', amount: 43.21, icon: 'fa-bag-shopping', type: 'expense' },
-  { date: 'Dec 7', merchant: 'Chipotle', category: 'Dining', amount: 13.25, icon: 'fa-bowl-food', type: 'expense' },
-  { date: 'Dec 7', merchant: 'Safeway', category: 'Groceries', amount: 95.67, icon: 'fa-basket-shopping', type: 'expense' },
-  { date: 'Dec 6', merchant: 'Spotify', category: 'Entertainment', amount: 10.99, icon: 'fa-music', type: 'expense' },
-  { date: 'Dec 6', merchant: 'Chevron', category: 'Transportation', amount: 48.20, icon: 'fa-gas-pump', type: 'expense' },
-  { date: 'Dec 5', merchant: 'Olive Garden', category: 'Dining', amount: 54.80, icon: 'fa-utensils', type: 'expense' },
-  { date: 'Dec 5', merchant: 'Best Buy', category: 'Shopping', amount: 89.99, icon: 'fa-desktop', type: 'expense' },
-  { date: 'Dec 4', merchant: 'Subway', category: 'Dining', amount: 9.75, icon: 'fa-sandwich', type: 'expense' },
-  { date: 'Dec 4', merchant: 'CVS Pharmacy', category: 'Other', amount: 32.45, icon: 'fa-pills', type: 'expense' },
-  { date: 'Dec 3', merchant: 'Lyft', category: 'Transportation', amount: 18.50, icon: 'fa-car', type: 'expense' },
-  { date: 'Dec 3', merchant: 'Walmart', category: 'Groceries', amount: 123.56, icon: 'fa-cart-shopping', type: 'expense' },
-  { date: 'Dec 2', merchant: 'Panda Express', category: 'Dining', amount: 11.25, icon: 'fa-bowl-rice', type: 'expense' },
-  { date: 'Dec 2', merchant: 'AMC Theater', category: 'Entertainment', amount: 32.50, icon: 'fa-film', type: 'expense' },
-  { date: 'Dec 1', merchant: 'In-N-Out', category: 'Dining', amount: 15.60, icon: 'fa-burger', type: 'expense' },
-  { date: 'Dec 1', merchant: 'Costco', category: 'Groceries', amount: 187.34, icon: 'fa-warehouse', type: 'expense' },
-  { date: 'Dec 1', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
-  { date: 'Dec 15', merchant: 'Freelance Project', category: 'Freelance', amount: 1200.00, icon: 'fa-laptop-code', type: 'income' },
+  // January 2026 transactions
+  { date: 'Jan 3, 2026', merchant: 'Starbucks', category: 'Dining', amount: 9.25, icon: 'fa-coffee', type: 'expense' },
+  { date: 'Jan 2, 2026', merchant: 'Whole Foods', category: 'Groceries', amount: 78.50, icon: 'fa-basket-shopping', type: 'expense' },
+  { date: 'Jan 1, 2026', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
   
-  // November transactions
-  { date: 'Nov 28', merchant: 'Starbucks', category: 'Dining', amount: 7.50, icon: 'fa-coffee', type: 'expense' },
-  { date: 'Nov 25', merchant: 'Target', category: 'Shopping', amount: 124.50, icon: 'fa-bag-shopping', type: 'expense' },
-  { date: 'Nov 22', merchant: 'Whole Foods', category: 'Groceries', amount: 98.30, icon: 'fa-basket-shopping', type: 'expense' },
-  { date: 'Nov 20', merchant: 'Shell Gas', category: 'Transportation', amount: 55.00, icon: 'fa-gas-pump', type: 'expense' },
-  { date: 'Nov 15', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv', type: 'expense' },
-  { date: 'Nov 10', merchant: 'Chipotle', category: 'Dining', amount: 14.75, icon: 'fa-bowl-food', type: 'expense' },
-  { date: 'Nov 1', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  // December 2025 transactions
+  { date: 'Dec 10, 2025', merchant: 'Starbucks', category: 'Dining', amount: 8.50, icon: 'fa-coffee', type: 'expense' },
+  { date: 'Dec 10, 2025', merchant: 'Uber', category: 'Transportation', amount: 24.30, icon: 'fa-car', type: 'expense' },
+  { date: 'Dec 9, 2025', merchant: 'Amazon', category: 'Shopping', amount: 156.78, icon: 'fa-cart-shopping', type: 'expense' },
+  { date: 'Dec 9, 2025', merchant: 'Whole Foods', category: 'Groceries', amount: 87.42, icon: 'fa-basket-shopping', type: 'expense' },
+  { date: 'Dec 9, 2025', merchant: 'McDonalds', category: 'Dining', amount: 12.45, icon: 'fa-burger', type: 'expense' },
+  { date: 'Dec 8, 2025', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv', type: 'expense' },
+  { date: 'Dec 8, 2025', merchant: 'Shell Gas', category: 'Transportation', amount: 52.00, icon: 'fa-gas-pump', type: 'expense' },
+  { date: 'Dec 8, 2025', merchant: 'Target', category: 'Shopping', amount: 43.21, icon: 'fa-bag-shopping', type: 'expense' },
+  { date: 'Dec 7, 2025', merchant: 'Chipotle', category: 'Dining', amount: 13.25, icon: 'fa-bowl-food', type: 'expense' },
+  { date: 'Dec 7, 2025', merchant: 'Safeway', category: 'Groceries', amount: 95.67, icon: 'fa-basket-shopping', type: 'expense' },
+  { date: 'Dec 6, 2025', merchant: 'Spotify', category: 'Entertainment', amount: 10.99, icon: 'fa-music', type: 'expense' },
+  { date: 'Dec 6, 2025', merchant: 'Chevron', category: 'Transportation', amount: 48.20, icon: 'fa-gas-pump', type: 'expense' },
+  { date: 'Dec 5, 2025', merchant: 'Olive Garden', category: 'Dining', amount: 54.80, icon: 'fa-utensils', type: 'expense' },
+  { date: 'Dec 5, 2025', merchant: 'Best Buy', category: 'Shopping', amount: 89.99, icon: 'fa-desktop', type: 'expense' },
+  { date: 'Dec 4, 2025', merchant: 'Subway', category: 'Dining', amount: 9.75, icon: 'fa-sandwich', type: 'expense' },
+  { date: 'Dec 4, 2025', merchant: 'CVS Pharmacy', category: 'Other', amount: 32.45, icon: 'fa-pills', type: 'expense' },
+  { date: 'Dec 3, 2025', merchant: 'Lyft', category: 'Transportation', amount: 18.50, icon: 'fa-car', type: 'expense' },
+  { date: 'Dec 3, 2025', merchant: 'Walmart', category: 'Groceries', amount: 123.56, icon: 'fa-cart-shopping', type: 'expense' },
+  { date: 'Dec 2, 2025', merchant: 'Panda Express', category: 'Dining', amount: 11.25, icon: 'fa-bowl-rice', type: 'expense' },
+  { date: 'Dec 2, 2025', merchant: 'AMC Theater', category: 'Entertainment', amount: 32.50, icon: 'fa-film', type: 'expense' },
+  { date: 'Dec 1, 2025', merchant: 'In-N-Out', category: 'Dining', amount: 15.60, icon: 'fa-burger', type: 'expense' },
+  { date: 'Dec 1, 2025', merchant: 'Costco', category: 'Groceries', amount: 187.34, icon: 'fa-warehouse', type: 'expense' },
+  { date: 'Dec 1, 2025', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  { date: 'Dec 15, 2025', merchant: 'Freelance Project', category: 'Freelance', amount: 1200.00, icon: 'fa-laptop-code', type: 'income' },
   
-  // October transactions
-  { date: 'Oct 25', merchant: 'Amazon', category: 'Shopping', amount: 89.99, icon: 'fa-cart-shopping', type: 'expense' },
-  { date: 'Oct 20', merchant: 'Safeway', category: 'Groceries', amount: 105.20, icon: 'fa-basket-shopping', type: 'expense' },
-  { date: 'Oct 15', merchant: 'Uber', category: 'Transportation', amount: 32.50, icon: 'fa-car', type: 'expense' },
-  { date: 'Oct 10', merchant: 'Spotify', category: 'Entertainment', amount: 10.99, icon: 'fa-music', type: 'expense' },
-  { date: 'Oct 5', merchant: 'McDonalds', category: 'Dining', amount: 11.25, icon: 'fa-burger', type: 'expense' },
-  { date: 'Oct 1', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  // November 2025 transactions
+  { date: 'Nov 28, 2025', merchant: 'Starbucks', category: 'Dining', amount: 7.50, icon: 'fa-coffee', type: 'expense' },
+  { date: 'Nov 25, 2025', merchant: 'Target', category: 'Shopping', amount: 124.50, icon: 'fa-bag-shopping', type: 'expense' },
+  { date: 'Nov 22, 2025', merchant: 'Whole Foods', category: 'Groceries', amount: 98.30, icon: 'fa-basket-shopping', type: 'expense' },
+  { date: 'Nov 20, 2025', merchant: 'Shell Gas', category: 'Transportation', amount: 55.00, icon: 'fa-gas-pump', type: 'expense' },
+  { date: 'Nov 15, 2025', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv', type: 'expense' },
+  { date: 'Nov 10, 2025', merchant: 'Chipotle', category: 'Dining', amount: 14.75, icon: 'fa-bowl-food', type: 'expense' },
+  { date: 'Nov 1, 2025', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  
+  // October 2025 transactions
+  { date: 'Oct 25, 2025', merchant: 'Amazon', category: 'Shopping', amount: 89.99, icon: 'fa-cart-shopping', type: 'expense' },
+  { date: 'Oct 20, 2025', merchant: 'Safeway', category: 'Groceries', amount: 105.20, icon: 'fa-basket-shopping', type: 'expense' },
+  { date: 'Oct 15, 2025', merchant: 'Uber', category: 'Transportation', amount: 32.50, icon: 'fa-car', type: 'expense' },
+  { date: 'Oct 10, 2025', merchant: 'Spotify', category: 'Entertainment', amount: 10.99, icon: 'fa-music', type: 'expense' },
+  { date: 'Oct 5, 2025', merchant: 'McDonalds', category: 'Dining', amount: 11.25, icon: 'fa-burger', type: 'expense' },
+  { date: 'Oct 1, 2025', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  
+  // September 2025 transactions
+  { date: 'Sep 20, 2025', merchant: 'Target', category: 'Shopping', amount: 156.00, icon: 'fa-bag-shopping', type: 'expense' },
+  { date: 'Sep 15, 2025', merchant: 'Shell Gas', category: 'Transportation', amount: 48.50, icon: 'fa-gas-pump', type: 'expense' },
+  { date: 'Sep 10, 2025', merchant: 'Chipotle', category: 'Dining', amount: 12.50, icon: 'fa-bowl-food', type: 'expense' },
+  { date: 'Sep 1, 2025', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
+  
+  // August 2025 transactions
+  { date: 'Aug 25, 2025', merchant: 'Amazon', category: 'Shopping', amount: 234.00, icon: 'fa-cart-shopping', type: 'expense' },
+  { date: 'Aug 18, 2025', merchant: 'Costco', category: 'Groceries', amount: 189.00, icon: 'fa-warehouse', type: 'expense' },
+  { date: 'Aug 10, 2025', merchant: 'Netflix', category: 'Entertainment', amount: 15.99, icon: 'fa-tv', type: 'expense' },
+  { date: 'Aug 1, 2025', merchant: 'Monthly Salary', category: 'Salary', amount: 5000.00, icon: 'fa-money-bill-wave', type: 'income' },
 ]
 
 export function DataProvider({ children }) {
@@ -98,21 +116,21 @@ export function DataProvider({ children }) {
     { category: 'Bills and Utilities', limit: 500, spent: 0, color: '#b8b8b8' }
   ])
 
-  // Track selected month for budget calculations (auto-detect latest month with transactions)
+  // Track selected month for budget calculations (auto-detect current month)
   const [selectedMonth, setSelectedMonth] = useState(() => {
-    if (initialTransactions.length === 0) return '';
-    // Extract all months from transaction dates
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthsInData = Array.from(new Set(initialTransactions.map(t => t.date.split(' ')[0])));
-    // Sort months by their order in the year, descending (latest first)
-    monthsInData.sort((a, b) => monthOrder.indexOf(b) - monthOrder.indexOf(a));
-    return monthsInData[0] || '';
+    const now = getCurrentDate()
+    return now.toLocaleDateString('en-US', { month: 'short' })
+  })
+  
+  // Track selected year
+  const [selectedYear, setSelectedYear] = useState(() => {
+    return getCurrentDate().getFullYear()
   })
 
-  // Automatically calculate and update budget spent amounts whenever transactions or selectedMonth changes
+  // Automatically calculate and update budget spent amounts whenever transactions or selectedMonth/Year changes
   useEffect(() => {
     const monthTransactions = transactions.filter(t =>
-      t.date.includes(selectedMonth) && t.type === 'expense'
+      matchesMonthYear(t.date, selectedMonth, selectedYear) && t.type === 'expense'
     )
 
     setBudgets(prevBudgets => {
@@ -129,7 +147,7 @@ export function DataProvider({ children }) {
       )
       return hasChanged ? updatedBudgets : prevBudgets
     })
-  }, [selectedMonth, transactions])
+  }, [selectedMonth, selectedYear, transactions])
 
   const addTransaction = (transaction) => {
     setTransactions([transaction, ...transactions])
@@ -145,9 +163,18 @@ export function DataProvider({ children }) {
     setTransactions(newTransactions)
   }
 
-  // Helper: Get transactions for a specific month
-  const getTransactionsByMonth = (month) => {
+  // Helper: Get transactions for a specific month and year
+  const getTransactionsByMonth = (month, year = null) => {
+    if (year !== null) {
+      return transactions.filter(t => matchesMonthYear(t.date, month, year))
+    }
+    // Legacy fallback - match by month only
     return transactions.filter(t => t.date.includes(month))
+  }
+
+  // Helper: Get transactions for a specific month/year using the new format
+  const getTransactionsByMonthYear = (month, year) => {
+    return transactions.filter(t => matchesMonthYear(t.date, month, year))
   }
 
   // Helper: Get transactions by type
@@ -182,6 +209,7 @@ export function DataProvider({ children }) {
     deleteTransaction,
     updateTransaction,
     getTransactionsByMonth,
+    getTransactionsByMonthYear,
     getTransactionsByType,
     getMonthTotal,
     getCategoryTotals,
@@ -192,7 +220,9 @@ export function DataProvider({ children }) {
     budgets,
     setBudgets,
     selectedMonth,
-    setSelectedMonth
+    setSelectedMonth,
+    selectedYear,
+    setSelectedYear
   }
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import './IncomeVsSpendingChart.css'
+import { getLastNMonths, matchesMonthYear, getCurrentDate } from '../utils/dateUtils'
 
 // Constants
 const CHART_COLORS = {
@@ -104,21 +105,26 @@ const CombinedSpendingBar = (props) => {
   )
 }
 
-function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect }) {
-  const [startIndex, setStartIndex] = useState(6)
+function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear, onMonthSelect }) {
+  const [startIndex, setStartIndex] = useState(0)
   const monthsToShow = 6
+
+  // Generate dynamic months: 6 months before current to 5 months after (total 12 months, showing in 2 intervals of 6)
+  const monthsData = useMemo(() => getLastNMonths(12), [])
 
   // Memoize month data calculations to prevent recalculating on every render
   const allMonthsData = useMemo(() => {
     const isBillTransaction = (transaction) => transaction.category === 'Bills and Utilities'
     
-    const calculateMonthData = (month) => {
+    const calculateMonthData = (monthInfo) => {
+      const { month, year, label, shortLabel } = monthInfo
+      
       const income = transactions
-        .filter(t => t.type === 'income' && t.date.includes(month))
+        .filter(t => t.type === 'income' && matchesMonthYear(t.date, month, year))
         .reduce((sum, t) => sum + t.amount, 0)
       
       const expenses = transactions
-        .filter(t => t.type === 'expense' && t.date.includes(month))
+        .filter(t => t.type === 'expense' && matchesMonthYear(t.date, month, year))
       
       const bills = expenses
         .filter(isBillTransaction)
@@ -128,26 +134,14 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
         .filter(t => !isBillTransaction(t))
         .reduce((sum, t) => sum + t.amount, 0)
       
-      return { month, income, bills, discretionary }
+      return { month, year, label, shortLabel, income, bills, discretionary }
     }
 
-    return [
-      calculateMonthData('Jan'),
-      calculateMonthData('Feb'),
-      calculateMonthData('Mar'),
-      calculateMonthData('Apr'),
-      calculateMonthData('May'),
-      calculateMonthData('Jun'),
-      calculateMonthData('Jul'),
-      calculateMonthData('Aug'),
-      calculateMonthData('Sep'),
-      calculateMonthData('Oct'),
-      calculateMonthData('Nov'),
-      calculateMonthData('Dec')
-    ]
-  }, [transactions])
+    return monthsData.map(calculateMonthData)
+  }, [transactions, monthsData])
 
-  const currentMonthIndex = 11 // December
+  // Current month index: the chart starts at -6 months, so current month is at index 6
+  const currentMonthIndex = 6
   const visibleMonths = allMonthsData.slice(startIndex, startIndex + monthsToShow)
 
   // Calculate max value to set YAxis domain
@@ -176,13 +170,13 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
     )
   }
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       
       return (
         <div style={TOOLTIP_STYLES.container}>
-          <p style={TOOLTIP_STYLES.title}>{label}</p>
+          <p style={TOOLTIP_STYLES.title}>{data.label}</p>
           <p style={TOOLTIP_STYLES.label}>Income:</p>
           <p style={TOOLTIP_STYLES.value}>${data.income.toLocaleString()}</p>
           <p style={TOOLTIP_STYLES.label}>Bills & Utilities:</p>
@@ -214,14 +208,23 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
                 stroke="transparent"
                 label={renderCustomTopLine}
               />
-              <XAxis dataKey="month" stroke="transparent" tick={({ x, y, payload }) => {
-                const monthIndex = visibleMonths.findIndex(m => m.month === payload.value) + startIndex
+              <XAxis dataKey="label" stroke="transparent" tick={({ x, y, payload }) => {
+                const monthData = visibleMonths.find(m => m.label === payload.value)
+                const monthIndex = visibleMonths.findIndex(m => m.label === payload.value) + startIndex
                 const isCurrentMonth = monthIndex === currentMonthIndex
-                const isSelected = payload.value === selectedMonth
+                const isSelected = monthData && monthData.month === selectedMonth && monthData.year === selectedYear
+                
+                // Display format: "Aug" for current year, "Aug 2025" for other years
+                const now = getCurrentDate()
+                const currentYear = now.getFullYear()
+                const displayLabel = monthData 
+                  ? (monthData.year === currentYear ? monthData.shortLabel : `${monthData.shortLabel} ${monthData.year}`)
+                  : payload.value
+                
                 return (
                   <g 
                     style={{ cursor: 'pointer' }}
-                    onClick={() => onMonthSelect && onMonthSelect(payload.value)}
+                    onClick={() => onMonthSelect && monthData && onMonthSelect(monthData.month, monthData.year)}
                   >
                     {(isCurrentMonth || isSelected) && (
                       <rect
@@ -241,7 +244,7 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
                       fontSize={CHART_CONFIG.fontSize.month}
                       style={{ fontWeight: isSelected ? '600' : '400' }}
                     >
-                      {payload.value}
+                      {displayLabel}
                     </text>
                   </g>
                 )
@@ -253,14 +256,14 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, onMonthSelect
                 return null
               }} ticks={[0, yAxisMax / 2, yAxisMax]} />
               <Tooltip content={<CustomTooltip />} cursor={false} />
-              {/* Single bar for combined spending (bills + discretionary) with rounded top */}
+              {/* Income bar on the left, spending bar on the right */}
+              <Bar dataKey="income" fill={CHART_COLORS.income} radius={[100, 100, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} />
               <Bar
                 dataKey={entry => (entry.bills || 0) + (entry.discretionary || 0)}
                 fill={CHART_COLORS.discretionary}
                 maxBarSize={CHART_CONFIG.barMaxSize}
                 shape={<CombinedSpendingBar />}
               />
-              <Bar dataKey="income" fill={CHART_COLORS.income} radius={[100, 100, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} />
             </BarChart>
           </ResponsiveContainer>
         </div>

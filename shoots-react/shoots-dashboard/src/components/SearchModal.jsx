@@ -10,18 +10,18 @@ function SearchModal({ isOpen, onClose }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef(null)
 
-  // Recent pages - could be expanded to track actual user activity
-  const recentPages = [
-    { type: 'page', title: 'Spending', path: '/spending', icon: 'fa-clipboard' },
-    { type: 'page', title: 'Savings', path: '/savings', icon: 'fa-piggy-bank' },
-    { type: 'page', title: 'Budget', path: '/budget', icon: 'fa-wallet' },
-    { type: 'page', title: 'Recurring', path: '/recurring', icon: 'fa-calendar' }
+  // Quick actions - shortcuts for common tasks
+  const suggestedActions = [
+    { type: 'action', title: 'Add New Transaction', path: '/spending', icon: 'fa-plus-circle', subtitle: 'Log a new expense or income' },
+    { type: 'action', title: 'Create Savings Goal', path: '/savings', icon: 'fa-piggy-bank', subtitle: 'Set a new savings target' },
+    { type: 'action', title: 'Set Monthly Budget', path: '/budget', icon: 'fa-wallet', subtitle: 'Define spending limits' },
+    { type: 'action', title: 'Add Recurring Bill', path: '/recurring', icon: 'fa-calendar-plus', subtitle: 'Track regular payments' }
   ]
 
   // Search across all data
   const getSearchResults = () => {
     if (!searchQuery.trim()) {
-      return { recent: recentPages, results: [] }
+      return { recent: suggestedActions, results: [] }
     }
 
     const query = searchQuery.toLowerCase()
@@ -87,13 +87,10 @@ function SearchModal({ isOpen, onClose }) {
       }
     })
 
-    // Add page results
-    recentPages.forEach(p => {
-      if (p.title.toLowerCase().includes(query)) {
-        results.unshift({
-          ...p,
-          subtitle: 'Page'
-        })
+    // Add action results
+    suggestedActions.forEach(a => {
+      if (a.title.toLowerCase().includes(query)) {
+        results.unshift(a)
       }
     })
 
@@ -150,6 +147,7 @@ function SearchModal({ isOpen, onClose }) {
   const getTypeLabel = (type) => {
     const labels = {
       page: 'Page',
+      action: 'Quick Action',
       transaction: 'Transaction',
       savings: 'Savings Goal',
       recurring: 'Recurring Bill',
@@ -179,7 +177,7 @@ function SearchModal({ isOpen, onClose }) {
         <div className="search-results">
           {!searchQuery.trim() && recent.length > 0 && (
             <div className="search-section">
-              <div className="search-section-title">Recent Pages</div>
+              <div className="search-section-title">Quick Actions</div>
               {recent.map((item, index) => (
                 <div
                   key={index}
@@ -190,7 +188,7 @@ function SearchModal({ isOpen, onClose }) {
                   <i className={`fa-solid ${item.icon} result-icon`}></i>
                   <div className="result-content">
                     <div className="result-title">{item.title}</div>
-                    <div className="result-subtitle">{getTypeLabel(item.type)}</div>
+                    <div className="result-subtitle">{item.subtitle || getTypeLabel(item.type)}</div>
                   </div>
                 </div>
               ))}
