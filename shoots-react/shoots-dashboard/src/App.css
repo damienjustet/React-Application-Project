@@ -33,6 +33,12 @@
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 1rem;
+    padding: 0;
+    padding-bottom: 100px; /* Space for mobile bottom nav */
+    margin-left: 0 !important;
+  }
+  
+  .main-content.sidebar-expanded {
+    margin-left: 0 !important;
   }
 }

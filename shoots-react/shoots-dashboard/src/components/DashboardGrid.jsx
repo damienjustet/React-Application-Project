@@ -1,23 +1,32 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { useDashboard } from '../context/DashboardContext'
 import { getWidgetById, getCurrentDragWidget } from '../data/widgetCatalog'
 import BudgetProgressBarWidget from './BudgetProgressBarWidget'
+import AddTransactionButton from './AddTransactionButton'
+import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
+import MobileDashboard from './MobileDashboard'
 import './DashboardGrid.css'
 
 const GRID_ROWS = 14 // Keep rows constant
 
-function DashboardGrid() {
+// Pure function for grid columns calculation
+const getGridColumns = () => {
+  const width = window.innerWidth
+  if (width >= 1200) return 28
+  if (width >= 768) return 14
+  return 7
+}
+
+function DashboardGrid({ isEditMode: mobileEditMode = false }) {
   const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget } = useDashboard()
   
-  // Determine grid columns based on window width
-  const getGridColumns = () => {
-    const width = window.innerWidth
-    if (width >= 1200) return 28
-    if (width >= 768) return 14
-    return 7
-  }
-
-  const [gridColumns, setGridColumns] = useState(getGridColumns())
+  // Detect mobile view
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
+  const [gridColumns, setGridColumns] = useState(getGridColumns)
+  const resizeTimeoutRef = useRef(null)
+  
+  // Edit mode state (desktop only - mobile uses prop)
+  const [isEditMode, setIsEditMode] = useState(false)
   
   // Widget drag state (for moving widgets on grid)
   const [draggedWidget, setDraggedWidget] = useState(null)
@@ -33,33 +42,35 @@ function DashboardGrid() {
   const [contextMenu, setContextMenu] = useState(null)
 
   // Check if a widget overlaps with any existing widgets (excluding itself)
-  const checkCollision = (x, y, w, h, excludeId) => {
+  const checkCollision = useCallback((x, y, w, h, excludeId) => {
     return dashboardWidgets.some(widget => {
       if (widget.id === excludeId) return false
-      
-      // Check if rectangles overlap
       const noOverlap = 
-        x >= widget.position.x + widget.size.width || // Target is to the right
-        x + w <= widget.position.x ||       // Target is to the left
-        y >= widget.position.y + widget.size.height || // Target is below
-        y + h <= widget.position.y          // Target is above
-      
+        x >= widget.position.x + widget.size.width ||
+        x + w <= widget.position.x ||
+        y >= widget.position.y + widget.size.height ||
+        y + h <= widget.position.y
       return !noOverlap
     })
-  }
+  }, [dashboardWidgets])
 
-  // Handle window resize
+  // Handle window resize with debounce
   useEffect(() => {
     const handleResize = () => {
-      const newColumns = getGridColumns()
-      if (newColumns !== gridColumns) {
-        setGridColumns(newColumns)
-      }
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+      resizeTimeoutRef.current = setTimeout(() => {
+        const newColumns = getGridColumns()
+        setGridColumns(prev => prev !== newColumns ? newColumns : prev)
+        setIsMobile(window.innerWidth <= 768)
+      }, 100)
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [gridColumns])
+    window.addEventListener('resize', handleResize, { passive: true })
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
+    }
+  }, [])
 
   // Close context menu on click outside
   useEffect(() => {
@@ -70,6 +81,9 @@ function DashboardGrid() {
 
   // Widget drag handlers
   const handleWidgetMouseDown = (e, widget) => {
+    // Only allow dragging in edit mode
+    if (!isEditMode) return
+    
     // Ignore right clicks (for context menu)
     if (e.button !== 0) return
     
@@ -152,6 +166,9 @@ function DashboardGrid() {
 
   // Widget context menu handlers
   const handleWidgetRightClick = (e, widget) => {
+    // Only show context menu in edit mode
+    if (!isEditMode) return
+    
     e.preventDefault()
     setContextMenu({
       x: e.clientX,
@@ -250,6 +267,11 @@ function DashboardGrid() {
   // Show empty state if no widgets
   const showEmptyState = dashboardWidgets.length === 0
 
+  // Render mobile dashboard on small screens
+  if (isMobile) {
+    return <MobileDashboard isEditMode={mobileEditMode} />
+  }
+
   return (
     <div 
       className="dashboard-content"
@@ -257,6 +279,18 @@ function DashboardGrid() {
       onMouseUp={handleWidgetMouseUp}
       onMouseLeave={handleWidgetMouseUp}
     >
+      {/* Edit Mode Toggle */}
+      <div className="dashboard-toolbar">
+        <button 
+          className={`edit-mode-btn ${isEditMode ? 'active' : ''}`}
+          onClick={() => setIsEditMode(!isEditMode)}
+          title={isEditMode ? 'Exit Edit Mode' : 'Edit Widgets'}
+        >
+          <i className={`fa-solid ${isEditMode ? 'fa-check' : 'fa-edit'}`}></i>
+          {isEditMode ? 'Done' : 'Edit'}
+        </button>
+      </div>
+      
       {showEmptyState && (
         <div className="dashboard-empty-state">
           <i className="fa-solid fa-grip"></i>
@@ -322,7 +356,7 @@ function DashboardGrid() {
               return (
                 <div
                   key={widget.id}
-                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''}`}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
                   style={style}
                   onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
                   onContextMenu={(e) => handleWidgetRightClick(e, widget)}
@@ -332,11 +366,41 @@ function DashboardGrid() {
               )
             }
 
+            // Render custom widget for add-transaction-button
+            if (widget.widgetId === 'add-transaction-button') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <AddTransactionButton onClick={() => console.log('Add transaction clicked')} />
+                </div>
+              )
+            }
+
+            // Render custom widget for upcoming-transactions
+            if (widget.widgetId === 'upcoming-transactions') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <UpcomingTransactionsWidget isFeatured={false} />
+                </div>
+              )
+            }
+
             // Default widget card
             return (
               <div
                 key={widget.id}
-                className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''}`}
+                className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
                 style={style}
                 onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
                 onContextMenu={(e) => handleWidgetRightClick(e, widget)}
@@ -380,4 +444,4 @@ function DashboardGrid() {
   )
 }
 
-export default DashboardGrid
+export default memo(DashboardGrid)

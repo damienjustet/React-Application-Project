@@ -53,6 +53,15 @@ export function saveDashboardWidgets(widgets) {
   return setItem(STORAGE_KEYS.DASHBOARD_WIDGETS, widgets)
 }
 
+// Debounced version to prevent excessive writes
+let saveTimeout = null
+export function debouncedSaveDashboardWidgets(widgets) {
+  if (saveTimeout) clearTimeout(saveTimeout)
+  saveTimeout = setTimeout(() => {
+    setItem(STORAGE_KEYS.DASHBOARD_WIDGETS, widgets)
+  }, 300)
+}
+
 export function loadDashboardWidgets() {
   return getItem(STORAGE_KEYS.DASHBOARD_WIDGETS) || []
 }

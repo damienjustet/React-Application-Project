@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
 import { parseDisplayDate, matchesMonthYear, getLastNMonths, getCurrentDate } from '../utils/dateUtils'
 
 const DataContext = createContext()
@@ -105,7 +105,8 @@ export function DataProvider({ children }) {
     { id: 1, name: 'Netflix', amount: 15.99, dueDate: '15', category: 'Entertainment', frequency: 'monthly', icon: 'fa-tv', isPaid: false },
     { id: 2, name: 'Rent', amount: 1200, dueDate: '1', category: 'Bills and Utilities', frequency: 'monthly', icon: 'fa-house', isPaid: true },
     { id: 3, name: 'Internet', amount: 79.99, dueDate: '10', category: 'Bills and Utilities', frequency: 'monthly', icon: 'fa-wifi', isPaid: false },
-    { id: 4, name: 'Gym Membership', amount: 49.99, dueDate: '5', category: 'Other', frequency: 'monthly', icon: 'fa-dumbbell', isPaid: true }
+    { id: 4, name: 'Gym Membership', amount: 49.99, dueDate: '5', category: 'Other', frequency: 'monthly', icon: 'fa-dumbbell', isPaid: true },
+    { id: 5, name: 'Spotify', amount: 10.99, dueDate: '20', category: 'Entertainment', frequency: 'monthly', icon: 'fa-music', isPaid: false }
   ])
   const [budgets, setBudgets] = useState([
     { category: 'Dining', limit: 300, spent: 0, color: '#707070' },
@@ -149,48 +150,50 @@ export function DataProvider({ children }) {
     })
   }, [selectedMonth, selectedYear, transactions])
 
-  const addTransaction = (transaction) => {
-    setTransactions([transaction, ...transactions])
-  }
+  const addTransaction = useCallback((transaction) => {
+    setTransactions(prev => [transaction, ...prev])
+  }, [])
 
-  const deleteTransaction = (index) => {
-    setTransactions(transactions.filter((_, i) => i !== index))
-  }
+  const deleteTransaction = useCallback((index) => {
+    setTransactions(prev => prev.filter((_, i) => i !== index))
+  }, [])
 
-  const updateTransaction = (index, updatedTransaction) => {
-    const newTransactions = [...transactions]
-    newTransactions[index] = updatedTransaction
-    setTransactions(newTransactions)
-  }
+  const updateTransaction = useCallback((index, updatedTransaction) => {
+    setTransactions(prev => {
+      const newTransactions = [...prev]
+      newTransactions[index] = updatedTransaction
+      return newTransactions
+    })
+  }, [])
 
   // Helper: Get transactions for a specific month and year
-  const getTransactionsByMonth = (month, year = null) => {
+  const getTransactionsByMonth = useCallback((month, year = null) => {
     if (year !== null) {
       return transactions.filter(t => matchesMonthYear(t.date, month, year))
     }
     // Legacy fallback - match by month only
     return transactions.filter(t => t.date.includes(month))
-  }
+  }, [transactions])
 
   // Helper: Get transactions for a specific month/year using the new format
-  const getTransactionsByMonthYear = (month, year) => {
+  const getTransactionsByMonthYear = useCallback((month, year) => {
     return transactions.filter(t => matchesMonthYear(t.date, month, year))
-  }
+  }, [transactions])
 
   // Helper: Get transactions by type
-  const getTransactionsByType = (type) => {
+  const getTransactionsByType = useCallback((type) => {
     return transactions.filter(t => t.type === type)
-  }
+  }, [transactions])
 
   // Helper: Calculate total for a month
-  const getMonthTotal = (month, type = null) => {
+  const getMonthTotal = useCallback((month, type = null) => {
     const monthTransactions = getTransactionsByMonth(month)
     const filtered = type ? monthTransactions.filter(t => t.type === type) : monthTransactions
     return filtered.reduce((sum, t) => sum + t.amount, 0)
-  }
+  }, [getTransactionsByMonth])
 
   // Helper: Get category totals for a month
-  const getCategoryTotals = (month, type = 'expense') => {
+  const getCategoryTotals = useCallback((month, type = 'expense') => {
     const monthTransactions = getTransactionsByMonth(month)
     const totals = {}
     
@@ -201,9 +204,10 @@ export function DataProvider({ children }) {
     })
     
     return totals
-  }
+  }, [getTransactionsByMonth])
 
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     transactions,
     addTransaction,
     deleteTransaction,
@@ -223,7 +227,12 @@ export function DataProvider({ children }) {
     setSelectedMonth,
     selectedYear,
     setSelectedYear
-  }
+  }), [
+    transactions, addTransaction, deleteTransaction, updateTransaction,
+    getTransactionsByMonth, getTransactionsByMonthYear, getTransactionsByType,
+    getMonthTotal, getCategoryTotals, savingsGoals, recurringBills, budgets,
+    selectedMonth, selectedYear
+  ])
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>
 }

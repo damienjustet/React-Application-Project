@@ -1,0 +1,50 @@
+/* Add Transaction Button Widget */
+
+.add-transaction-button-widget {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.add-transaction-widget-btn {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--theme-primary);
+  border: 2px solid var(--theme-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.add-transaction-widget-btn:hover {
+  background: var(--theme-secondary);
+  border-color: var(--theme-accent1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: scale(1.05) translateZ(0);
+}
+
+.add-transaction-widget-btn:active {
+  transform: scale(0.95) translateZ(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.add-transaction-widget-btn i {
+  transition: transform 0.2s ease;
+}
+
+.add-transaction-widget-btn:hover i {
+  transform: rotate(90deg);
+}

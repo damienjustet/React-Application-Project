@@ -1,0 +1,376 @@
+/* Mobile Dashboard Carousel */
+
+.mobile-dashboard {
+  width: 100%;
+  padding: 0 0 16px 0;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+.mobile-carousel {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-x;
+}
+
+.mobile-carousel-track {
+  display: flex;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.mobile-card {
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+ .mobile-card-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+  aspect-ratio: 7 / 5;
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 16px;
+  contain: style;
+  overflow: visible;
+  position: relative;
+}
+
+/* Show grid lines in edit mode */
+.mobile-dashboard .mobile-card-grid::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  z-index: 1;
+  pointer-events: none;
+  background-image: 
+    repeating-linear-gradient(to right, transparent 0, transparent calc((100% - 6 * 8px) / 7), rgba(106, 138, 109, 0.25) calc((100% - 6 * 8px) / 7), rgba(106, 138, 109, 0.25) calc((100% - 6 * 8px) / 7 + 8px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc((100% - 4 * 8px) / 5), rgba(106, 138, 109, 0.25) calc((100% - 4 * 8px) / 5), rgba(106, 138, 109, 0.25) calc((100% - 4 * 8px) / 5 + 8px));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show grid when in edit mode */
+.mobile-dashboard[data-edit-mode="true"] .mobile-card-grid::before {
+  opacity: 1;
+}
+
+/* Hover cell indicator - shows where widget will be placed */
+.mobile-grid-hover-cell {
+  background: var(--theme-primary, #6a8a6d);
+  opacity: 0.4;
+  border-radius: 8px;
+  z-index: 1;
+  pointer-events: none;
+  animation: pulse-cell 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-cell {
+  from { opacity: 0.3; }
+  to { opacity: 0.5; }
+}
+
+.mobile-widget {
+  background: transparent;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible; /* Allow X button to show outside bounds */
+  will-change: transform;
+  transform: translateZ(0);
+  position: relative;
+  z-index: 2; /* Above grid lines */
+}
+
+.mobile-widget:active:not(.edit-mode) {
+  transform: scale(0.97) translateZ(0);
+}
+
+.mobile-widget-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.mobile-widget-content i {
+  font-size: 24px;
+  color: #5a963f;
+  margin-bottom: 6px;
+}
+
+.mobile-widget-content .widget-name {
+  font-size: 11px;
+  color: #a0a0a0;
+  font-weight: 500;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-widget-content .widget-size-label {
+  font-size: 14px;
+  color: #e8e8e8;
+  font-weight: 600;
+}
+
+/* Empty state */
+.mobile-empty-state {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  text-align: center;
+  padding: 20px;
+}
+
+.mobile-empty-state i {
+  font-size: 48px;
+  color: #666;
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.mobile-empty-state p {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  color: #999;
+  font-weight: 500;
+}
+
+.mobile-empty-hint {
+  font-size: 12px;
+  color: #666;
+  opacity: 0.8;
+}
+
+/* Card indicator (text, not dots) */
+.mobile-card-indicator {
+  text-align: center;
+  padding: 12px 0;
+  color: #666;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Large widget card styling */
+.mobile-card-grid .mobile-widget:only-child {
+  background: transparent;
+}
+/* Featured Widgets Section - Below the grid cards */
+.mobile-featured-section {
+  margin-top: 8px;
+  padding: 0 16px;
+}
+
+/* ===== Edit Mode Styles ===== */
+
+/* Jiggle animation for edit mode */
+@keyframes jiggle {
+  0%, 100% { transform: rotate(-0.5deg); }
+  50% { transform: rotate(0.5deg); }
+}
+
+.mobile-widget.edit-mode {
+  position: relative;
+}
+
+.mobile-widget.edit-mode.jiggle {
+  animation: jiggle 0.15s ease-in-out infinite;
+}
+
+/* Stagger the animation for visual variety */
+.mobile-widget.edit-mode.jiggle:nth-child(2n) {
+  animation-delay: 0.075s;
+}
+
+.mobile-widget.edit-mode.jiggle:nth-child(3n) {
+  animation-delay: 0.05s;
+}
+
+/* Remove button on widgets in edit mode */
+.widget-remove-btn {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--theme-primary, #6a8a6d);
+  border: 2px solid #2a2a2a;
+  display: flex;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease;
+  /* Stop jiggle on button */
+  animation: none !important;
+}
+
+.widget-remove-btn:hover {
+  transform: scale(1.1);
+  background: var(--theme-secondary, #8b9e8c);
+}
+
+.widget-remove-btn:active {
+  transform: scale(0.95);
+}
+
+.widget-remove-btn i {
+  font-size: 11px;
+  color: #fff;
+  margin: 0;
+}
+
+/* Add Widget Button */
+.mobile-add-widget-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 32px);
+  margin: 16px auto;
+  padding: 14px 20px;
+  background: var(--theme-subtle, rgba(106, 138, 109, 0.15));
+  border: 2px dashed var(--theme-secondary, #8b9e8c);
+  border-radius: 12px;
+  color: var(--theme-primary, #6a8a6d);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-add-widget-btn:hover {
+  background: rgba(106, 138, 109, 0.25);
+  border-color: var(--theme-primary, #6a8a6d);
+}
+
+.mobile-add-widget-btn:active {
+  transform: scale(0.98);
+}
+
+.mobile-add-widget-btn i {
+  font-size: 16px;
+}
+
+/* ===== Drag and Drop Reordering ===== */
+
+/* Widget being dragged - the original spot becomes a placeholder */
+.mobile-widget.dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
+  animation: none !important;
+  background: var(--theme-subtle, rgba(106, 138, 109, 0.15)) !important;
+  border: 2px dashed var(--theme-secondary, #8b9e8c);
+  border-radius: 12px;
+}
+
+.mobile-widget.dragging > * {
+  visibility: hidden;
+}
+
+.mobile-widget.dragging .widget-remove-btn {
+  display: none;
+}
+
+/* Widget being hovered over as drop target */
+.mobile-widget.drag-over {
+  animation: none !important;
+  box-shadow: 0 0 0 3px var(--theme-primary, #6a8a6d);
+  border-radius: 12px;
+  transform: scale(1.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 5;
+}
+
+/* Floating widget clone that follows finger - matches actual widget appearance */
+.mobile-widget-drag-clone {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 12px;
+  background: #3a3a3a;
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 2px var(--theme-primary, #6a8a6d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(1.1);
+  transition: transform 0.1s ease;
+}
+
+.mobile-widget-drag-clone .mobile-widget-content,
+.mobile-widget-drag-clone .budget-progress-bar,
+.mobile-widget-drag-clone .add-transaction-button {
+  pointer-events: none;
+}
+
+/* Cursor change in edit mode */
+.mobile-widget.edit-mode {
+  cursor: grab;
+  touch-action: none;
+}
+
+.mobile-widget.edit-mode:active {
+  cursor: grabbing;
+}
+
+/* Featured Widget Wrapper */
+.mobile-featured-widget-wrapper {
+  position: relative;
+}
+
+.featured-remove-btn {
+  position: absolute;
+  top: 52px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--theme-primary, #6a8a6d);
+  border: 2px solid #2a2a2a;
+  display: flex;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.featured-remove-btn:hover {
+  transform: scale(1.1);
+  background: var(--theme-secondary, #8b9e8c);
+}
+
+.featured-remove-btn:active {
+  transform: scale(0.95);
+}
+
+.featured-remove-btn i {
+  font-size: 14px;
+  color: #fff;
+  margin: 0;
+}

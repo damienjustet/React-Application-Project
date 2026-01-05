@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { getWidgetById } from '../data/widgetCatalog'
-import { saveDashboardWidgets, loadDashboardWidgets } from '../services/storageService'
+import { loadDashboardWidgets } from '../services/storageService'
+import { debouncedSaveDashboardWidgets } from '../services/storageService'
 
 const DashboardContext = createContext(null)
 
@@ -19,18 +20,20 @@ export const DashboardProvider = ({ children }) => {
     return saved.length > 0 ? saved : []
   })
   
-  // Undo/Redo history
-  const [history, setHistory] = useState([[]])
-  const [historyIndex, setHistoryIndex] = useState(0)
+  // Undo/Redo history - use refs to avoid recreation on every render
+  const historyRef = useRef([[]])
+  const historyIndexRef = useRef(0)
+  const [canUndo, setCanUndo] = useState(false)
+  const [canRedo, setCanRedo] = useState(false)
 
-  // Persist widgets to localStorage whenever they change
+  // Persist widgets to localStorage with debounce
   useEffect(() => {
-    saveDashboardWidgets(widgets)
+    debouncedSaveDashboardWidgets(widgets)
   }, [widgets])
 
   // Update widgets and add to history
   const updateWithHistory = useCallback((newWidgets) => {
-    const newHistory = history.slice(0, historyIndex + 1)
+    const newHistory = historyRef.current.slice(0, historyIndexRef.current + 1)
     newHistory.push(newWidgets)
     
     // Limit history to 50 states
@@ -38,10 +41,12 @@ export const DashboardProvider = ({ children }) => {
       newHistory.shift()
     }
     
-    setHistory(newHistory)
-    setHistoryIndex(newHistory.length - 1)
+    historyRef.current = newHistory
+    historyIndexRef.current = newHistory.length - 1
+    setCanUndo(historyIndexRef.current > 0)
+    setCanRedo(false)
     setWidgets(newWidgets)
-  }, [history, historyIndex])
+  }, [])
 
   // Add widget to dashboard
   const addWidget = useCallback((widgetId, position = null) => {
@@ -107,42 +112,65 @@ export const DashboardProvider = ({ children }) => {
     )
   }, [widgets, updateWithHistory])
 
+  // Reorder widgets - moves source widget to the position before target widget
+  const reorderWidgets = useCallback((sourceWidgetId, targetWidgetId) => {
+    const sourceIndex = widgets.findIndex(w => w.id === sourceWidgetId)
+    const targetIndex = widgets.findIndex(w => w.id === targetWidgetId)
+    
+    if (sourceIndex === -1 || targetIndex === -1) return
+    
+    const newWidgets = [...widgets]
+    const [removed] = newWidgets.splice(sourceIndex, 1)
+    
+    // Insert at the target position
+    const insertIndex = sourceIndex < targetIndex ? targetIndex : targetIndex
+    newWidgets.splice(insertIndex, 0, removed)
+    
+    updateWithHistory(newWidgets)
+  }, [widgets, updateWithHistory])
+
   // Undo
   const undo = useCallback(() => {
-    if (historyIndex > 0) {
-      const newIndex = historyIndex - 1
-      setHistoryIndex(newIndex)
-      setWidgets(history[newIndex])
+    if (historyIndexRef.current > 0) {
+      const newIndex = historyIndexRef.current - 1
+      historyIndexRef.current = newIndex
+      setCanUndo(newIndex > 0)
+      setCanRedo(true)
+      setWidgets(historyRef.current[newIndex])
     }
-  }, [history, historyIndex])
+  }, [])
 
   // Redo
   const redo = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      const newIndex = historyIndex + 1
-      setHistoryIndex(newIndex)
-      setWidgets(history[newIndex])
+    if (historyIndexRef.current < historyRef.current.length - 1) {
+      const newIndex = historyIndexRef.current + 1
+      historyIndexRef.current = newIndex
+      setCanUndo(true)
+      setCanRedo(newIndex < historyRef.current.length - 1)
+      setWidgets(historyRef.current[newIndex])
     }
-  }, [history, historyIndex])
+  }, [])
 
   // Reset to default
   const resetDashboard = useCallback(() => {
     updateWithHistory([])
   }, [updateWithHistory])
 
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     widgets,
     addWidget,
     addMultipleWidgets,
     removeWidget,
     moveWidget,
     resizeWidget,
+    reorderWidgets,
     undo,
     redo,
     resetDashboard,
-    canUndo: historyIndex > 0,
-    canRedo: historyIndex < history.length - 1
-  }
+    canUndo,
+    canRedo
+  }), [widgets, addWidget, addMultipleWidgets, removeWidget, moveWidget, resizeWidget, reorderWidgets, undo, redo, resetDashboard, canUndo, canRedo])
 
   return (
     <DashboardContext.Provider value={value}>

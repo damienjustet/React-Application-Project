@@ -130,9 +130,32 @@ function SearchModal({ isOpen, onClose }) {
     if (isOpen) {
       setSearchQuery('')
       setSelectedIndex(0)
-      setTimeout(() => inputRef.current?.focus(), 100)
+      
+      // Only auto-focus on desktop, not mobile
+      const isMobile = window.innerWidth <= 768
+      if (!isMobile) {
+        setTimeout(() => inputRef.current?.focus(), 100)
+      }
+      
+      // Push a history state for mobile back gesture
+      if (isMobile) {
+        window.history.pushState({ searchModal: true }, '')
+      }
     }
   }, [isOpen])
+
+  // Handle browser back button/gesture
+  useEffect(() => {
+    const handlePopState = (e) => {
+      if (isOpen) {
+        e.preventDefault()
+        onClose()
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [isOpen, onClose])
 
   // Reset selected index when search changes
   useEffect(() => {
@@ -162,6 +185,9 @@ function SearchModal({ isOpen, onClose }) {
     <div className="search-overlay" onClick={onClose}>
       <div className="search-modal" onClick={(e) => e.stopPropagation()}>
         <div className="search-input-wrapper">
+          <button className="search-close-btn" onClick={onClose}>
+            <i className="fa-solid fa-arrow-left"></i>
+          </button>
           <i className="fa-solid fa-magnifying-glass search-icon"></i>
           <input
             ref={inputRef}

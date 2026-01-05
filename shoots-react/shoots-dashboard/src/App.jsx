@@ -20,6 +20,7 @@ function AppContent() {
   const [isHovering, setIsHovering] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isWidgetLibraryOpen, setIsWidgetLibraryOpen] = useState(false)
+  const [isMobileEditMode, setIsMobileEditMode] = useState(false)
 
   const { undo, redo } = useDashboard()
 
@@ -91,8 +92,10 @@ function AppContent() {
                     isExpanded={isExpanded}
                     toggleSidebar={toggleSidebar}
                     onToggleWidgetLibrary={toggleWidgetLibrary}
+                    isEditMode={isMobileEditMode}
+                    onToggleEditMode={() => setIsMobileEditMode(!isMobileEditMode)}
                   />
-                  <DashboardGrid />
+                  <DashboardGrid isEditMode={isMobileEditMode} />
                 </div>
               } />
               <Route path="/savings" element={
