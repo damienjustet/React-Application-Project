@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import './App.css'
 import './styles/moulpali-font.css'
 import Nav from './components/Nav'
@@ -9,6 +9,7 @@ import SpendingPage from './pages/SpendingPage'
 import SavingsPage from './pages/SavingsPage'
 import RecurringPage from './pages/RecurringPage'
 import BudgetPage from './pages/BudgetPage'
+import OnboardingPage from './pages/OnboardingPage'
 import SearchModal from './components/SearchModal'
 import WidgetLibrary from './components/WidgetLibrary'
 import { DataProvider } from './context/DataContext'
@@ -21,8 +22,12 @@ function AppContent() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isWidgetLibraryOpen, setIsWidgetLibraryOpen] = useState(false)
   const [isMobileEditMode, setIsMobileEditMode] = useState(false)
+  const location = useLocation()
 
   const { undo, redo } = useDashboard()
+
+  // Check if we're on the onboarding page
+  const isOnboardingPage = location.pathname === '/onboarding'
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded)
@@ -71,8 +76,16 @@ function AppContent() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [undo, redo])
 
+  // If on onboarding page, render without nav/chrome
+  if (isOnboardingPage) {
+    return (
+      <Routes>
+        <Route path="/onboarding" element={<OnboardingPage />} />
+      </Routes>
+    )
+  }
+
   return (
-    <Router>
       <div className="app">
         <Nav 
           isExpanded={isExpanded}
@@ -125,7 +138,6 @@ function AppContent() {
             </Routes>
           </main>
         </div>
-      </Router>
   )
 }
 
@@ -134,7 +146,9 @@ function App() {
     <ThemeProvider>
       <DataProvider>
         <DashboardProvider>
-          <AppContent />
+          <Router>
+            <AppContent />
+          </Router>
         </DashboardProvider>
       </DataProvider>
     </ThemeProvider>

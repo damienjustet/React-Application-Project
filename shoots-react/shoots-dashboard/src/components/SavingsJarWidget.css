@@ -1,0 +1,222 @@
+.savings-jar-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  border-radius: 12px;
+}
+
+.jar-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 150px;
+}
+
+/* Jar structure matching home.html exactly - scaled for 3x4 widget */
+.jar-bg {
+  position: relative;
+  width: 85px;
+  height: 120px;
+  background: #464646;
+  border-radius: 18px;
+  flex-direction: column;
+  z-index: 1;
+  margin-top: 22px;
+}
+
+.jar-lid {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  width: 57px;
+  height: 11px;
+  background: #464646;
+  border-radius: 18px;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.jar-neck {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  width: 43px;
+  height: 38px;
+  background: #464646;
+  border-radius: 9px;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.jar-body {
+  background-color: #656565;
+  position: absolute;
+  top: 5.5px;
+  left: 5.5px;
+  width: calc(100% - 11px);
+  height: calc(100% - 11px);
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Jar sections (stacked fill) */
+.jar-section {
+  border-radius: 6px 6px 0 0;
+  z-index: 2;
+  transition: height 0.3s;
+}
+
+.jar-section.bottom {
+  border-radius: 6px 6px 15px 15px;
+}
+
+/* Switch button */
+.jar-switch-btn {
+  background: none;
+  border: none;
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 3;
+  padding: 0;
+  touch-action: none; /* Prevent touch interference in mobile drag */
+}
+
+.jar-switch-btn i {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.1rem;
+  line-height: 1;
+  pointer-events: none; /* Let touches pass through to button */
+}
+
+/* Savings info section */
+.savings-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.savings-label {
+  font-size: 0.6rem;
+  color: #83827d;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+ .savings-amount {
+  font-family: 'Moulpali', sans-serif;
+  font-size: 1.1rem;
+  color: #e8e8e8;
+  font-weight: 500;
+}
+
+/* Tooltip styles for future hover functionality */
+.source-tooltip {
+  position: absolute;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: #e8e8e8;
+  pointer-events: none;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.source-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #3a3a3a;
+}
+
+/* Mobile view adjustments - scale everything down */
+@media (max-width: 768px) {
+  .savings-jar-widget {
+    padding: 0.25rem;
+  }
+  
+  .jar-container {
+    max-width: 125px;
+  }
+  
+  .jar-bg {
+    width: 72px;
+    height: 102px;
+    border-radius: 15px;
+    margin-top: 19px;
+  }
+  
+  .jar-lid {
+    top: -19px;
+    width: 48px;
+    height: 9.5px;
+    border-radius: 15px;
+  }
+  
+  .jar-neck {
+    top: -19px;
+    width: 37px;
+    height: 33px;
+    border-radius: 8.5px;
+  }
+  
+  .jar-body {
+    top: 4.6px;
+    left: 4.6px;
+    width: calc(100% - 9.2px);
+    height: calc(100% - 9.2px);
+    border-radius: 12.5px;
+  }
+  
+  .jar-section {
+    border-radius: 4.5px 4.5px 0 0;
+  }
+  
+  .jar-section.bottom {
+    border-radius: 4.5px 4.5px 11px 11px;
+  }
+  
+  .jar-switch-btn {
+    bottom: 13px;
+  }
+  
+  .jar-switch-btn i {
+    font-size: 0.75rem;
+  }
+  
+  .savings-info {
+    gap: 0.1rem;
+    margin-top: 0.15rem;
+  }
+  
+  .savings-label {
+    font-size: 0.5rem;
+  }
+  
+  .savings-amount {
+    font-size: 0.85rem;
+  }
+}

@@ -4,6 +4,7 @@ import { getWidgetById, getCurrentDragWidget } from '../data/widgetCatalog'
 import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
 import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
+import SavingsJarWidget from './SavingsJarWidget'
 import MobileDashboard from './MobileDashboard'
 import './DashboardGrid.css'
 
@@ -392,6 +393,21 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
                   onContextMenu={(e) => handleWidgetRightClick(e, widget)}
                 >
                   <UpcomingTransactionsWidget isFeatured={false} />
+                </div>
+              )
+            }
+
+            // Render custom widget for savings-jar
+            if (widget.widgetId === 'savings-jar') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <SavingsJarWidget />
                 </div>
               )
             }

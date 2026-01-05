@@ -57,10 +57,10 @@
   transition: opacity 0.2s ease;
 }
 
-/* Show grid when in edit mode */
-.mobile-dashboard[data-edit-mode="true"] .mobile-card-grid::before {
+/* Show grid when in edit mode - DISABLED */
+/* .mobile-dashboard[data-edit-mode="true"] .mobile-card-grid::before {
   opacity: 1;
-}
+} */
 
 /* Hover cell indicator - shows where widget will be placed */
 .mobile-grid-hover-cell {

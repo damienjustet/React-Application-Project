@@ -175,7 +175,7 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar, onSearchCli
           <ul className="nav-links">
             <li>
               <Link to="/" className={`nav-item home-item ${location.pathname === '/' ? 'active' : ''}`}>
-                <img src={shootsLogo} className="logo-icon" alt="Logo" />
+                <ShootsLogo />
                 <span>Home</span>
                 <div className="toggle-btn-wrapper">
                   <i className="fa-solid fa-angles-left collapse-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSidebar(); }}></i>

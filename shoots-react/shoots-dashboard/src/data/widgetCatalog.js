@@ -40,6 +40,15 @@ export const WIDGET_CATALOG = [
     icon: 'fa-calendar-days',
     defaultSize: { width: 14, height: 3 },
     displayType: WIDGET_DISPLAY_TYPE.FEATURED  // This widget gets its own section
+  },
+  {
+    id: 'savings-jar',
+    name: 'Savings Jar',
+    category: WIDGET_CATEGORIES.STATS,
+    description: 'Visual jar showing savings progress with ability to switch between goals',
+    icon: 'fa-jar',
+    defaultSize: { width: 3, height: 4 },
+    displayType: WIDGET_DISPLAY_TYPE.GRID
   }
 ]
 

@@ -1,0 +1,228 @@
+.onboarding-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #1a1a1a 0%, #232323 100%);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Logo section - upper half */
+.onboarding-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.onboarding-logo {
+  width: 100px;
+  height: 100px;
+  color: var(--theme-primary, #6a8a6d);
+  animation: logoFadeIn 0.8s ease-out;
+}
+
+.onboarding-brand {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin: 0;
+  letter-spacing: 0.02em;
+  animation: textFadeIn 0.8s ease-out 0.2s both;
+}
+
+/* Welcome content */
+.onboarding-content {
+  margin-bottom: 48px;
+  animation: contentFadeIn 0.8s ease-out 0.4s both;
+}
+
+.onboarding-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #e8e8e8;
+  margin: 0 0 12px 0;
+}
+
+.onboarding-subtitle {
+  font-size: 1rem;
+  color: #a0a0a0;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Action buttons */
+.onboarding-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 48px;
+  animation: buttonsFadeIn 0.8s ease-out 0.6s both;
+}
+
+.onboarding-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.onboarding-btn.primary {
+  background: var(--theme-primary, #6a8a6d);
+  color: #191919;
+}
+
+.onboarding-btn.primary:hover {
+  background: var(--theme-primary-light, #7d9d80);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(106, 138, 109, 0.3);
+}
+
+.onboarding-btn.primary:active {
+  transform: translateY(0);
+}
+
+.onboarding-btn.secondary {
+  background: transparent;
+  color: #a0a0a0;
+  border: 1px solid #3a3a3a;
+}
+
+.onboarding-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e8e8e8;
+  border-color: #4a4a4a;
+}
+
+/* Progress dots */
+.onboarding-progress {
+  display: flex;
+  gap: 8px;
+  animation: dotsFadeIn 0.8s ease-out 0.8s both;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a3a3a;
+  transition: all 0.3s ease;
+}
+
+.progress-dot.active {
+  background: var(--theme-primary, #6a8a6d);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes logoFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes textFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buttonsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dotsFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .onboarding-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .onboarding-brand {
+    font-size: 2rem;
+  }
+
+  .onboarding-title {
+    font-size: 1.5rem;
+  }
+
+  .onboarding-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .onboarding-header {
+    margin-bottom: 40px;
+  }
+
+  .onboarding-content {
+    margin-bottom: 40px;
+  }
+
+  .onboarding-actions {
+    margin-bottom: 40px;
+  }
+
+  .onboarding-btn {
+    padding: 14px 28px;
+  }
+}

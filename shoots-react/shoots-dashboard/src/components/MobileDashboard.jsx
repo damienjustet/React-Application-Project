@@ -4,6 +4,7 @@ import { getWidgetById, WIDGET_DISPLAY_TYPE } from '../data/widgetCatalog'
 import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
 import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
+import SavingsJarWidget from './SavingsJarWidget'
 import MobileWidgetDrawer from './MobileWidgetDrawer'
 import './MobileDashboard.css'
 
@@ -573,6 +574,19 @@ function MobileDashboard({ isEditMode = false }) {
       return null
     }
 
+    if (widget.widgetId === 'savings-jar') {
+      return (
+        <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
+          {isEditMode && (
+            <button className="widget-remove-btn" onClick={(e) => handleRemoveWidget(e, widget.id)}>
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          )}
+          <SavingsJarWidget />
+        </div>
+      )
+    }
+
     return (
       <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
         {isEditMode && (
@@ -587,7 +601,7 @@ function MobileDashboard({ isEditMode = false }) {
               <span className="widget-name">{widgetDef.name}</span>
             </>
           ) : (
-            <span className="widget-size-label">{widget.label || `${size.width}×${size.height}`}</span>
+            <span className="widget-name">Widget</span>
           )}
         </div>
       </div>
@@ -710,6 +724,10 @@ function MobileDashboard({ isEditMode = false }) {
             
             if (widget.widgetId === 'add-transaction-button') {
               return <AddTransactionButton onClick={() => {}} />
+            }
+            
+            if (widget.widgetId === 'savings-jar') {
+              return <SavingsJarWidget />
             }
             
             // Default widget content
