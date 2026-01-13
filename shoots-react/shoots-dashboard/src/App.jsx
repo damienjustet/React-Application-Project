@@ -12,6 +12,7 @@ import BudgetPage from './pages/BudgetPage'
 import OnboardingPage from './pages/OnboardingPage'
 import SearchModal from './components/SearchModal'
 import WidgetLibrary from './components/WidgetLibrary'
+import TransactionModal from './components/TransactionModal'
 import { DataProvider } from './context/DataContext'
 import { DashboardProvider, useDashboard } from './context/DashboardContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -96,6 +97,7 @@ function AppContent() {
         />
         <SearchModal isOpen={isSearchOpen} onClose={closeSearch} />
         <WidgetLibrary isOpen={isWidgetLibraryOpen} onClose={closeWidgetLibrary} />
+        <TransactionModal />
         <main className={`main-content ${isExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
             <Routes>
               <Route path="/" element={

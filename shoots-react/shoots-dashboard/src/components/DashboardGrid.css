@@ -159,6 +159,11 @@
   cursor: grab;
 }
 
+/* Disable all widget interactions in edit mode */
+.grid-block-wrapper.edit-mode > * {
+  pointer-events: none;
+}
+
 .grid-block-wrapper.edit-mode:active {
   cursor: grabbing;
 }
@@ -166,6 +171,18 @@
 .grid-block-wrapper.dragging {
   cursor: grabbing;
   z-index: 100;
+}
+
+/* Disable all widget interactions when dragging */
+.grid-block-wrapper.dragging > * {
+  pointer-events: none;
+}
+
+/* Keep add transaction button widget small when dragging */
+.grid-block-wrapper.dragging .add-transaction-button-widget {
+  max-width: 64px;
+  max-height: 64px;
+  margin: auto;
 }
 
 /* Edit mode visual indication */

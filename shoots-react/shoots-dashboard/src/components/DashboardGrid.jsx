@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { useDashboard } from '../context/DashboardContext'
+import { useData } from '../context/DataContext'
 import { getWidgetById, getCurrentDragWidget } from '../data/widgetCatalog'
 import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
@@ -20,6 +21,7 @@ const getGridColumns = () => {
 
 function DashboardGrid({ isEditMode: mobileEditMode = false }) {
   const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget } = useDashboard()
+  const { openAddTransactionModal } = useData()
   
   // Detect mobile view
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
@@ -377,7 +379,7 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
                   onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
                   onContextMenu={(e) => handleWidgetRightClick(e, widget)}
                 >
-                  <AddTransactionButton onClick={() => console.log('Add transaction clicked')} />
+                  <AddTransactionButton onClick={openAddTransactionModal} />
                 </div>
               )
             }

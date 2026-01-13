@@ -6,13 +6,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 0;
 }
 
 .add-transaction-widget-btn {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
   background: var(--theme-primary);
   border: 2px solid var(--theme-secondary);
   border-radius: 50%;
@@ -20,7 +23,7 @@
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);

@@ -123,7 +123,7 @@ function Nav({ isExpanded, isHovering, setIsHovering, toggleSidebar, onSearchCli
           <ul className="nav-links">
             <li>
               <Link to="/" className={`nav-item home-item ${location.pathname === '/' ? 'active' : ''}`}>
-                <img src={shootsLogo} className="logo-icon" alt="Logo" />
+                <ShootsLogo />
                 <span>Home</span>
                 <i className="fa-solid fa-plus add-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}></i>
               </Link>

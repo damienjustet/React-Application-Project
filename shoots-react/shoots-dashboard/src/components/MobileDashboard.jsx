@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo, useCallback, useEffect, memo } from 'react'
 import { useDashboard } from '../context/DashboardContext'
+import { useData } from '../context/DataContext'
 import { getWidgetById, WIDGET_DISPLAY_TYPE } from '../data/widgetCatalog'
 import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
@@ -29,6 +30,11 @@ const getMobileSize = (widget) => {
   if (widget.widgetId === 'add-transaction-button') {
     // Add button: keep as 1x1
     return { width: 1, height: 1 }
+  }
+  
+  if (widget.widgetId === 'savings-jar') {
+    // Savings jar: 3x4 on mobile (web uses 4x5)
+    return { width: 3, height: 4 }
   }
   
   if (widget.widgetId === 'upcoming-transactions') {
@@ -201,6 +207,7 @@ const getLayoutCacheKey = (widgets) => {
 
 function MobileDashboard({ isEditMode = false }) {
   const { widgets: dashboardWidgets, removeWidget, reorderWidgets, moveWidget } = useDashboard()
+  const { openAddTransactionModal } = useData()
   const [currentCard, setCurrentCard] = useState(0)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [draggedWidgetId, setDraggedWidgetId] = useState(null)
@@ -564,7 +571,7 @@ function MobileDashboard({ isEditMode = false }) {
               <i className="fa-solid fa-xmark"></i>
             </button>
           )}
-          <AddTransactionButton onClick={() => console.log('Add transaction clicked (mobile)')} />
+          <AddTransactionButton onClick={openAddTransactionModal} />
         </div>
       )
     }
@@ -723,7 +730,7 @@ function MobileDashboard({ isEditMode = false }) {
             }
             
             if (widget.widgetId === 'add-transaction-button') {
-              return <AddTransactionButton onClick={() => {}} />
+              return <AddTransactionButton onClick={openAddTransactionModal} />
             }
             
             if (widget.widgetId === 'savings-jar') {

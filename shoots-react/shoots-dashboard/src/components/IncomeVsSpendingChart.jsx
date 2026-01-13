@@ -24,9 +24,7 @@ const CHART_CONFIG = {
     tooltipText: 11
   },
   monthHighlight: {
-    width: 50,
-    height: 28,
-    offsetX: -25,
+    padding: 8,
     offsetY: 8,
     borderRadius: 6
   }
@@ -201,7 +199,7 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
         </button>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={visibleMonths} margin={{ top: 20, right: 70, left: 10, bottom: 5 }} barGap={12} barCategoryGap="20%">
+            <BarChart data={visibleMonths} margin={{ top: 20, right: 70, left: 10, bottom: 45 }} barGap={12} barCategoryGap="20%">
               <CartesianGrid strokeDasharray="0" stroke={CHART_COLORS.grid} strokeWidth={CHART_CONFIG.gridStrokeWidth} horizontal={true} vertical={false} horizontalValues={[0, yAxisMax / 2]} />
               <ReferenceLine
                 y={yAxisMax}
@@ -221,6 +219,13 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
                   ? (monthData.year === currentYear ? monthData.shortLabel : `${monthData.shortLabel} ${monthData.year}`)
                   : payload.value
                 
+                // Calculate dynamic background dimensions based on text length
+                const approxCharWidth = CHART_CONFIG.fontSize.month * 0.7
+                const textWidth = displayLabel.length * approxCharWidth
+                const bgWidth = textWidth + (CHART_CONFIG.monthHighlight.padding * 2)
+                const bgHeight = CHART_CONFIG.fontSize.month + (CHART_CONFIG.monthHighlight.padding * 1.5)
+                const bgOffsetX = -bgWidth / 2
+                
                 return (
                   <g 
                     style={{ cursor: 'pointer' }}
@@ -228,10 +233,10 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
                   >
                     {(isCurrentMonth || isSelected) && (
                       <rect
-                        x={x + CHART_CONFIG.monthHighlight.offsetX}
+                        x={x + bgOffsetX}
                         y={y + CHART_CONFIG.monthHighlight.offsetY}
-                        width={CHART_CONFIG.monthHighlight.width}
-                        height={CHART_CONFIG.monthHighlight.height}
+                        width={bgWidth}
+                        height={bgHeight}
                         fill={isSelected ? CHART_COLORS.monthHighlight : CHART_COLORS.monthHighlight}
                         rx={CHART_CONFIG.monthHighlight.borderRadius}
                       />
@@ -256,7 +261,7 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
                 return null
               }} ticks={[0, yAxisMax / 2, yAxisMax]} />
               <Tooltip content={<CustomTooltip />} cursor={false} />
-              {/* Income bar on the left, spending bar on the right */}
+              {/* Income bar on the left, expenses bar on the right */}
               <Bar dataKey="income" fill={CHART_COLORS.income} radius={[100, 100, 0, 0]} maxBarSize={CHART_CONFIG.barMaxSize} />
               <Bar
                 dataKey={entry => (entry.bills || 0) + (entry.discretionary || 0)}

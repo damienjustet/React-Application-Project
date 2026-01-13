@@ -45,7 +45,10 @@ function DashboardHeader({ userName = "Damien", isExpanded, toggleSidebar, onTog
           const size = 64 // Reduced from 128 for faster processing
           canvas.width = size
           canvas.height = size
-          const ctx = canvas.getContext('2d', { alpha: false }) // Disable alpha for better performance
+          const ctx = canvas.getContext('2d', { alpha: true }) // Enable alpha for transparency
+          
+          // Clear canvas with transparency
+          ctx.clearRect(0, 0, size, size)
           
           // Draw circular clip
           ctx.beginPath()

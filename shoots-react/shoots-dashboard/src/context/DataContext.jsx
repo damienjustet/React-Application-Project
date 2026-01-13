@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
-import { parseDisplayDate, matchesMonthYear, getLastNMonths, getCurrentDate } from '../utils/dateUtils'
+import { parseDisplayDate, matchesMonthYear, getLastNMonths, getCurrentDate, inputToDisplayDate } from '../utils/dateUtils'
 
 const DataContext = createContext()
 
@@ -128,6 +128,16 @@ export function DataProvider({ children }) {
     return getCurrentDate().getFullYear()
   })
 
+  // Transaction modal state
+  const [showAddTransactionModal, setShowAddTransactionModal] = useState(false)
+  const [newTransaction, setNewTransaction] = useState({
+    merchant: '',
+    amount: 0,
+    category: 'Dining',
+    date: '',
+    type: 'expense'
+  })
+
   // Automatically calculate and update budget spent amounts whenever transactions or selectedMonth/Year changes
   useEffect(() => {
     const monthTransactions = transactions.filter(t =>
@@ -164,6 +174,48 @@ export function DataProvider({ children }) {
       newTransactions[index] = updatedTransaction
       return newTransactions
     })
+  }, [])
+
+  // Transaction modal functions
+  const openAddTransactionModal = useCallback(() => {
+    // Reset form and set current date
+    const today = getCurrentDate()
+    const todayString = today.toISOString().split('T')[0] // Format as YYYY-MM-DD
+    
+    setNewTransaction({
+      merchant: '',
+      amount: 0,
+      category: 'Dining',
+      date: todayString,
+      type: 'expense'
+    })
+    setShowAddTransactionModal(true)
+  }, [])
+
+  const closeAddTransactionModal = useCallback(() => {
+    setShowAddTransactionModal(false)
+  }, [])
+
+  const handleModalAddTransaction = useCallback(() => {
+    if (!newTransaction.merchant.trim() || newTransaction.amount <= 0 || !newTransaction.date) {
+      return
+    }
+
+    // Convert date to display format
+    const displayDate = inputToDisplayDate(newTransaction.date)
+    
+    const transaction = {
+      ...newTransaction,
+      date: displayDate,
+      icon: categoryIcons[newTransaction.category] || 'fa-circle'
+    }
+    
+    addTransaction(transaction)
+    closeAddTransactionModal()
+  }, [newTransaction, addTransaction])
+
+  const updateNewTransaction = useCallback((updates) => {
+    setNewTransaction(prev => ({ ...prev, ...updates }))
   }, [])
 
   // Helper: Get transactions for a specific month and year
@@ -226,12 +278,20 @@ export function DataProvider({ children }) {
     selectedMonth,
     setSelectedMonth,
     selectedYear,
-    setSelectedYear
+    setSelectedYear,
+    // Transaction modal
+    showAddTransactionModal,
+    newTransaction,
+    openAddTransactionModal,
+    closeAddTransactionModal,
+    handleModalAddTransaction,
+    updateNewTransaction
   }), [
     transactions, addTransaction, deleteTransaction, updateTransaction,
     getTransactionsByMonth, getTransactionsByMonthYear, getTransactionsByType,
     getMonthTotal, getCategoryTotals, savingsGoals, recurringBills, budgets,
-    selectedMonth, selectedYear
+    selectedMonth, selectedYear, showAddTransactionModal, newTransaction,
+    openAddTransactionModal, closeAddTransactionModal, handleModalAddTransaction, updateNewTransaction
   ])
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

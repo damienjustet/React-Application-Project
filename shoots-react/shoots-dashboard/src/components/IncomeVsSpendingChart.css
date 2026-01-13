@@ -61,6 +61,21 @@
   flex: 1;
 }
 
+/* Remove focus/selection outlines from chart */
+.chart-container *:focus,
+.chart-container *:focus-visible {
+  outline: none;
+}
+
+.chart-container .recharts-surface:focus,
+.chart-container .recharts-wrapper:focus {
+  outline: none;
+}
+
+.income-spending-chart *:focus {
+  outline: none;
+}
+
 @media (max-width: 768px) {
   .chart-container {
     height: 280px;

@@ -81,6 +81,14 @@
   height: 18px;
 }
 
+/* Add spacing for SVG logo in mini-sidebar */
+.mini-sidebar .home-item .mobile-nav-logo {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  margin-bottom: 0;
+}
+
 .mini-sidebar .add-btn {
   font-size: 1rem;
 }
@@ -149,6 +157,14 @@
   height: 20px;
   margin-right: 10px;
   vertical-align: middle;
+}
+
+/* Add spacing for SVG logo in desktop nav */
+.sidebar .home-item .mobile-nav-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  margin-bottom: 0;
 }
 
 .nav-item.home-item span {
