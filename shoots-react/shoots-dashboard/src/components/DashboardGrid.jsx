@@ -6,6 +6,10 @@ import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
 import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
 import SavingsJarWidget from './SavingsJarWidget'
+import CategoryBreakdownWidget from './CategoryBreakdownWidget'
+import SpendingTrendsWidget from './SpendingTrendsWidget'
+import RecentTransactionsWidget from './RecentTransactionsWidget'
+import ImageWidget from './ImageWidget'
 import MobileDashboard from './MobileDashboard'
 import './DashboardGrid.css'
 
@@ -19,14 +23,19 @@ const getGridColumns = () => {
   return 7
 }
 
+// Ideal width baseline (ultrawide monitor) - grid scales proportionally below this
+const IDEAL_GRID_WIDTH = 1600
+
 function DashboardGrid({ isEditMode: mobileEditMode = false }) {
-  const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget } = useDashboard()
+  const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget, resizeWidget } = useDashboard()
   const { openAddTransactionModal } = useData()
   
   // Detect mobile view
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const [gridColumns, setGridColumns] = useState(getGridColumns)
   const resizeTimeoutRef = useRef(null)
+  const gridContainerRef = useRef(null)
+  const [gridScale, setGridScale] = useState(1)
   
   // Edit mode state (desktop only - mobile uses prop)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -57,6 +66,20 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
     })
   }, [dashboardWidgets])
 
+  // Calculate grid scale based on container width
+  const updateGridScale = useCallback(() => {
+    if (gridContainerRef.current && !isMobile) {
+      const containerWidth = gridContainerRef.current.offsetWidth
+      // Scale down proportionally when smaller than ideal, never scale up
+      const scale = Math.min(1, containerWidth / IDEAL_GRID_WIDTH)
+      // Clamp minimum scale to prevent content from becoming too small
+      const clampedScale = Math.max(0.6, scale)
+      setGridScale(clampedScale)
+    } else {
+      setGridScale(1)
+    }
+  }, [isMobile])
+
   // Handle window resize with debounce
   useEffect(() => {
     const handleResize = () => {
@@ -65,21 +88,37 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
         const newColumns = getGridColumns()
         setGridColumns(prev => prev !== newColumns ? newColumns : prev)
         setIsMobile(window.innerWidth <= 768)
+        updateGridScale()
       }, 100)
     }
+
+    // Initial scale calculation
+    updateGridScale()
 
     window.addEventListener('resize', handleResize, { passive: true })
     return () => {
       window.removeEventListener('resize', handleResize)
       if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
     }
-  }, [])
+  }, [updateGridScale])
 
   // Close context menu on click outside
   useEffect(() => {
     const handleClickOutside = () => setContextMenu(null)
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
+
+  // Keyboard shortcut: Ctrl+E to toggle edit mode
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 'e') {
+        e.preventDefault()
+        setIsEditMode(prev => !prev)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   // Widget drag handlers
@@ -207,11 +246,8 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
     
     // Get widget size from the currently dragged widget (stored globally)
     // Note: dataTransfer.getData() is not accessible during dragover for security reasons
-    let widgetSize = { width: 6, height: 4 } // default fallback
     const draggedWidgetInfo = getCurrentDragWidget()
-    if (draggedWidgetInfo && draggedWidgetInfo.size) {
-      widgetSize = draggedWidgetInfo.size
-    }
+    const widgetSize = draggedWidgetInfo?.size || { width: 2, height: 2 }
     
     setWidgetDropZone({ x: gridX, y: gridY, size: widgetSize })
   }
@@ -301,17 +337,33 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
           <p>Or use multi-select in the widget library →</p>
         </div>
       )}
-      <div className="dashboard-grid-container">
+      <div 
+        className="dashboard-grid-scale-wrapper"
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center'
+        }}
+      >
         <div 
-          className="dashboard-grid" 
+          ref={gridContainerRef}
+          className="dashboard-grid-container"
           style={{
-            gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-            gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
+            '--grid-scale': gridScale,
+            transform: gridScale < 1 ? `scale(${gridScale})` : 'none',
+            transformOrigin: 'top center'
           }}
-          onDragOver={handleWidgetDragOver}
-          onDragLeave={handleWidgetDragLeave}
-          onDrop={handleWidgetDrop}
         >
+          <div 
+            className="dashboard-grid" 
+            style={{
+              gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+              gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
+            }}
+            onDragOver={handleWidgetDragOver}
+            onDragLeave={handleWidgetDragLeave}
+            onDrop={handleWidgetDrop}
+          >
           {/* Widget drop zone preview */}
           {isWidgetDragging && widgetDropZone && (
             <div
@@ -414,6 +466,88 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
               )
             }
 
+            // Render custom widget for category-breakdown
+            if (widget.widgetId === 'category-breakdown') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <CategoryBreakdownWidget />
+                </div>
+              )
+            }
+
+            // Render custom widget for spending-trends
+            if (widget.widgetId === 'spending-trends') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <SpendingTrendsWidget />
+                </div>
+              )
+            }
+
+            // Render custom widget for recent-transactions
+            if (widget.widgetId === 'recent-transactions') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => handleWidgetMouseDown(e, widget)}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <RecentTransactionsWidget isFeatured={false} />
+                </div>
+              )
+            }
+
+            // Render custom widget for image-widget
+            if (widget.widgetId === 'image-widget') {
+              return (
+                <div
+                  key={widget.id}
+                  className={`grid-block-wrapper widget-instance ${isDragging ? 'dragging' : ''} ${isEditMode ? 'edit-mode' : ''}`}
+                  style={style}
+                  onMouseDown={(e) => {
+                    // Don't start drag if clicking on resize handles
+                    if (e.target.closest('.resize-handle')) return
+                    handleWidgetMouseDown(e, widget)
+                  }}
+                  onContextMenu={(e) => handleWidgetRightClick(e, widget)}
+                >
+                  <ImageWidget 
+                    instanceId={widget.id}
+                    size={widget.size}
+                    position={widget.position}
+                    isEditMode={isEditMode}
+                    onResize={(newSize, direction, newPosition) => {
+                      // Check bounds
+                      if (newPosition.x + newSize.width > gridColumns) {
+                        newSize.width = gridColumns - newPosition.x
+                      }
+                      if (newPosition.y + newSize.height > GRID_ROWS) {
+                        newSize.height = GRID_ROWS - newPosition.y
+                      }
+                      resizeWidget(widget.id, newSize)
+                      if (newPosition.x !== widget.position.x || newPosition.y !== widget.position.y) {
+                        moveWidget(widget.id, newPosition)
+                      }
+                    }}
+                  />
+                </div>
+              )
+            }
+
             // Default widget card
             return (
               <div
@@ -436,6 +570,7 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
             )
           })}
         </div>
+      </div>
       </div>
       
       {/* Context menu for widgets */}

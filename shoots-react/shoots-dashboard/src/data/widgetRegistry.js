@@ -138,6 +138,51 @@ export const WIDGET_REGISTRY = {
     component: 'CategoryBreakdownChart'
   },
 
+  'category-breakdown': {
+    id: 'category-breakdown',
+    name: 'Category Breakdown',
+    category: WIDGET_CATEGORIES.CHARTS,
+    description: 'Pie chart with spending breakdown by category',
+    icon: 'fa-chart-pie',
+    defaultSize: { width: 6, height: 4 },
+    minSize: { width: 5, height: 4 },
+    maxSize: { width: 10, height: 6 },
+    resizable: true,
+    dependencies: [DATA_DEPENDENCIES.TRANSACTIONS, DATA_DEPENDENCIES.THEME],
+    refreshInterval: null,
+    component: 'CategoryBreakdownWidget'
+  },
+
+  'spending-trends': {
+    id: 'spending-trends',
+    name: 'Spending Trends',
+    category: WIDGET_CATEGORIES.CHARTS,
+    description: 'Area chart showing 6-month spending trends with optional bills toggle',
+    icon: 'fa-chart-line',
+    defaultSize: { width: 7, height: 5 },
+    minSize: { width: 5, height: 4 },
+    maxSize: { width: 10, height: 8 },
+    resizable: true,
+    dependencies: [DATA_DEPENDENCIES.TRANSACTIONS, DATA_DEPENDENCIES.THEME],
+    refreshInterval: null,
+    component: 'SpendingTrendsWidget'
+  },
+
+  'recent-transactions': {
+    id: 'recent-transactions',
+    name: 'Recent Transactions',
+    category: WIDGET_CATEGORIES.LISTS,
+    description: 'Shows the 5 most recent transactions with amounts and categories',
+    icon: 'fa-receipt',
+    defaultSize: { width: 8, height: 7 },
+    minSize: { width: 6, height: 5 },
+    maxSize: { width: 14, height: 10 },
+    resizable: true,
+    dependencies: [DATA_DEPENDENCIES.TRANSACTIONS, DATA_DEPENDENCIES.THEME],
+    refreshInterval: null,
+    component: 'RecentTransactionsWidget'
+  },
+
   'trend-analysis-chart': {
     id: 'trend-analysis-chart',
     name: 'Trend Analysis',
@@ -232,6 +277,23 @@ export const WIDGET_REGISTRY = {
     dependencies: [DATA_DEPENDENCIES.TRANSACTIONS],
     refreshInterval: null,
     component: 'QuickAddTransactionWidget'
+  },
+
+  'image-widget': {
+    id: 'image-widget',
+    name: 'Image',
+    category: WIDGET_CATEGORIES.ACTIONS,
+    description: 'Upload and display a custom image. Resizable in edit mode.',
+    icon: 'fa-image',
+    defaultSize: { width: 2, height: 2 },
+    minSize: { width: 2, height: 2 },
+    maxSize: { width: 14, height: 14 },
+    resizable: true,
+    webOnly: true,
+    keepInLibrary: true,
+    dependencies: [],
+    refreshInterval: null,
+    component: 'ImageWidget'
   }
 }
 

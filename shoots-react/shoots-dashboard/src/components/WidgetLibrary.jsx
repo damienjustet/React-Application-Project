@@ -17,7 +17,8 @@ function WidgetLibrary({ isOpen, onClose }) {
   const filteredWidgets = useMemo(() => {
     let widgets = getWidgetsByCategory(activeCategory)
     const usedWidgetIds = new Set(dashboardWidgets.map(w => w.widgetId))
-    widgets = widgets.filter(w => !usedWidgetIds.has(w.id))
+    // Filter out used widgets, but keep those with keepInLibrary flag
+    widgets = widgets.filter(w => w.keepInLibrary || !usedWidgetIds.has(w.id))
     if (searchQuery) {
       widgets = widgets.filter(w =>
         w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

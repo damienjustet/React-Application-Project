@@ -22,6 +22,10 @@
   transform: translateZ(0);
 }
 
+.mobile-carousel-track.swiping {
+  transition: none;
+}
+
 .mobile-card {
   flex: 0 0 100%;
   width: 100%;
@@ -161,13 +165,54 @@
   opacity: 0.8;
 }
 
-/* Card indicator (text, not dots) */
+/* Card indicator - Samsung-style with home icon and dots */
 .mobile-card-indicator {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   padding: 12px 0;
+}
+
+.indicator-home {
+  background: transparent;
+  border: none;
   color: #666;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+}
+
+.indicator-home.active {
+  color: var(--theme-primary, #6a8a6d);
+  opacity: 1;
+}
+
+.indicator-home:active {
+  transform: scale(0.9);
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+  border: none;
+  padding: 0;
+  transition: all 0.2s ease;
+  opacity: 0.3;
+}
+
+.indicator-dot.active {
+  background: var(--theme-primary, #6a8a6d);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.indicator-dot:active {
+  transform: scale(0.9);
 }
 
 /* Large widget card styling */

@@ -1,0 +1,155 @@
+.spending-trends-widget {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.trends-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.trends-widget-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Bills toggle button */
+.trends-widget-bills-btn {
+  padding: 6px 14px;
+  border-radius: 24px;
+  border: none;
+  background-color: #3a3a3a;
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trends-widget-bills-btn:hover {
+  background-color: #444;
+}
+
+.trends-widget-bills-btn.active {
+  background-color: var(--btn-active-color, #4CAF50);
+  color: #fff;
+}
+
+.trends-widget-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 12px;
+  gap: 8px;
+}
+
+.trends-widget-stats {
+  display: flex;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.trends-widget-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trends-widget-stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+.trends-widget-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.trends-widget-chart {
+  flex: 1;
+  min-height: 0;
+  padding-top: 8px;
+  border-top: 1px solid #3a3a3a;
+}
+
+.trends-widget-tooltip {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Empty state */
+.trends-widget-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #666;
+  background: #2a2a2a;
+  border-radius: 10px;
+}
+
+.trends-widget-empty i {
+  font-size: 24px;
+}
+
+.trends-widget-empty span {
+  font-size: 12px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .spending-trends-widget {
+    padding: 10px;
+  }
+  
+  .trends-widget-header {
+    margin-bottom: 8px;
+  }
+  
+  .trends-widget-content {
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+  
+  .trends-widget-stats {
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+  
+  .trends-widget-chart {
+    background: #323232;
+    border-radius: 10px;
+    padding: 12px;
+    border-top: none;
+  }
+}

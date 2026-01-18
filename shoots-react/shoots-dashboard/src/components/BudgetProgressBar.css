@@ -74,3 +74,50 @@
   align-items: center;
   height: 32px;
 }
+
+/* Container query scaling */
+@container dashboard (max-width: 900px) {
+  .budget-progress-bar {
+    padding: 4px;
+    border-radius: 12px;
+  }
+  .budget-progress-bar__padding {
+    height: 32px;
+    border-radius: 10px;
+  }
+  .budget-progress-bar__fill {
+    height: 32px;
+    border-radius: 10px;
+    min-width: 50px;
+    padding-left: 15px;
+  }
+  .budget-progress-bar__amount {
+    font-size: 13px;
+  }
+  .budget-progress-bar__amount--budget {
+    right: 15px;
+  }
+}
+
+@container dashboard (max-width: 700px) {
+  .budget-progress-bar {
+    padding: 3px;
+    border-radius: 10px;
+  }
+  .budget-progress-bar__padding {
+    height: 26px;
+    border-radius: 8px;
+  }
+  .budget-progress-bar__fill {
+    height: 26px;
+    border-radius: 8px;
+    min-width: 40px;
+    padding-left: 10px;
+  }
+  .budget-progress-bar__amount {
+    font-size: 11px;
+  }
+  .budget-progress-bar__amount--budget {
+    right: 10px;
+  }
+}

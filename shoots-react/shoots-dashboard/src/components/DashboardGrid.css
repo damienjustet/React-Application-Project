@@ -91,6 +91,10 @@
   padding: 2.25rem;
   position: relative;
   
+  /* Scale transition for smooth resizing */
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  
   /* Soft organic border - torn paper / cave opening style */
   clip-path: polygon(
     /* Top edge - soft flowing curves with occasional tears */
@@ -142,7 +146,7 @@
 
 /* Grid Tiles (Visual Guidelines) */
 .grid-tile {
-  border: 1px solid rgba(131, 130, 125, 0.1);
+  border: none;
   background: transparent;
   pointer-events: none;
 }
@@ -228,8 +232,9 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
 }
 
-.grid-block-wrapper.widget-instance {
+.grid-block-wrapper.widget-instance.edit-mode {
   cursor: move;
+  overflow: visible;
 }
 
 /* Context Menu */

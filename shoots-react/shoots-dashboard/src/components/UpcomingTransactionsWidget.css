@@ -136,11 +136,11 @@
 }
 
 .tile-icon svg {
-  font-size: 28px;
+  font-size: 40px;
   color: #e8e8e8;
   opacity: 0.9;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
 }
 
 /* Empty state */

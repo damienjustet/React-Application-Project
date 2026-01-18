@@ -1,0 +1,157 @@
+/* Image Widget Styles */
+
+.image-widget {
+  width: 100%;
+  height: 100%;
+  background: #202020;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #2a2a2a;
+}
+
+.image-widget:hover {
+  border-color: #3a3a3a;
+}
+
+.image-widget.edit-mode {
+  cursor: default;
+  overflow: visible;
+}
+
+.image-widget.resizing {
+  user-select: none;
+}
+
+/* Image Container */
+.image-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.widget-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Upload Placeholder */
+.upload-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #5a5a5a;
+  transition: all 0.2s ease;
+}
+
+.image-widget:hover .upload-placeholder {
+  color: #888;
+}
+
+.upload-placeholder i {
+  font-size: 2rem;
+}
+
+.upload-placeholder span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Remove Image Button */
+.remove-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  color: #ff6b6b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.image-widget.edit-mode .remove-image-btn {
+  opacity: 1;
+}
+
+.remove-image-btn:hover {
+  background: rgba(255, 107, 107, 0.3);
+  transform: scale(1.1);
+}
+
+/* Resize Handles */
+.resize-handle {
+  position: absolute;
+  background: var(--theme-primary, #6aa84f);
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.image-widget.edit-mode .resize-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-widget.edit-mode .resize-handle:hover {
+  background: var(--theme-secondary, #a0d084);
+}
+
+/* Edge handles - pill shaped */
+.resize-right {
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 40px;
+  cursor: ew-resize;
+}
+
+.resize-left {
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 40px;
+  cursor: ew-resize;
+}
+
+.resize-top {
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.resize-bottom {
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+/* Active resizing state */
+.image-widget.resizing .resize-handle {
+  background: var(--theme-secondary, #a0d084);
+}

@@ -38,7 +38,7 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.LISTS,
     description: 'Shows the next 5 upcoming bills and subscriptions',
     icon: 'fa-calendar-days',
-    defaultSize: { width: 15, height: 3 },
+    defaultSize: { width: 13, height: 3 },
     displayType: WIDGET_DISPLAY_TYPE.FEATURED  // This widget gets its own section
   },
   {
@@ -49,6 +49,46 @@ export const WIDGET_CATALOG = [
     icon: 'fa-jar',
     defaultSize: { width: 4, height: 5 },
     displayType: WIDGET_DISPLAY_TYPE.GRID
+  },
+  {
+    id: 'category-breakdown',
+    name: 'Category Breakdown',
+    category: WIDGET_CATEGORIES.CHARTS,
+    description: 'Pie chart with spending breakdown by category',
+    icon: 'fa-chart-pie',
+    defaultSize: { width: 6, height: 4 },
+    displayType: WIDGET_DISPLAY_TYPE.GRID
+  },
+  {
+    id: 'spending-trends',
+    name: 'Spending Trends',
+    category: WIDGET_CATEGORIES.CHARTS,
+    description: 'Area chart showing 6-month spending trends with optional bills toggle',
+    icon: 'fa-chart-line',
+    defaultSize: { width: 7, height: 5 },
+    displayType: WIDGET_DISPLAY_TYPE.GRID
+  },
+  {
+    id: 'recent-transactions',
+    name: 'Recent Transactions',
+    category: WIDGET_CATEGORIES.LISTS,
+    description: 'Shows the 5 most recent transactions with amounts and categories',
+    icon: 'fa-receipt',
+    defaultSize: { width: 8, height: 7 },
+    displayType: WIDGET_DISPLAY_TYPE.FEATURED  // Featured widget on mobile
+  },
+  {
+    id: 'image-widget',
+    name: 'Image',
+    category: WIDGET_CATEGORIES.ACTIONS,
+    description: 'Upload and display a custom image. Resizable in edit mode.',
+    icon: 'fa-image',
+    defaultSize: { width: 2, height: 2 },
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    webOnly: true,         // Only visible on web, hidden on mobile
+    keepInLibrary: true,   // Doesn't disappear from library when added
+    resizable: true,       // Can be resized by user
+    minSize: { width: 2, height: 2 }
   }
 ]
 

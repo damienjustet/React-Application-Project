@@ -81,3 +81,185 @@
     height: 280px;
   }
 }
+
+/* Mobile Card View */
+.income-spending-chart.mobile {
+  background: transparent;
+  border-radius: 0;
+  padding: 1rem 0;
+  border: none;
+  margin-bottom: 1.5rem;
+}
+
+/* Period Tabs */
+.mobile-period-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 0 16px;
+}
+
+.period-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #3a3a3a;
+  color: #e8e8e8;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.period-tab.active {
+  background: #ffffff;
+  color: #191919;
+}
+
+.period-tab:not(.active):hover {
+  background: #4a4a4a;
+}
+
+/* Cards Scroll Container */
+.mobile-cards-scroll {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+}
+
+.mobile-cards-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-cards-container {
+  display: flex;
+  gap: 6px;
+  padding: 0;
+  width: max-content;
+}
+
+.mobile-card-wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Year Divider */
+.year-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  height: 115px;
+}
+
+.year-divider-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 1px;
+}
+
+/* Month Card */
+.mobile-month-card {
+  width: 56px;
+  height: 115px;
+  background: transparent;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-month-card.selected {
+  border-color: #ffffff;
+}
+
+.mobile-month-card:not(.selected):active {
+  border-color: #666;
+}
+
+/* Card Bars */
+.card-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.card-bar {
+  width: 12px;
+  min-height: 6px;
+  max-height: 70px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px 8px 3px 3px;
+}
+
+.bar-fill.solid {
+  background: #F4C95D;
+}
+
+.bar-fill.dotted {
+  background: #FFEBB8;
+}
+
+.card-month-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #e8e8e8;
+  margin-top: auto;
+}
+
+/* Legend */
+.mobile-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 12px;
+  padding: 0 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.solid {
+  background: #F4C95D;
+}
+
+.legend-dot.dotted {
+  background: #FFEBB8;
+}
+
+.legend-text {
+  font-size: 13px;
+  color: #e8e8e8;
+}

@@ -6,6 +6,9 @@ import BudgetProgressBarWidget from './BudgetProgressBarWidget'
 import AddTransactionButton from './AddTransactionButton'
 import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
 import SavingsJarWidget from './SavingsJarWidget'
+import CategoryBreakdownWidget from './CategoryBreakdownWidget'
+import SpendingTrendsWidget from './SpendingTrendsWidget'
+import RecentTransactionsWidget from './RecentTransactionsWidget'
 import MobileWidgetDrawer from './MobileWidgetDrawer'
 import './MobileDashboard.css'
 
@@ -37,12 +40,23 @@ const getMobileSize = (widget) => {
     return { width: 3, height: 4 }
   }
   
+  if (widget.widgetId === 'category-breakdown') {
+    // Category breakdown: 7x4 on mobile
+    return { width: MOBILE_GRID_COLS, height: 4 }
+  }
+  
+  if (widget.widgetId === 'spending-trends') {
+    // Spending trends: full width (7 columns) on mobile
+    return { width: MOBILE_GRID_COLS, height: 5 }
+  }
+  
   if (widget.widgetId === 'upcoming-transactions') {
     // Upcoming transactions is now a featured widget - rendered separately
     return null
   }
   
-  // For other widgets: clamp to grid bounds
+  // For other widgets (including webOnly like image-widget): 
+  // clamp to grid bounds - they still occupy space even if not visible
   return {
     width: Math.min(width, MOBILE_GRID_COLS),
     height: Math.min(height, MOBILE_GRID_ROWS)
@@ -208,7 +222,20 @@ const getLayoutCacheKey = (widgets) => {
 function MobileDashboard({ isEditMode = false }) {
   const { widgets: dashboardWidgets, removeWidget, reorderWidgets, moveWidget } = useDashboard()
   const { openAddTransactionModal } = useData()
+  
+  // Load card order from localStorage (array of card indices representing display order)
+  const [cardOrder, setCardOrder] = useState(() => {
+    const saved = localStorage.getItem('mobileCardOrder')
+    return saved ? JSON.parse(saved) : null
+  })
+  
+  // Current card index (always starts at 0, which is the home card)
   const [currentCard, setCurrentCard] = useState(0)
+  
+  // Swipe offset for smooth dragging feedback
+  const [swipeOffset, setSwipeOffset] = useState(0)
+  const [isSwiping, setIsSwiping] = useState(false)
+  
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [draggedWidgetId, setDraggedWidgetId] = useState(null)
   const [dragOverWidgetId, setDragOverWidgetId] = useState(null)
@@ -225,6 +252,13 @@ function MobileDashboard({ isEditMode = false }) {
   const initialTouchPos = useRef({ x: 0, y: 0 })
   const hasMoved = useRef(false)
   const draggedWidgetData = useRef(null) // Store widget data during drag
+
+  // Persist card order to localStorage
+  useEffect(() => {
+    if (cardOrder !== null) {
+      localStorage.setItem('mobileCardOrder', JSON.stringify(cardOrder))
+    }
+  }, [cardOrder])
 
   // Separate featured widgets from regular grid widgets
   const { gridWidgets, featuredWidgets } = useMemo(() => {
@@ -275,6 +309,25 @@ function MobileDashboard({ isEditMode = false }) {
     return result
   }, [widgets, widgetKey])
 
+  // Ensure currentCard stays within bounds when total cards changes
+  useEffect(() => {
+    if (currentCard >= totalCards) {
+      setCurrentCard(Math.max(0, totalCards - 1))
+    }
+    // Reset card order if it doesn't match the number of cards
+    if (cardOrder !== null && cardOrder.length !== totalCards) {
+      setCardOrder(null)
+    }
+  }, [totalCards, currentCard, cardOrder])
+
+  // Reorder cards based on cardOrder, or use default order
+  const orderedCards = useMemo(() => {
+    if (!cardOrder || cardOrder.length !== allCards.length) {
+      return allCards
+    }
+    return cardOrder.map(i => allCards[i]).filter(Boolean)
+  }, [allCards, cardOrder])
+
   // Touch handlers - defined outside to use with passive listeners
   useEffect(() => {
     const carousel = carouselRef.current
@@ -282,13 +335,23 @@ function MobileDashboard({ isEditMode = false }) {
 
     const handleTouchStart = (e) => {
       touchStartX.current = e.touches[0].clientX
+      touchEndX.current = e.touches[0].clientX
+      setIsSwiping(true)
     }
 
     const handleTouchMove = (e) => {
       touchEndX.current = e.touches[0].clientX
+      const diff = touchEndX.current - touchStartX.current
+      // Calculate offset as percentage of card width
+      const containerWidth = carousel.offsetWidth
+      const offsetPercent = (diff / containerWidth) * 100
+      setSwipeOffset(offsetPercent)
     }
 
     const handleTouchEnd = () => {
+      setIsSwiping(false)
+      setSwipeOffset(0)
+      
       const diff = touchStartX.current - touchEndX.current
       const threshold = 50
 
@@ -550,6 +613,23 @@ function MobileDashboard({ isEditMode = false }) {
       widgetRefs.current[widget.id] = el
     }
 
+    // For webOnly widgets (like image-widget), render an invisible placeholder
+    // that still occupies the grid space
+    if (widgetDef?.webOnly) {
+      return (
+        <div 
+          key={widget.id} 
+          ref={setWidgetRef} 
+          className={`mobile-widget-placeholder ${isEditMode ? 'edit-mode' : ''}`}
+          style={{
+            ...style,
+            visibility: 'hidden',
+            pointerEvents: 'none'
+          }} 
+        />
+      )
+    }
+
     if (widget.widgetId === 'budget-progress-bar') {
       return (
         <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
@@ -594,6 +674,32 @@ function MobileDashboard({ isEditMode = false }) {
       )
     }
 
+    if (widget.widgetId === 'category-breakdown') {
+      return (
+        <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
+          {isEditMode && (
+            <button className="widget-remove-btn" onClick={(e) => handleRemoveWidget(e, widget.id)}>
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          )}
+          <CategoryBreakdownWidget />
+        </div>
+      )
+    }
+
+    if (widget.widgetId === 'spending-trends') {
+      return (
+        <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
+          {isEditMode && (
+            <button className="widget-remove-btn" onClick={(e) => handleRemoveWidget(e, widget.id)}>
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+          )}
+          <SpendingTrendsWidget />
+        </div>
+      )
+    }
+
     return (
       <div key={widget.id} ref={setWidgetRef} className={wrapperClass} style={style} {...touchProps}>
         {isEditMode && (
@@ -622,13 +728,13 @@ function MobileDashboard({ isEditMode = false }) {
         ref={carouselRef}
       >
         <div 
-          className="mobile-carousel-track"
+          className={`mobile-carousel-track ${isSwiping ? 'swiping' : ''}`}
           style={{
-            transform: `translateX(-${currentCard * 100}%)`
+            transform: `translateX(calc(-${currentCard * 100}% + ${swipeOffset}%))`
           }}
         >
-          {allCards.length > 0 ? (
-            allCards.map((card, cardIndex) => (
+          {orderedCards.length > 0 ? (
+            orderedCards.map((card, cardIndex) => (
               <div key={cardIndex} className="mobile-card">
                 <div className="mobile-card-grid" ref={cardIndex === currentCard ? gridRef : null}>
                   {/* Hover cell indicator */}
@@ -661,7 +767,44 @@ function MobileDashboard({ isEditMode = false }) {
       
       {totalCards > 1 && (
         <div className="mobile-card-indicator">
-          <span>{currentCard + 1} / {totalCards}</span>
+          {Array.from({ length: totalCards }).map((_, index) => {
+            const isHome = index === 0 // First position is always the home indicator
+            const isActive = index === currentCard
+            
+            if (isHome) {
+              return (
+                <button
+                  key={index}
+                  className={`indicator-home ${isActive ? 'active' : ''}`}
+                  onClick={() => {
+                    if (!isActive) {
+                      // Clicking hollow home icon makes current card the new home card
+                      // Get current order or create default
+                      const currentOrder = cardOrder || Array.from({ length: totalCards }, (_, i) => i)
+                      // Remove the card at currentCard position and put it at the front
+                      const newOrder = [...currentOrder]
+                      const removed = newOrder.splice(currentCard, 1)[0]
+                      newOrder.unshift(removed)
+                      setCardOrder(newOrder)
+                      // Stay viewing the same content, now at position 0
+                      setCurrentCard(0)
+                    }
+                  }}
+                  aria-label="Set as home card"
+                >
+                  <i className={`fa-${isActive ? 'solid' : 'regular'} fa-house`}></i>
+                </button>
+              )
+            }
+            
+            return (
+              <span
+                key={index}
+                className={`indicator-dot ${isActive ? 'active' : ''}`}
+                aria-label={`Card ${index + 1}`}
+              />
+            )
+          })}
         </div>
       )}
 
@@ -671,6 +814,8 @@ function MobileDashboard({ isEditMode = false }) {
           {featuredWidgets.map(widget => {
             const widgetElement = widget.widgetId === 'upcoming-transactions' 
               ? <UpcomingTransactionsWidget key={widget.id} isFeatured={true} />
+              : widget.widgetId === 'recent-transactions'
+              ? <RecentTransactionsWidget key={widget.id} isFeatured={true} />
               : null
             
             return widgetElement ? (

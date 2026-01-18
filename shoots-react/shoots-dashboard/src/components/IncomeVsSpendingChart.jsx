@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import './IncomeVsSpendingChart.css'
 import { getLastNMonths, matchesMonthYear, getCurrentDate } from '../utils/dateUtils'
@@ -13,6 +13,8 @@ const CHART_COLORS = {
   discretionary: '#FFDC84', // Discretionary spending - soft yellow
   bills: '#FFEBB8'          // Bills/fixed costs - pale yellow
 }
+
+const TIME_PERIODS = ['Week', 'Month', 'Quarter', 'Year']
 
 const CHART_CONFIG = {
   barMaxSize: 23,
@@ -105,7 +107,16 @@ const CombinedSpendingBar = (props) => {
 
 function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear, onMonthSelect }) {
   const [startIndex, setStartIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
+  const [selectedPeriod, setSelectedPeriod] = useState('Month')
+  const scrollContainerRef = useRef(null)
   const monthsToShow = 6
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Generate dynamic months: 6 months before current to 5 months after (total 12 months, showing in 2 intervals of 6)
   const monthsData = useMemo(() => getLastNMonths(12), [])
@@ -187,6 +198,102 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
     return null
   }
 
+  // Calculate max values for mobile card bars
+  const maxIncome = Math.max(...allMonthsData.map(m => m.income), 1)
+  const maxSpending = Math.max(...allMonthsData.map(m => m.bills + m.discretionary), 1)
+  const mobileMaxValue = Math.max(maxIncome, maxSpending)
+
+  // Filter out future months for mobile view
+  const currentDate = getCurrentDate()
+  const todayMonthNum = currentDate.getMonth()
+  const todayYear = currentDate.getFullYear()
+  
+  // Map month abbreviations to their index (0-11)
+  const monthToIndex = {
+    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+  }
+  
+  const pastAndCurrentMonths = allMonthsData.filter(monthData => {
+    const monthIndex = monthToIndex[monthData.month]
+    if (monthData.year < todayYear) return true
+    if (monthData.year === todayYear && monthIndex <= todayMonthNum) return true
+    return false
+  })
+
+  // Mobile Card View
+  if (isMobile) {
+    return (
+      <div className="income-spending-chart mobile">
+        {/* Period Tabs */}
+        <div className="mobile-period-tabs">
+          {TIME_PERIODS.map(period => (
+            <button
+              key={period}
+              className={`period-tab ${selectedPeriod === period ? 'active' : ''}`}
+              onClick={() => setSelectedPeriod(period)}
+            >
+              {period}
+            </button>
+          ))}
+        </div>
+
+        {/* Month Cards Carousel */}
+        <div className="mobile-cards-scroll" ref={scrollContainerRef}>
+          <div className="mobile-cards-container">
+            {pastAndCurrentMonths.map((monthData, index) => {
+              const isSelected = monthData.month === selectedMonth && monthData.year === selectedYear
+              const totalSpending = monthData.bills + monthData.discretionary
+              const incomeHeight = mobileMaxValue > 0 ? (monthData.income / mobileMaxValue) * 100 : 0
+              const spendingHeight = mobileMaxValue > 0 ? (totalSpending / mobileMaxValue) * 100 : 0
+              
+              // Check if we need to show year divider (when year changes from previous month)
+              const prevMonth = index > 0 ? pastAndCurrentMonths[index - 1] : null
+              const showYearDivider = prevMonth && prevMonth.year !== monthData.year
+
+              return (
+                <div key={`${monthData.month}-${monthData.year}`} className="mobile-card-wrapper">
+                  {showYearDivider && (
+                    <div className="year-divider">
+                      <span className="year-divider-text">{monthData.year}</span>
+                    </div>
+                  )}
+                  <div 
+                    className={`mobile-month-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => onMonthSelect && onMonthSelect(monthData.month, monthData.year)}
+                  >
+                    <div className="card-bars">
+                      <div className="card-bar income-bar" style={{ height: `${Math.max(incomeHeight, 5)}%` }}>
+                        <div className="bar-fill solid"></div>
+                      </div>
+                      <div className="card-bar spending-bar" style={{ height: `${Math.max(spendingHeight, 5)}%` }}>
+                        <div className="bar-fill dotted"></div>
+                      </div>
+                    </div>
+                    <span className="card-month-label">{monthData.shortLabel}</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="mobile-legend">
+          <div className="legend-item">
+            <span className="legend-dot solid"></span>
+            <span className="legend-text">Income</span>
+          </div>
+          <div className="legend-item">
+            <span className="legend-dot dotted"></span>
+            <span className="legend-text">Total Spend</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Desktop View
   return (
     <div className="income-spending-chart">
       <div className="chart-wrapper">

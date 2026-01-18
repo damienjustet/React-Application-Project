@@ -55,10 +55,18 @@ function SpendingPage({ isExpanded, toggleSidebar }) {
     return true
   }).slice(0, activeFilter === 'Recent' ? RECENT_TRANSACTIONS_LIMIT : undefined)
 
+  // Get today's date in input format (YYYY-MM-DD) for placeholder
+  const getTodayInputFormat = () => {
+    const today = getCurrentDate()
+    return today.toISOString().split('T')[0]
+  }
+
   // Handlers
   const handleAddTransaction = () => {
-    if (newTransaction.merchant && newTransaction.amount > 0 && newTransaction.date) {
-      const formattedDate = inputToDisplayDate(newTransaction.date)
+    if (newTransaction.merchant && newTransaction.amount > 0) {
+      // Default to today's date if no date provided
+      const dateToUse = newTransaction.date || getTodayInputFormat()
+      const formattedDate = inputToDisplayDate(dateToUse)
       
       const transaction = {
         date: formattedDate,
@@ -307,7 +315,20 @@ function SpendingPage({ isExpanded, toggleSidebar }) {
       )}
       
       <div className="spending-content">
-        <h1 className="page-title">Spending</h1>
+        <h1 className="page-title">{{
+          'Jan': 'January',
+          'Feb': 'February',
+          'Mar': 'March',
+          'Apr': 'April',
+          'May': 'May',
+          'Jun': 'June',
+          'Jul': 'July',
+          'Aug': 'August',
+          'Sep': 'September',
+          'Oct': 'October',
+          'Nov': 'November',
+          'Dec': 'December'
+        }[selectedMonth]} Spending</h1>
 
         {/* Income vs Spending Chart */}
         <IncomeVsSpendingChart 
@@ -337,9 +358,8 @@ function SpendingPage({ isExpanded, toggleSidebar }) {
                 >
                   <i className="fa-solid fa-calendar-days"></i>
                 </button>
-                <button className="add-transaction-btn" onClick={() => setShowAddModal(true)}>
+                <button className="add-transaction-btn" onClick={() => setShowAddModal(true)} title="Add Transaction">
                   <i className="fa-solid fa-plus"></i>
-                  Add Transaction
                 </button>
               </div>
             </div>
