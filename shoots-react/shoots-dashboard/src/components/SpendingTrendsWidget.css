@@ -3,11 +3,13 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 4px;
   box-sizing: border-box;
   background: transparent;
   border-radius: 12px;
   overflow: hidden;
+  container-type: size;
+  container-name: trends-widget;
 }
 
 .trends-widget-header {
@@ -49,6 +51,27 @@
 .trends-widget-bills-btn.active {
   background-color: var(--btn-active-color, #4CAF50);
   color: #fff;
+}
+
+/* Scale title and button for larger containers */
+@container trends-widget (min-width: 300px) {
+  .trends-widget-title {
+    font-size: 16px;
+  }
+  .trends-widget-bills-btn {
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+}
+
+@container trends-widget (min-width: 400px) {
+  .trends-widget-title {
+    font-size: 18px;
+  }
+  .trends-widget-bills-btn {
+    font-size: 13px;
+    padding: 8px 18px;
+  }
 }
 
 .trends-widget-content {

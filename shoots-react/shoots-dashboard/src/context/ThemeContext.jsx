@@ -4,7 +4,7 @@ import ColorThief from 'colorthief'
 const ThemeContext = createContext(null)
 
 // Default banner image URL
-const DEFAULT_BANNER_URL = "https://images.unsplash.com/photo-1632307941173-5d541ea1d940?q=80&w=1792&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+const DEFAULT_BANNER_URL = "https://cdn.jumpshare.com/preview/_RcP6rEc3-263IjZvDy9zkZ8OIumkySYyMgBbIVBUqjCtYWE_WtIRYbRONEJA4gCW7SUNoVwSFcl-iIEgXYK4huE9N2fP9XXKzZvzaFWwqA"
 
 // Convert RGB array to hex
 const rgbToHex = (r, g, b) => {

@@ -18,7 +18,27 @@
   padding: 0 15px;
   font-size: 14px;
   gap: 15px;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+/* When sidebar is expanded, offset the top bar */
+.top-bar.sidebar-expanded {
+  left: clamp(240px, 15vw, 240px);
+}
+
+/* Spacer to prevent content from being hidden under fixed top bar */
+.top-bar-spacer {
+  height: 45px;
+}
+
+@media (max-width: 768px) {
+  .top-bar {
+    left: 0 !important;
+  }
 }
 
 /* Hamburger icon in header */

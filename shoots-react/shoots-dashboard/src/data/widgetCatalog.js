@@ -38,7 +38,7 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.LISTS,
     description: 'Shows the next 5 upcoming bills and subscriptions',
     icon: 'fa-calendar-days',
-    defaultSize: { width: 13, height: 3 },
+    defaultSize: { width: 15, height: 3 },
     displayType: WIDGET_DISPLAY_TYPE.FEATURED  // This widget gets its own section
   },
   {
@@ -47,7 +47,7 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.STATS,
     description: 'Visual jar showing savings progress with ability to switch between goals',
     icon: 'fa-jar',
-    defaultSize: { width: 4, height: 5 },
+    defaultSize: { width: 3, height: 5 },
     displayType: WIDGET_DISPLAY_TYPE.GRID
   },
   {
@@ -56,7 +56,7 @@ export const WIDGET_CATALOG = [
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Pie chart with spending breakdown by category',
     icon: 'fa-chart-pie',
-    defaultSize: { width: 6, height: 4 },
+    defaultSize: { width: 8, height: 4 },
     displayType: WIDGET_DISPLAY_TYPE.GRID
   },
   {

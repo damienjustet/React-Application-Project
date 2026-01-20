@@ -11,6 +11,52 @@
   background-attachment: fixed;
 }
 
+/* Time Period Selector */
+.time-period-selector {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.time-period-cell {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Vertical dividers between cells */
+.time-period-cell:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.time-period-cell:hover:not(:disabled) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.time-period-cell.active {
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+.time-period-cell:disabled {
+  color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+}
+
 /* Section header with toggle */
 .section-header-with-toggle {
   display: flex;

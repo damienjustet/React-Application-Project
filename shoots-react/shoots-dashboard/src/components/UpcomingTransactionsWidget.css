@@ -6,8 +6,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 4px;
   box-sizing: border-box;
+  container-type: size;
+  container-name: upcoming-widget;
 }
 
 /* Featured Widget - Full Width Section */
@@ -66,8 +68,7 @@
 
 .upcoming-tile {
   flex: 1;
-  min-width: 90px;
-  max-width: 130px;
+  min-width: 80px;
   background: #2a2a2a;
   border-radius: 12px;
   padding: 14px 12px;
@@ -141,6 +142,23 @@
   opacity: 0.9;
   width: 40px;
   height: 40px;
+}
+
+/* Scale icons for larger containers */
+@container upcoming-widget (min-width: 600px) {
+  .tile-icon svg {
+    font-size: 50px;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@container upcoming-widget (min-width: 900px) {
+  .tile-icon svg {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+  }
 }
 
 /* Empty state */

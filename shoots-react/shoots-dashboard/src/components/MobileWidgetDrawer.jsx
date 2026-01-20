@@ -8,26 +8,20 @@ const WEB_GRID_COLS = 28 // Maximum columns on web view
 const WEB_GRID_ROWS = 14 // Constant rows on web view
 const MAX_GRID_CELLS = WEB_GRID_COLS * WEB_GRID_ROWS
 
-// Calculate how many cells a widget takes on the web view grid
-const getWebGridCellCount = (widget) => {
-  // Featured widgets don't take up grid space
-  if (widget.id === 'upcoming-transactions') return 0
-  // Use the widget's actual default size (web view dimensions)
-  return widget.defaultSize.width * widget.defaultSize.height
-}
-
 function MobileWidgetDrawer({ isOpen, onClose }) {
   const { widgets: dashboardWidgets, addWidget } = useDashboard()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
 
-  // Calculate current grid usage
+  // Calculate current grid usage from actual widget sizes on dashboard
   const gridUsage = useMemo(() => {
     let usedCells = 0
     dashboardWidgets.forEach(widget => {
-      const catalogWidget = WIDGET_CATALOG.find(w => w.id === widget.widgetId)
-      if (catalogWidget) {
-        usedCells += getWebGridCellCount(catalogWidget)
+      // Skip featured widgets that don't take grid space
+      if (widget.widgetId === 'upcoming-transactions') return
+      // Use the widget's actual size on the dashboard, not default size
+      if (widget.size) {
+        usedCells += widget.size.width * widget.size.height
       }
     })
     return usedCells
@@ -41,7 +35,9 @@ function MobileWidgetDrawer({ isOpen, onClose }) {
   // Check if adding a widget would exceed grid capacity
   const canAddWidget = (catalogWidget) => {
     if (isWidgetAdded(catalogWidget.id)) return false
-    const cellsNeeded = getWebGridCellCount(catalogWidget)
+    // Skip featured widgets that don't take grid space
+    if (catalogWidget.id === 'upcoming-transactions') return true
+    const cellsNeeded = catalogWidget.defaultSize.width * catalogWidget.defaultSize.height
     return (gridUsage + cellsNeeded) <= MAX_GRID_CELLS
   }
 

@@ -144,7 +144,7 @@ export const WIDGET_REGISTRY = {
     category: WIDGET_CATEGORIES.CHARTS,
     description: 'Pie chart with spending breakdown by category',
     icon: 'fa-chart-pie',
-    defaultSize: { width: 6, height: 4 },
+    defaultSize: { width: 8, height: 4 },
     minSize: { width: 5, height: 4 },
     maxSize: { width: 10, height: 6 },
     resizable: true,

@@ -105,8 +105,19 @@ const CombinedSpendingBar = (props) => {
   )
 }
 
-function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear, onMonthSelect }) {
-  const [startIndex, setStartIndex] = useState(0)
+function IncomeVsSpendingChart({ 
+  transactions = [], 
+  selectedMonth, 
+  selectedYear, 
+  selectedQuarter,
+  selectedPeriodYear,
+  timePeriod = 'monthly', 
+  onMonthSelect,
+  onQuarterSelect,
+  onYearSelect
+}) {
+  // Start at index 6 for monthly view so current month is visible (months 6-11 include current month)
+  const [startIndex, setStartIndex] = useState(6)
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const [selectedPeriod, setSelectedPeriod] = useState('Month')
   const scrollContainerRef = useRef(null)
@@ -149,12 +160,130 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
     return monthsData.map(calculateMonthData)
   }, [transactions, monthsData])
 
+  // Generate quarterly data
+  const quarterlyData = useMemo(() => {
+    const isBillTransaction = (transaction) => transaction.category === 'Bills and Utilities'
+    const currentDate = getCurrentDate()
+    const currentYear = currentDate.getFullYear()
+    
+    // Show quarters for current year and previous year
+    const years = [currentYear - 1, currentYear]
+    const quarters = []
+    
+    const quarterMonths = {
+      Q1: ['Jan', 'Feb', 'Mar'],
+      Q2: ['Apr', 'May', 'Jun'],
+      Q3: ['Jul', 'Aug', 'Sep'],
+      Q4: ['Oct', 'Nov', 'Dec']
+    }
+    
+    years.forEach(year => {
+      Object.entries(quarterMonths).forEach(([quarter, months]) => {
+        const quarterTransactions = transactions.filter(t => {
+          // Date format: "Jan 3, 2026" or "Dec 10, 2025"
+          const parts = t.date.split(' ')
+          const txMonth = parts[0] // e.g., "Jan", "Dec"
+          const txYear = parseInt(parts[2]) // e.g., 2026, 2025
+          return txYear === year && months.includes(txMonth)
+        })
+        
+        const income = quarterTransactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0)
+        
+        const expenses = quarterTransactions.filter(t => t.type === 'expense')
+        const bills = expenses.filter(isBillTransaction).reduce((sum, t) => sum + t.amount, 0)
+        const discretionary = expenses.filter(t => !isBillTransaction(t)).reduce((sum, t) => sum + t.amount, 0)
+        
+        quarters.push({
+          month: quarter,
+          year,
+          label: `${quarter} ${year}`,
+          shortLabel: quarter,
+          income,
+          bills,
+          discretionary
+        })
+      })
+    })
+    
+    return quarters
+  }, [transactions])
+
+  // Generate yearly data
+  const yearlyData = useMemo(() => {
+    const isBillTransaction = (transaction) => transaction.category === 'Bills and Utilities'
+    const currentDate = getCurrentDate()
+    const currentYear = currentDate.getFullYear()
+    
+    // Show last 6 years including current
+    const years = []
+    for (let i = 5; i >= 0; i--) {
+      years.push(currentYear - i)
+    }
+    
+    return years.map(year => {
+      const yearTransactions = transactions.filter(t => {
+        // Date format: "Jan 3, 2026" or "Dec 10, 2025"
+        const parts = t.date.split(' ')
+        const txYear = parseInt(parts[2])
+        return txYear === year
+      })
+      
+      const income = yearTransactions
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + t.amount, 0)
+      
+      const expenses = yearTransactions.filter(t => t.type === 'expense')
+      const bills = expenses.filter(isBillTransaction).reduce((sum, t) => sum + t.amount, 0)
+      const discretionary = expenses.filter(t => !isBillTransaction(t)).reduce((sum, t) => sum + t.amount, 0)
+      
+      return {
+        month: year.toString(),
+        year,
+        label: year.toString(),
+        shortLabel: year.toString(),
+        income,
+        bills,
+        discretionary
+      }
+    })
+  }, [transactions])
+
+  // Select which data to use based on timePeriod
+  const chartData = useMemo(() => {
+    switch (timePeriod) {
+      case 'year':
+        return yearlyData
+      case 'quarterly':
+        return quarterlyData
+      case 'monthly':
+      default:
+        return allMonthsData
+    }
+  }, [timePeriod, allMonthsData, quarterlyData, yearlyData])
+
+  // Reset start index when time period changes - position to show current period
+  useEffect(() => {
+    if (timePeriod === 'monthly') {
+      setStartIndex(6) // Show current month (index 6-11)
+    } else if (timePeriod === 'quarterly') {
+      setStartIndex(4) // Show current year's quarters (Q1-Q4 of current year)
+    } else {
+      setStartIndex(0) // Show all years from the start
+    }
+  }, [timePeriod])
+
+  // Determine items to show based on time period
+  const itemsToShow = timePeriod === 'year' ? 6 : timePeriod === 'quarterly' ? 4 : monthsToShow
+  const maxStartIndex = Math.max(0, chartData.length - itemsToShow)
+  
   // Current month index: the chart starts at -6 months, so current month is at index 6
-  const currentMonthIndex = 6
-  const visibleMonths = allMonthsData.slice(startIndex, startIndex + monthsToShow)
+  const currentMonthIndex = timePeriod === 'monthly' ? 6 : -1
+  const visibleData = chartData.slice(startIndex, startIndex + itemsToShow)
 
   // Calculate max value to set YAxis domain
-  const maxValue = Math.max(...visibleMonths.map(m => Math.max(m.income, m.bills + m.discretionary)), 100)
+  const maxValue = Math.max(...visibleData.map(m => Math.max(m.income, m.bills + m.discretionary)), 100)
   const yAxisMax = Math.ceil(maxValue / 100) * 100
   // Calculate the clip offset for the top line based on annotation width
   const annotationText = formatCurrency(yAxisMax)
@@ -299,14 +428,14 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
       <div className="chart-wrapper">
         <button 
           className="chart-nav-btn chart-nav-left" 
-          onClick={() => setStartIndex(Math.max(0, startIndex - 6))}
+          onClick={() => setStartIndex(Math.max(0, startIndex - itemsToShow))}
           disabled={startIndex === 0}
         >
           <i className="fa-solid fa-chevron-left"></i>
         </button>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={visibleMonths} margin={{ top: 20, right: 70, left: 10, bottom: 45 }} barGap={12} barCategoryGap="20%">
+            <BarChart data={visibleData} margin={{ top: 20, right: 70, left: 10, bottom: 25 }} barGap={12} barCategoryGap="20%">
               <CartesianGrid strokeDasharray="0" stroke={CHART_COLORS.grid} strokeWidth={CHART_CONFIG.gridStrokeWidth} horizontal={true} vertical={false} horizontalValues={[0, yAxisMax / 2]} />
               <ReferenceLine
                 y={yAxisMax}
@@ -314,17 +443,43 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
                 label={renderCustomTopLine}
               />
               <XAxis dataKey="label" stroke="transparent" tick={({ x, y, payload }) => {
-                const monthData = visibleMonths.find(m => m.label === payload.value)
-                const monthIndex = visibleMonths.findIndex(m => m.label === payload.value) + startIndex
-                const isCurrentMonth = monthIndex === currentMonthIndex
-                const isSelected = monthData && monthData.month === selectedMonth && monthData.year === selectedYear
+                const dataItem = visibleData.find(m => m.label === payload.value)
+                const dataIndex = visibleData.findIndex(m => m.label === payload.value) + startIndex
+                const isCurrentMonth = timePeriod === 'monthly' && dataIndex === currentMonthIndex
                 
-                // Display format: "Aug" for current year, "Aug 2025" for other years
+                // Determine if this item is selected based on time period
+                let isSelected = false
+                if (timePeriod === 'monthly' && dataItem) {
+                  isSelected = dataItem.month === selectedMonth && dataItem.year === selectedYear
+                } else if (timePeriod === 'quarterly' && dataItem) {
+                  isSelected = dataItem.shortLabel === selectedQuarter && dataItem.year === selectedPeriodYear
+                } else if (timePeriod === 'year' && dataItem) {
+                  isSelected = dataItem.year === selectedPeriodYear
+                }
+                
+                // Display format depends on time period
                 const now = getCurrentDate()
                 const currentYear = now.getFullYear()
-                const displayLabel = monthData 
-                  ? (monthData.year === currentYear ? monthData.shortLabel : `${monthData.shortLabel} ${monthData.year}`)
-                  : payload.value
+                let displayLabel = payload.value
+                if (timePeriod === 'monthly' && dataItem) {
+                  displayLabel = dataItem.year === currentYear ? dataItem.shortLabel : `${dataItem.shortLabel} ${dataItem.year}`
+                } else if (timePeriod === 'quarterly' && dataItem) {
+                  displayLabel = `${dataItem.shortLabel} ${dataItem.year}`
+                } else if (timePeriod === 'year' && dataItem) {
+                  displayLabel = dataItem.label
+                }
+                
+                // Handle click based on time period
+                const handleClick = () => {
+                  if (!dataItem) return
+                  if (timePeriod === 'monthly' && onMonthSelect) {
+                    onMonthSelect(dataItem.month, dataItem.year)
+                  } else if (timePeriod === 'quarterly' && onQuarterSelect) {
+                    onQuarterSelect(dataItem.shortLabel, dataItem.year)
+                  } else if (timePeriod === 'year' && onYearSelect) {
+                    onYearSelect(dataItem.year)
+                  }
+                }
                 
                 // Calculate dynamic background dimensions based on text length
                 const approxCharWidth = CHART_CONFIG.fontSize.month * 0.7
@@ -336,7 +491,7 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
                 return (
                   <g 
                     style={{ cursor: 'pointer' }}
-                    onClick={() => onMonthSelect && monthData && onMonthSelect(monthData.month, monthData.year)}
+                    onClick={handleClick}
                   >
                     {(isCurrentMonth || isSelected) && (
                       <rect
@@ -381,8 +536,8 @@ function IncomeVsSpendingChart({ transactions = [], selectedMonth, selectedYear,
         </div>
         <button 
           className="chart-nav-btn chart-nav-right" 
-          onClick={() => setStartIndex(Math.min(6, startIndex + 6))}
-          disabled={startIndex >= 6}
+          onClick={() => setStartIndex(Math.min(maxStartIndex, startIndex + itemsToShow))}
+          disabled={startIndex >= maxStartIndex}
         >
           <i className="fa-solid fa-chevron-right"></i>
         </button>

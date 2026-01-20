@@ -59,7 +59,7 @@ function CategoryBreakdownWidget() {
       .sort((a, b) => b.amount - a.amount)
 
     const totalAmount = cats.reduce((sum, cat) => sum + cat.amount, 0)
-    const remainingBudget = Math.max(0, totalBudget - totalAmount)
+    const remainingBudget = totalBudget - totalAmount
     
     return { categories: cats, total: totalAmount, remaining: remainingBudget }
   }, [transactions, selectedMonth, selectedYear, categoryColors, getTransactionsByMonthYear, totalBudget, includeBills])
@@ -116,18 +116,28 @@ function CategoryBreakdownWidget() {
         <div className="category-widget-chart">
         <div className="category-widget-center-label">
           <span 
-            className={`category-widget-amount font-numeric ${isHoveringChart ? 'expanded' : ''}`}
+            className={`category-widget-amount font-numeric ${isHoveringChart ? 'expanded' : ''} ${remaining < 0 ? 'over-budget' : ''}`}
             onMouseEnter={() => setIsHoveringChart(true)}
             onMouseLeave={() => setIsHoveringChart(false)}
           >
-            {isHoveringChart
-              ? `$${remaining.toFixed(2)}`
-              : remaining >= 1000
-                ? `$${(remaining / 1000).toFixed(1)}k`
-                : `$${Math.round(remaining)}`
+            {remaining < 0 
+              ? (isHoveringChart
+                  ? `-$${Math.abs(remaining).toFixed(2)}`
+                  : Math.abs(remaining) >= 1000
+                    ? `-$${(Math.abs(remaining) / 1000).toFixed(1)}k`
+                    : `-$${Math.round(Math.abs(remaining))}`
+                )
+              : (isHoveringChart
+                  ? `$${remaining.toFixed(2)}`
+                  : remaining >= 1000
+                    ? `$${(remaining / 1000).toFixed(1)}k`
+                    : `$${Math.round(remaining)}`
+                )
             }
           </span>
-          <span className="category-widget-label">Left</span>
+          <span className={`category-widget-label ${remaining < 0 ? 'over-budget' : ''}`}>
+            {remaining < 0 ? 'Over !' : 'Left'}
+          </span>
         </div>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -135,8 +145,8 @@ function CategoryBreakdownWidget() {
               data={categories}
               cx="50%"
               cy="50%"
-              innerRadius={isMobile ? "60%" : "55%"}
-              outerRadius={isMobile ? "95%" : "85%"}
+              innerRadius={isMobile ? "60%" : "68%"}
+              outerRadius={isMobile ? "95%" : "95%"}
               paddingAngle={0}
               dataKey="amount"
               stroke="none"
@@ -159,7 +169,6 @@ function CategoryBreakdownWidget() {
       {/* Right side - Category List */}
       <div className="category-widget-list">
         {categories.map((category, index) => {
-          const changeClass = category.percentChange > 0 ? 'up' : category.percentChange < 0 ? 'down' : ''
           return (
             <div key={index} className="category-widget-row">
               <div className="category-widget-row-left">
@@ -167,7 +176,6 @@ function CategoryBreakdownWidget() {
                 <span className="category-widget-name">{category.name}</span>
               </div>
               <div className="category-widget-row-right">
-                <span className={`category-widget-percent font-numeric ${changeClass}`}>{Math.abs(category.percentChange)}%</span>
                 <span className="category-widget-value font-numeric">${category.amount.toFixed(0)}</span>
               </div>
             </div>

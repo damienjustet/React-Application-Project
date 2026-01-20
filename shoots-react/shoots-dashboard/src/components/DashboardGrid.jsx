@@ -23,9 +23,6 @@ const getGridColumns = () => {
   return 7
 }
 
-// Ideal width baseline (ultrawide monitor) - grid scales proportionally below this
-const IDEAL_GRID_WIDTH = 1600
-
 function DashboardGrid({ isEditMode: mobileEditMode = false }) {
   const { widgets: dashboardWidgets, addWidget, removeWidget, moveWidget, resizeWidget } = useDashboard()
   const { openAddTransactionModal } = useData()
@@ -34,8 +31,6 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const [gridColumns, setGridColumns] = useState(getGridColumns)
   const resizeTimeoutRef = useRef(null)
-  const gridContainerRef = useRef(null)
-  const [gridScale, setGridScale] = useState(1)
   
   // Edit mode state (desktop only - mobile uses prop)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -66,20 +61,6 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
     })
   }, [dashboardWidgets])
 
-  // Calculate grid scale based on container width
-  const updateGridScale = useCallback(() => {
-    if (gridContainerRef.current && !isMobile) {
-      const containerWidth = gridContainerRef.current.offsetWidth
-      // Scale down proportionally when smaller than ideal, never scale up
-      const scale = Math.min(1, containerWidth / IDEAL_GRID_WIDTH)
-      // Clamp minimum scale to prevent content from becoming too small
-      const clampedScale = Math.max(0.6, scale)
-      setGridScale(clampedScale)
-    } else {
-      setGridScale(1)
-    }
-  }, [isMobile])
-
   // Handle window resize with debounce
   useEffect(() => {
     const handleResize = () => {
@@ -88,19 +69,15 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
         const newColumns = getGridColumns()
         setGridColumns(prev => prev !== newColumns ? newColumns : prev)
         setIsMobile(window.innerWidth <= 768)
-        updateGridScale()
       }, 100)
     }
-
-    // Initial scale calculation
-    updateGridScale()
 
     window.addEventListener('resize', handleResize, { passive: true })
     return () => {
       window.removeEventListener('resize', handleResize)
       if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current)
     }
-  }, [updateGridScale])
+  }, [])
 
   // Close context menu on click outside
   useEffect(() => {
@@ -109,10 +86,10 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
     return () => document.removeEventListener('click', handleClickOutside)
   }, [])
 
-  // Keyboard shortcut: Ctrl+E to toggle edit mode
+  // Keyboard shortcut: Ctrl+E / Cmd+E to toggle edit mode
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.key === 'e') {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
         e.preventDefault()
         setIsEditMode(prev => !prev)
       }
@@ -337,33 +314,17 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
           <p>Or use multi-select in the widget library →</p>
         </div>
       )}
-      <div 
-        className="dashboard-grid-scale-wrapper"
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-      >
+      <div className="dashboard-grid-container">
         <div 
-          ref={gridContainerRef}
-          className="dashboard-grid-container"
+          className="dashboard-grid" 
           style={{
-            '--grid-scale': gridScale,
-            transform: gridScale < 1 ? `scale(${gridScale})` : 'none',
-            transformOrigin: 'top center'
+            gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+            gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
           }}
+          onDragOver={handleWidgetDragOver}
+          onDragLeave={handleWidgetDragLeave}
+          onDrop={handleWidgetDrop}
         >
-          <div 
-            className="dashboard-grid" 
-            style={{
-              gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
-              gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`
-            }}
-            onDragOver={handleWidgetDragOver}
-            onDragLeave={handleWidgetDragLeave}
-            onDrop={handleWidgetDrop}
-          >
           {/* Widget drop zone preview */}
           {isWidgetDragging && widgetDropZone && (
             <div
@@ -570,7 +531,6 @@ function DashboardGrid({ isEditMode: mobileEditMode = false }) {
             )
           })}
         </div>
-      </div>
       </div>
       
       {/* Context menu for widgets */}

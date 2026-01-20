@@ -91,10 +91,6 @@
   padding: 2.25rem;
   position: relative;
   
-  /* Scale transition for smooth resizing */
-  transition: transform 0.15s ease-out;
-  will-change: transform;
-  
   /* Soft organic border - torn paper / cave opening style */
   clip-path: polygon(
     /* Top edge - soft flowing curves with occasional tears */
@@ -146,7 +142,7 @@
 
 /* Grid Tiles (Visual Guidelines) */
 .grid-tile {
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
   pointer-events: none;
 }
@@ -156,7 +152,7 @@
   position: relative;
   z-index: 10;
   user-select: none;
-  padding: 5px;
+  padding: 1px;
 }
 
 .grid-block-wrapper.edit-mode {

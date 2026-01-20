@@ -113,7 +113,7 @@ function WidgetLibrary({ isOpen, onClose }) {
         onClick={onClose}
         style={isDragging ? { pointerEvents: 'none' } : {}}
       />
-      <div className="widget-library">
+      <div className={`widget-library ${isDragging ? 'dragging' : ''}`}>
         <div className="widget-library-header">
           <h2>Widget Library</h2>
           <button className="close-btn" onClick={onClose} title="Close">

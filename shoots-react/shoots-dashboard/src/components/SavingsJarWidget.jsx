@@ -209,29 +209,31 @@ function SavingsJarWidget() {
   return (
     <div className="savings-jar-widget">
       <div className="jar-container">
-        <div className="jar-bg">
-          <div className="jar-lid"></div>
-          <div className="jar-neck"></div>
-          <div className="jar-body" id="jarBody">
-            {jarSections.map(section => (
-              <div
-                key={section.key}
-                className={`jar-section${section.isBottom ? ' bottom' : ''}`}
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  height: `${section.height}px`,
-                  bottom: `${section.bottom}px`,
-                  background: section.color
-                }}
-                title={`${section.source.name}: ${formatCurrency(section.source.value)}`}
-              />
-            ))}
+        <div className="jar-wrapper">
+          <div className="jar-bg">
+            <div className="jar-lid"></div>
+            <div className="jar-neck"></div>
+            <div className="jar-body" id="jarBody">
+              {jarSections.map(section => (
+                <div
+                  key={section.key}
+                  className={`jar-section${section.isBottom ? ' bottom' : ''}`}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    height: `${section.height}px`,
+                    bottom: `${section.bottom}px`,
+                    background: section.color
+                  }}
+                  title={`${section.source.name}: ${formatCurrency(section.source.value)}`}
+                />
+              ))}
+            </div>
+            <button className="jar-switch-btn" onClick={handleSwitch}>
+              <i className="fa-solid fa-arrow-right-arrow-left"></i>
+            </button>
           </div>
-          <button className="jar-switch-btn" onClick={handleSwitch}>
-            <i className="fa-solid fa-arrow-right-arrow-left"></i>
-          </button>
         </div>
       </div>
       

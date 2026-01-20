@@ -59,18 +59,6 @@ function AppContent() {
         e.preventDefault()
         setIsSearchOpen(true)
       }
-
-      // Ctrl+Z / Cmd+Z - Undo
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-        e.preventDefault()
-        undo()
-      }
-
-      // Ctrl+Y / Cmd+Shift+Z - Redo
-      if (((e.ctrlKey && e.key === 'y') || (e.metaKey && e.shiftKey && e.key === 'z'))) {
-        e.preventDefault()
-        redo()
-      }
     }
 
     document.addEventListener('keydown', handleKeyDown)

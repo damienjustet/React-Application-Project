@@ -31,9 +31,48 @@ function SpendingPage({ isExpanded, toggleSidebar }) {
   const [editTransaction, setEditTransaction] = useState({ merchant: '', amount: 0, category: '', date: '', type: '' })
   const [includeBillsInBreakdown, setIncludeBillsInBreakdown] = useState(true)
   const [includeBillsInTrends, setIncludeBillsInTrends] = useState(true)
+  const [timePeriod, setTimePeriod] = useState('monthly')
+  const [selectedQuarter, setSelectedQuarter] = useState(() => {
+    const now = getCurrentDate()
+    const q = Math.ceil((now.getMonth() + 1) / 3)
+    return `Q${q}`
+  })
+  const [selectedPeriodYear, setSelectedPeriodYear] = useState(() => getCurrentDate().getFullYear())
 
-  // Computed values - use year-aware filtering
-  const monthTransactions = getTransactionsByMonthYear(selectedMonth, selectedYear)
+  // Quarter to months mapping
+  const quarterMonths = {
+    Q1: ['Jan', 'Feb', 'Mar'],
+    Q2: ['Apr', 'May', 'Jun'],
+    Q3: ['Jul', 'Aug', 'Sep'],
+    Q4: ['Oct', 'Nov', 'Dec']
+  }
+
+  // Get transactions based on time period
+  const periodTransactions = (() => {
+    if (timePeriod === 'monthly') {
+      return getTransactionsByMonthYear(selectedMonth, selectedYear)
+    } else if (timePeriod === 'quarterly') {
+      const months = quarterMonths[selectedQuarter] || []
+      return transactions.filter(t => {
+        // Date format: "Jan 3, 2026" or "Dec 10, 2025"
+        const parts = t.date.split(' ')
+        const txMonth = parts[0] // e.g., "Jan", "Dec"
+        const txYear = parseInt(parts[2]) // e.g., 2026, 2025
+        return txYear === selectedPeriodYear && months.includes(txMonth)
+      })
+    } else if (timePeriod === 'year') {
+      return transactions.filter(t => {
+        // Date format: "Jan 3, 2026" or "Dec 10, 2025"
+        const parts = t.date.split(' ')
+        const txYear = parseInt(parts[2])
+        return txYear === selectedPeriodYear
+      })
+    }
+    return []
+  })()
+
+  // For backward compatibility, also keep monthTransactions
+  const monthTransactions = periodTransactions
   
   const filteredTransactions = monthTransactions.filter(transaction => {
     const matchesSearch = transaction.merchant.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -315,29 +354,73 @@ function SpendingPage({ isExpanded, toggleSidebar }) {
       )}
       
       <div className="spending-content">
-        <h1 className="page-title">{{
-          'Jan': 'January',
-          'Feb': 'February',
-          'Mar': 'March',
-          'Apr': 'April',
-          'May': 'May',
-          'Jun': 'June',
-          'Jul': 'July',
-          'Aug': 'August',
-          'Sep': 'September',
-          'Oct': 'October',
-          'Nov': 'November',
-          'Dec': 'December'
-        }[selectedMonth]} Spending</h1>
+        <h1 className="page-title">{
+          timePeriod === 'monthly' ? `${{
+            'Jan': 'January',
+            'Feb': 'February',
+            'Mar': 'March',
+            'Apr': 'April',
+            'May': 'May',
+            'Jun': 'June',
+            'Jul': 'July',
+            'Aug': 'August',
+            'Sep': 'September',
+            'Oct': 'October',
+            'Nov': 'November',
+            'Dec': 'December'
+          }[selectedMonth]} ${selectedYear} Spending` :
+          timePeriod === 'quarterly' ? `${selectedQuarter} ${selectedPeriodYear} Spending` :
+          timePeriod === 'year' ? `${selectedPeriodYear} Spending` :
+          'Spending'
+        }</h1>
+
+        {/* Time Period Selector */}
+        <div className="time-period-selector">
+          <button 
+            className={`time-period-cell ${timePeriod === 'year' ? 'active' : ''}`}
+            onClick={() => setTimePeriod('year')}
+          >
+            Year
+          </button>
+          <button 
+            className={`time-period-cell ${timePeriod === 'quarterly' ? 'active' : ''}`}
+            onClick={() => setTimePeriod('quarterly')}
+          >
+            Quarterly
+          </button>
+          <button 
+            className={`time-period-cell ${timePeriod === 'monthly' ? 'active' : ''}`}
+            onClick={() => setTimePeriod('monthly')}
+          >
+            Monthly
+          </button>
+          <button 
+            className={`time-period-cell ${timePeriod === 'custom' ? 'active' : ''}`}
+            onClick={() => setTimePeriod('custom')}
+            disabled
+          >
+            Custom
+          </button>
+        </div>
 
         {/* Income vs Spending Chart */}
         <IncomeVsSpendingChart 
           transactions={transactions} 
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
+          selectedQuarter={selectedQuarter}
+          selectedPeriodYear={selectedPeriodYear}
+          timePeriod={timePeriod}
           onMonthSelect={(month, year) => {
             setSelectedMonth(month)
             setSelectedYear(year)
+          }}
+          onQuarterSelect={(quarter, year) => {
+            setSelectedQuarter(quarter)
+            setSelectedPeriodYear(year)
+          }}
+          onYearSelect={(year) => {
+            setSelectedPeriodYear(year)
           }}
         />
 

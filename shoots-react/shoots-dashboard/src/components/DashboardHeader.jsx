@@ -170,7 +170,7 @@ function DashboardHeader({ userName = "Damien", isExpanded, toggleSidebar, onTog
       ) : (
         // Desktop Header
         <>
-          <div className="top-bar">
+          <div className={`top-bar ${isExpanded ? 'sidebar-expanded' : ''}`}>
             {!isExpanded && (
               <i className="fa-solid fa-bars hamburger-icon" onClick={toggleSidebar}></i>
             )}
@@ -186,6 +186,7 @@ function DashboardHeader({ userName = "Damien", isExpanded, toggleSidebar, onTog
               <i className="fa-solid fa-ellipsis"></i>
             </button>
           </div>
+          <div className="top-bar-spacer"></div>
           <div className="banner" onClick={handleBannerClick} style={{ cursor: 'pointer' }} title="Click to upload your own banner image">
             <img 
               src={bannerUrl}

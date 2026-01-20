@@ -5,20 +5,20 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  height: 100%;
   background: #353535;
   border-radius: 15px;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
   padding: 5px;
-  height: auto;
 }
 
 .budget-progress-bar__padding {
   background: #666666;
   border-radius: 12px;
   width: 100%;
-  height: 38px;
+  height: 100%;
   margin: 0;
   display: flex;
   align-items: center;
@@ -33,12 +33,10 @@
   align-items: center;
   justify-content: flex-start;
   background: #F4C95D;
-  height: 38px;
+  height: 100%;
   border-radius: 12px;
   position: relative;
   margin-left: 0;
-  margin-top: 6px;
-  margin-bottom: 6px;
   transition: width 0.3s ease;
   min-width: 60px;
   padding-left: 20px;
@@ -82,11 +80,9 @@
     border-radius: 12px;
   }
   .budget-progress-bar__padding {
-    height: 32px;
     border-radius: 10px;
   }
   .budget-progress-bar__fill {
-    height: 32px;
     border-radius: 10px;
     min-width: 50px;
     padding-left: 15px;
@@ -105,11 +101,9 @@
     border-radius: 10px;
   }
   .budget-progress-bar__padding {
-    height: 26px;
     border-radius: 8px;
   }
   .budget-progress-bar__fill {
-    height: 26px;
     border-radius: 8px;
     min-width: 40px;
     padding-left: 10px;
