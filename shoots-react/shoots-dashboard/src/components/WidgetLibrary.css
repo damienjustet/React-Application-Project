@@ -403,3 +403,179 @@
 .widget-card .widget-card-checkbox {
   pointer-events: auto;
 }
+
+/* Widget Preview Panel */
+.widget-preview-panel {
+  position: fixed;
+  right: 440px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  background: #1e1e1e;
+  border: 1px solid #2c2c2c;
+  border-radius: 12px;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  overflow: hidden;
+  animation: previewSlideIn 0.2s ease-out;
+}
+
+@keyframes previewSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.widget-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #242424;
+  border-bottom: 1px solid #2c2c2c;
+}
+
+.widget-preview-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-subtle);
+  border-radius: 10px;
+  font-size: 1.5rem;
+  color: var(--theme-primary);
+}
+
+.widget-preview-title h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #e8e8e8;
+}
+
+.widget-preview-size {
+  font-size: 0.8rem;
+  color: #83827d;
+  background: #191919;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.widget-preview-mockup {
+  padding: 1.25rem;
+  background: #191919;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-preview-features {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #2c2c2c;
+}
+
+.widget-preview-features h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  color: #83827d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.widget-preview-features ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.widget-preview-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #c8c8c8;
+  padding: 0.35rem 0;
+}
+
+.widget-preview-features li i {
+  color: var(--theme-primary);
+  font-size: 0.75rem;
+}
+
+/* Live Widget Preview Styles */
+.live-widget-preview {
+  width: 100%;
+  min-height: 120px;
+  max-height: 280px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Scale down larger widgets to fit preview */
+.live-widget-preview[data-widget-id="category-breakdown"],
+.live-widget-preview[data-widget-id="spending-trends"] {
+  transform: scale(0.85);
+  transform-origin: center center;
+  min-height: 200px;
+}
+
+.live-widget-preview[data-widget-id="savings-jar"] {
+  min-height: 220px;
+}
+
+.live-widget-preview[data-widget-id="recent-transactions"],
+.live-widget-preview[data-widget-id="upcoming-transactions"] {
+  transform: scale(0.9);
+  transform-origin: center center;
+  min-height: 180px;
+}
+
+.live-widget-preview[data-widget-id="budget-progress-bar"] {
+  min-height: 80px;
+  padding: 0 1rem;
+}
+
+.live-widget-preview[data-widget-id="add-transaction-button"] {
+  min-height: 100px;
+}
+
+.live-widget-preview[data-widget-id="image-widget"] {
+  min-height: 140px;
+}
+
+/* Preview fallback */
+.preview-fallback {
+  width: 80px;
+  height: 80px;
+  background: var(--theme-subtle);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--theme-primary);
+}
+
+/* Hovered card state */
+.widget-card.hovered {
+  border-color: var(--theme-primary);
+  background-color: #2c2c2c;
+}
+
+/* Hide preview panel on mobile */
+@media (max-width: 768px) {
+  .widget-preview-panel {
+    display: none;
+  }
+}

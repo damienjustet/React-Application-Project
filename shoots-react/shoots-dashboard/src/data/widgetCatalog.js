@@ -21,7 +21,10 @@ export const WIDGET_CATALOG = [
     description: 'Shows a visual progress bar of spending vs. budget',
     icon: 'fa-battery-half',
     defaultSize: { width: 10, height: 1 },
-    displayType: WIDGET_DISPLAY_TYPE.GRID
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    preview: {
+      features: ['Real-time spending tracking', 'Color-coded progress indicator', 'Shows remaining budget']
+    }
   },
   {
     id: 'add-transaction-button',
@@ -30,7 +33,10 @@ export const WIDGET_CATALOG = [
     description: 'Circular button to create a new transaction',
     icon: 'fa-plus',
     defaultSize: { width: 1, height: 1 },
-    displayType: WIDGET_DISPLAY_TYPE.GRID
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    preview: {
+      features: ['One-tap transaction entry', 'Opens quick-add modal', 'Compact 1×1 size']
+    }
   },
   {
     id: 'upcoming-transactions',
@@ -39,7 +45,10 @@ export const WIDGET_CATALOG = [
     description: 'Shows the next 5 upcoming bills and subscriptions',
     icon: 'fa-calendar-days',
     defaultSize: { width: 15, height: 3 },
-    displayType: WIDGET_DISPLAY_TYPE.FEATURED  // This widget gets its own section
+    displayType: WIDGET_DISPLAY_TYPE.FEATURED,
+    preview: {
+      features: ['Next 5 bills at a glance', 'Due dates & amounts', 'Category icons', 'Recurring indicators']
+    }
   },
   {
     id: 'savings-jar',
@@ -48,7 +57,10 @@ export const WIDGET_CATALOG = [
     description: 'Visual jar showing savings progress with ability to switch between goals',
     icon: 'fa-jar',
     defaultSize: { width: 3, height: 5 },
-    displayType: WIDGET_DISPLAY_TYPE.GRID
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    preview: {
+      features: ['Animated fill level', 'Multiple savings goals', 'Progress percentage', 'Goal amount display']
+    }
   },
   {
     id: 'category-breakdown',
@@ -57,7 +69,10 @@ export const WIDGET_CATALOG = [
     description: 'Pie chart with spending breakdown by category',
     icon: 'fa-chart-pie',
     defaultSize: { width: 8, height: 4 },
-    displayType: WIDGET_DISPLAY_TYPE.GRID
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    preview: {
+      features: ['Interactive pie chart', 'Category percentages', 'Color-coded segments', 'Hover for details']
+    }
   },
   {
     id: 'spending-trends',
@@ -66,7 +81,10 @@ export const WIDGET_CATALOG = [
     description: 'Area chart showing 6-month spending trends with optional bills toggle',
     icon: 'fa-chart-line',
     defaultSize: { width: 7, height: 5 },
-    displayType: WIDGET_DISPLAY_TYPE.GRID
+    displayType: WIDGET_DISPLAY_TYPE.GRID,
+    preview: {
+      features: ['6-month history', 'Area chart visualization', 'Bills toggle option', 'Trend comparison']
+    }
   },
   {
     id: 'recent-transactions',
@@ -75,7 +93,10 @@ export const WIDGET_CATALOG = [
     description: 'Shows the 5 most recent transactions with amounts and categories',
     icon: 'fa-receipt',
     defaultSize: { width: 8, height: 7 },
-    displayType: WIDGET_DISPLAY_TYPE.FEATURED  // Featured widget on mobile
+    displayType: WIDGET_DISPLAY_TYPE.FEATURED,
+    preview: {
+      features: ['Latest 5 transactions', 'Amount & category', 'Date display', 'Quick overview']
+    }
   },
   {
     id: 'image-widget',
@@ -88,7 +109,10 @@ export const WIDGET_CATALOG = [
     webOnly: true,         // Only visible on web, hidden on mobile
     keepInLibrary: true,   // Doesn't disappear from library when added
     resizable: true,       // Can be resized by user
-    minSize: { width: 2, height: 2 }
+    minSize: { width: 2, height: 2 },
+    preview: {
+      features: ['Custom image upload', 'Resizable dimensions', 'Personal decoration', 'Multiple instances']
+    }
   }
 ]
 

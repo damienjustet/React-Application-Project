@@ -3,12 +3,69 @@ import { WIDGET_CATEGORIES, getWidgetsByCategory, setCurrentDragWidget, clearCur
 import { useDashboard } from '../context/DashboardContext'
 import './WidgetLibrary.css'
 
+// Import actual widget components for live preview
+import BudgetProgressBarWidget from './BudgetProgressBarWidget'
+import AddTransactionButton from './AddTransactionButton'
+import SavingsJarWidget from './SavingsJarWidget'
+import CategoryBreakdownWidget from './CategoryBreakdownWidget'
+import SpendingTrendsWidget from './SpendingTrendsWidget'
+import RecentTransactionsWidget from './RecentTransactionsWidget'
+import UpcomingTransactionsWidget from './UpcomingTransactionsWidget'
+import ImageWidget from './ImageWidget'
+
+// Map widget IDs to their actual components
+const WIDGET_COMPONENTS = {
+  'budget-progress-bar': BudgetProgressBarWidget,
+  'add-transaction-button': AddTransactionButton,
+  'savings-jar': SavingsJarWidget,
+  'category-breakdown': CategoryBreakdownWidget,
+  'spending-trends': SpendingTrendsWidget,
+  'recent-transactions': RecentTransactionsWidget,
+  'upcoming-transactions': UpcomingTransactionsWidget,
+  'image-widget': ImageWidget
+}
+
+// Live Widget Preview - renders actual widget scaled down
+function WidgetPreview({ widget }) {
+  const WidgetComponent = WIDGET_COMPONENTS[widget.id]
+  
+  if (!WidgetComponent) {
+    return (
+      <div className="preview-fallback">
+        <i className={`fa-solid ${widget.icon}`}></i>
+      </div>
+    )
+  }
+
+  // Special props for specific widgets
+  const getWidgetProps = () => {
+    switch (widget.id) {
+      case 'add-transaction-button':
+        return { onClick: () => {} }
+      case 'image-widget':
+        return { instanceId: 'preview', size: { width: 2, height: 2 } }
+      case 'recent-transactions':
+      case 'upcoming-transactions':
+        return { isFeatured: false }
+      default:
+        return {}
+    }
+  }
+
+  return (
+    <div className="live-widget-preview" data-widget-id={widget.id}>
+      <WidgetComponent {...getWidgetProps()} />
+    </div>
+  )
+}
+
 function WidgetLibrary({ isOpen, onClose }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [selectedWidgets, setSelectedWidgets] = useState([])
   const [showCheckboxes, setShowCheckboxes] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+  const [hoveredWidget, setHoveredWidget] = useState(null)
   const dragImageRef = useRef(null)
   
   const { addWidget, addMultipleWidgets, widgets: dashboardWidgets } = useDashboard()
@@ -162,10 +219,12 @@ function WidgetLibrary({ isOpen, onClose }) {
           {filteredWidgets.map(widget => (
             <div
               key={widget.id}
-              className={`widget-card ${selectedWidgets.includes(widget.id) ? 'selected' : ''}`}
+              className={`widget-card ${selectedWidgets.includes(widget.id) ? 'selected' : ''} ${hoveredWidget?.id === widget.id ? 'hovered' : ''}`}
               draggable={true}
               onDragStart={(e) => handleDragStart(e, widget)}
               onDragEnd={handleDragEnd}
+              onMouseEnter={() => setHoveredWidget(widget)}
+              onMouseLeave={() => setHoveredWidget(null)}
             >
               {showCheckboxes && (
                 <div className="widget-card-checkbox">
@@ -186,6 +245,39 @@ function WidgetLibrary({ isOpen, onClose }) {
             </div>
           ))}
         </div>
+
+        {/* Preview Panel - shows on hover (desktop only) */}
+        {hoveredWidget && (
+          <div className="widget-preview-panel">
+            <div className="widget-preview-header">
+              <div className="widget-preview-icon">
+                <i className={`fa-solid ${hoveredWidget.icon}`}></i>
+              </div>
+              <div className="widget-preview-title">
+                <h3>{hoveredWidget.name}</h3>
+                <span className="widget-preview-size">{hoveredWidget.defaultSize.width}×{hoveredWidget.defaultSize.height}</span>
+              </div>
+            </div>
+            
+            <div className="widget-preview-mockup">
+              <WidgetPreview widget={hoveredWidget} />
+            </div>
+            
+            {hoveredWidget.preview?.features && (
+              <div className="widget-preview-features">
+                <h4>Features</h4>
+                <ul>
+                  {hoveredWidget.preview.features.map((feature, idx) => (
+                    <li key={idx}>
+                      <i className="fa-solid fa-check"></i>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         {selectedWidgets.length > 0 && (
           <div className="widget-library-footer">
